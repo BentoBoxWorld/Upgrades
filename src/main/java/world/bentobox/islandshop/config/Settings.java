@@ -32,11 +32,14 @@ public class Settings {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("gamemodes");
 			
 			for (String gameMode : Objects.requireNonNull(section).getKeys(false)) {
-				
 				ConfigurationSection gameModeSection = section.getConfigurationSection(gameMode);
-				for (String key : Objects.requireNonNull(gameModeSection).getKeys(false)) {
-					
-					this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addRangeSection(gameModeSection, key));
+				
+				if (gameModeSection.isSet("range-upgrade")) {
+					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("range-upgrade");
+					for (String key : Objects.requireNonNull(lowSection).getKeys(false)) {
+						
+						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addRangeSection(lowSection, key));
+					}
 				}
 			}
 		}

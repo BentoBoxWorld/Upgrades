@@ -36,8 +36,9 @@ range-upgrade:
 # You can overwrite a tier by using the same name
 gamemodes:
   BSkyblock:
-    tier3:
-      max-level: 15
-      upgrade-range: "5"
-      island-min-level: "6"
-      vault-cost: "[level]*[numberPlayer]*500"
+    range-upgrade:
+      tier3:
+        max-level: 15
+        upgrade-range: "5"
+        island-min-level: "6"
+        vault-cost: "[level]*[numberPlayer]*500"
