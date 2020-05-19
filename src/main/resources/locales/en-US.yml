@@ -1,0 +1,17 @@
+islandshop:
+  commands:
+    main:
+      description: "Open the upgrade shop interface"
+  ui:
+    upgradepanel:
+      title: "Island upgrade shop"
+      rangeupgrade: "Range upgrade of [rangelevel]"
+      norangeupgrade: "§7Range upgrade"
+      rangeupgradedone: "§aYour island range was upgraded of [rangelevel] blocks"
+      maxlevel: "Max level reached"
+      islandneed: "Island Min Level: [islandlevel]"
+      moneycost: "Money cost: [cost]"
+      tryreloadlevel: "Don't forget to update your island level with the level command"
+  error:
+    rangeovermax: "§cYou tried to upgrade you island range over the max? You should talk about this to an administrator"
+    costwithdraw: "§cCouldn't withdraw money. You should talk about this to an administrator"

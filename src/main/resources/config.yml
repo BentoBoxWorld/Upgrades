@@ -1,0 +1,43 @@
+# Config file for IslandShop addon
+
+# Disabled Game Mode Addons
+# IslandShop will not work in these game modes
+disabled-gamemodes: []
+
+# Range Upgrade Default Tiers
+# Each tier must contain:
+#      max-level: Upgrade level up to which tier apply
+#      upgrade-range: How much block is added to the range with each upgrade
+#      island-min-level: Minimum level required to upgrade (if level addon is provided)
+#      vault-cost: Money cost of upgrade
+# Note: for upgrade-range, island-min-level and vault-cost:
+#      Mathematical expression can be used (+,-,*,/,^,(,))
+#      Mathematical function can be used (sqrt,sin,cost,tan)
+#      Special value can be used:
+#         [level] : Is the actual level for this upgrade
+#         [islandLevel] : Is the islandLevel from level addon
+#         [numberPlayer] : Is the number of players in team
+#
+# Caution: You should always check that at max level, your players won't attain max range for island
+range-upgrade:
+  tier1:
+    max-level: 5
+    upgrade-range: "5"
+    island-min-level: "2"
+    vault-cost: "[level]*100"
+  tier2:
+    max-level: 10
+    upgrade-range: "3"
+    island-min-level: "4"
+    vault-cost: "[level]*[numberPlayer]*200"
+
+# GameMode differences
+# List any tiers that you want to add
+# You can overwrite a tier by using the same name
+gamemodes:
+  BSkyblock:
+    tier3:
+      max-level: 15
+      upgrade-range: "5"
+      island-min-level: "6"
+      vault-cost: "[level]*[numberPlayer]*500"

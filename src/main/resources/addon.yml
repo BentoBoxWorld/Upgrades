@@ -1,0 +1,11 @@
+name: IslandShop
+main: world.bentobox.islandshop.IslandShopAddon
+version: ${version}${build.number}
+repository: "Guillaume-Lebegue/IslandShop"
+metrics: true
+icon: GOLD_INGOT
+
+authors:
+  - Guillaume-Lebegue
+
+softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, Level
