@@ -1,4 +1,4 @@
-package world.bentobox.islandshop.task;
+package world.bentobox.islandupgrades.task;
 
 import java.util.Map;
 
@@ -6,19 +6,19 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import world.bentobox.bentobox.api.events.island.IslandEvent;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.islandshop.IslandShopAddon;
-import world.bentobox.islandshop.IslandShopData;
+import world.bentobox.islandupgrades.IslandUpgradesAddon;
+import world.bentobox.islandupgrades.IslandUpgradesData;
 
-public class IslandShopRangeUpgrade {
-	
-	public IslandShopRangeUpgrade(IslandShopAddon addon) {
+public class IslandUpgradesRangeUpgrade {
+
+	public IslandUpgradesRangeUpgrade(IslandUpgradesAddon addon) {
 		this.addon = addon;
 	}
 	
 	public boolean canUpgrade(User user, Island island, Map<String, Integer> rangeUpgradeInfo) {
 		boolean can = true;
 		
-		if (this.addon.isLevelProvided() && this.addon.getIslandShopManager().getIslandLevel(island) < rangeUpgradeInfo.get("islandMinLevel"))
+		if (this.addon.isLevelProvided() && this.addon.getIslandUpgradesManager().getIslandLevel(island) < rangeUpgradeInfo.get("islandMinLevel"))
 			can = false;
 		
 		if (this.addon.isVaultProvided() && !this.addon.getVaultHook().has(user, rangeUpgradeInfo.get("vaultCost")))
@@ -32,7 +32,7 @@ public class IslandShopRangeUpgrade {
 		int newRange = island.getProtectionRange() + rangeUpgradeInfo.get("upgradeRange");
 		if (newRange > island.getRange()) {
 			this.addon.logWarning("User tried to upgrade their island range over the max. This is probably a configuration problem.");
-			user.sendMessage("islandshop.error.rangeovermax");
+			user.sendMessage("islandupgrades.error.rangeovermax");
 			return false;
 		}
 		
@@ -40,7 +40,7 @@ public class IslandShopRangeUpgrade {
 			EconomyResponse response = this.addon.getVaultHook().withdraw(user, rangeUpgradeInfo.get("vaultCost"));
 			if (!response.transactionSuccess()) {
 				this.addon.logWarning("User Money withdrawing failed user: " + user.getName() + " reason: " + response.errorMessage);
-				user.sendMessage("islandshop.error.costwithdraw");
+				user.sendMessage("islandupgrades.error.costwithdraw");
 				return false;
 			}
 		}
@@ -58,15 +58,15 @@ public class IslandShopRangeUpgrade {
 		.protectionRange(newRange, oldRange)
 		.build();
 		
-		IslandShopData data = this.addon.getIslandShopLevel(island.getUniqueId());
+		IslandUpgradesData data = this.addon.getIslandUpgradesLevel(island.getUniqueId());
 		data.setRangeUpgradeLevel(data.getRangeUpgradeLevel() + 1);
 		
-		user.sendMessage("islandshop.ui.upgradepanel.rangeupgradedone",
+		user.sendMessage("islandupgrades.ui.upgradepanel.rangeupgradedone",
 			"[rangelevel]", rangeUpgradeInfo.get("upgradeRange").toString());
 
 		return true;
 	}
 	
-	private IslandShopAddon addon;
-
+	private IslandUpgradesAddon addon;
+	
 }

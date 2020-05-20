@@ -1,7 +1,7 @@
-name: IslandShop
-main: world.bentobox.islandshop.IslandShopAddon
+name: IslandUpgrades
+main: world.bentobox.islandupgrades.IslandUpgradesAddon
 version: ${version}${build.number}
-repository: "Guillaume-Lebegue/IslandShop"
+repository: "Guillaume-Lebegue/IslandUpgrades"
 metrics: true
 icon: GOLD_INGOT
 

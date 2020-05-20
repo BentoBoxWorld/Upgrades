@@ -1,4 +1,4 @@
-package world.bentobox.islandshop.config;
+package world.bentobox.islandupgrades.config;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import java.util.Objects;
 import org.bukkit.configuration.ConfigurationSection;
 import org.eclipse.jdt.annotation.NonNull;
 
-import world.bentobox.islandshop.IslandShopAddon;
+import world.bentobox.islandupgrades.IslandUpgradesAddon;
 
 public class Settings {
 	
-	public Settings(IslandShopAddon addon)
+	public Settings(IslandUpgradesAddon addon)
 	{
 		this.addon = addon;
 		this.addon.saveDefaultConfig();
@@ -85,7 +85,7 @@ public class Settings {
 		return this.customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
 	}
 
-	private IslandShopAddon addon;
+	private IslandUpgradesAddon addon;
 	
 	private Set<String> disabledGameModes;
 	
@@ -318,8 +318,8 @@ public class Settings {
 	            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
 	                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
 	                x = (() -> Double.parseDouble(str.substring(startPos, this.pos)));
-	            } else if ((ch >= 'a' && ch <= 'z') || ch == '[' || ch == ']') { // functions
-	                while ((ch >= 'a' && ch <= 'z') || ch == '[' || ch == ']') nextChar();
+	            } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') { // functions
+	                while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') nextChar();
 	                String func = str.substring(startPos, this.pos);
 	                if (variables.containsKey(func)) x = (() -> variables.get(func));
 	                else {

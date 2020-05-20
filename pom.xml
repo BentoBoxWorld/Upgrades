@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>world.bentobox</groupId>
-	<artifactId>IslandShop</artifactId>
+	<artifactId>IslandUpgrades</artifactId>
 	<version>${revision}</version>
 	
-	<name>IslandShop</name>
+	<name>IslandUpgrades</name>
 	<description>BentoBox Addon for buying upgrade for island with vault money</description>
   
   	<properties>

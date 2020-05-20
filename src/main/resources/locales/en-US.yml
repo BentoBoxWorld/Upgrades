@@ -1,4 +1,4 @@
-islandshop:
+islandupgrades:
   commands:
     main:
       description: "Open the upgrade shop interface"

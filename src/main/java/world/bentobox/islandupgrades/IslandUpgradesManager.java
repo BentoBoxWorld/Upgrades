@@ -1,4 +1,4 @@
-package world.bentobox.islandshop;
+package world.bentobox.islandupgrades;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,16 +10,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.islandshop.config.Settings;
+import world.bentobox.islandupgrades.config.Settings;
 
-public class IslandShopManager {
-	
-	public IslandShopManager(IslandShopAddon addon) {
+public class IslandUpgradesManager {
+
+	public IslandUpgradesManager(IslandUpgradesAddon addon) {
 		this.addon = addon;
 		this.hookedGameModes = new HashSet<>();
 	}
@@ -102,8 +101,8 @@ public class IslandShopManager {
 		return info;
 	}
 	
-	private IslandShopAddon addon;
+	private IslandUpgradesAddon addon;
 	
 	private Set<String> hookedGameModes;
-
+	
 }

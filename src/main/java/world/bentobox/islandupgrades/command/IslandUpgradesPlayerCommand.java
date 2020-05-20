@@ -1,15 +1,15 @@
-package world.bentobox.islandshop.command;
+package world.bentobox.islandupgrades.command;
 
 import java.util.List;
 
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.islandshop.IslandShopAddon;
-import world.bentobox.islandshop.ui.Panel;
+import world.bentobox.islandupgrades.IslandUpgradesAddon;
+import world.bentobox.islandupgrades.ui.Panel;
 
-public class IslandShopPlayerCommand extends CompositeCommand {
+public class IslandUpgradesPlayerCommand extends CompositeCommand {
 
-	public IslandShopPlayerCommand(IslandShopAddon addon, CompositeCommand cmd) {
+	public IslandUpgradesPlayerCommand(IslandUpgradesAddon addon, CompositeCommand cmd) {
 		super(addon, cmd, "upgrade");
 		
 		this.addon = addon;
@@ -17,7 +17,7 @@ public class IslandShopPlayerCommand extends CompositeCommand {
 	
 	@Override
 	public void setup() {
-		this.setDescription("islandshop.commands.main.description");
+		this.setDescription("islandupgrades.commands.main.description");
 		this.setOnlyPlayer(true);
 	}
 	
@@ -31,6 +31,6 @@ public class IslandShopPlayerCommand extends CompositeCommand {
 		return false;
 	}
 	
-	IslandShopAddon addon;
+	IslandUpgradesAddon addon;
 	
 }

@@ -1,7 +1,7 @@
-# Config file for IslandShop addon
+# Config file for IslandUpgrades addon
 
 # Disabled Game Mode Addons
-# IslandShop will not work in these game modes
+# IslandUpgrades will not work in these game modes
 disabled-gamemodes: []
 
 # Range Upgrade Default Tiers

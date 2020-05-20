@@ -1,4 +1,4 @@
-package world.bentobox.islandshop;
+package world.bentobox.islandupgrades;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,13 +12,13 @@ import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.hooks.VaultHook;
-import world.bentobox.islandshop.command.IslandShopPlayerCommand;
-import world.bentobox.islandshop.config.Settings;
-import world.bentobox.islandshop.task.IslandShopRangeUpgrade;
+import world.bentobox.islandupgrades.command.IslandUpgradesPlayerCommand;
+import world.bentobox.islandupgrades.config.Settings;
+import world.bentobox.islandupgrades.task.IslandUpgradesRangeUpgrade;
 import world.bentobox.level.Level;
 
-public class IslandShopAddon extends Addon {
-	
+public class IslandUpgradesAddon extends Addon {
+
 	@Override
 	public void onLoad() {
 		super.onLoad();
@@ -29,7 +29,7 @@ public class IslandShopAddon extends Addon {
 	@Override
 	public void onEnable() {
 		if (this.getState().equals(State.DISABLED)) {
-			this.logWarning("Island Shop Addon is not available or disabled!");
+			this.logWarning("Island Upgrade Addon is not available or disabled!");
 			return;
 		}
 		
@@ -40,7 +40,7 @@ public class IslandShopAddon extends Addon {
 			.forEach(g -> {
 				if (g.getPlayerCommand().isPresent()) {
 					
-					new IslandShopPlayerCommand(this, g.getPlayerCommand().get());
+					new IslandUpgradesPlayerCommand(this, g.getPlayerCommand().get());
 					
 					this.hooked = true;
 					hookedGameModes.add(g.getDescription().getName());
@@ -48,40 +48,40 @@ public class IslandShopAddon extends Addon {
 			});
 		
 		if (this.hooked) {
-			this.islandShopManager = new IslandShopManager(this);
-			this.islandShopManager.addGameModes(hookedGameModes);
+			this.islandUpgradesManager = new IslandUpgradesManager(this);
+			this.islandUpgradesManager.addGameModes(hookedGameModes);
 			
-			this.islandShopRangeUpgrade = new IslandShopRangeUpgrade(this);
+			this.islandUpgradesRangeUpgrade = new IslandUpgradesRangeUpgrade(this);
 			
-			this.dataBase = new Database<>(this, IslandShopData.class);
-			this.islandShopCache = new HashMap<>();
+			this.dataBase = new Database<>(this, IslandUpgradesData.class);
+			this.islandUpgradesCache = new HashMap<>();
 			
 			Optional<Addon> level = this.getAddonByName("Level");
 			
 			if (!level.isPresent()) {
-				this.logWarning("Level addon not found so Island Shop won't look for IslandLevel");
+				this.logWarning("Level addon not found so Island Upgrade won't look for IslandLevel");
 				this.levelAddon = null;
 			} else
 				this.levelAddon = (Level) level.get();
 			
 			Optional<VaultHook> vault = this.getPlugin().getVault();
 			if (!vault.isPresent()) {
-				this.logWarning("Vault plugin not found si Island Shop won't look for money");
+				this.logWarning("Vault plugin not found si Island Upgrade won't look for money");
 				this.vault = null;
 			} else
 				this.vault = vault.get();
 			
-			this.log("Island Shop addon enabled");
+			this.log("Island upgrade addon enabled");
 		} else {
-			this.logError("Island Shop addon could not hook into any GameMode ans so, will not do anythings");
+			this.logError("Island upgrade addon could not hook into any GameMode ans so, will not do anythings");
 			this.setState(State.DISABLED);
 		}
 	}
 	
 	@Override
 	public void onDisable() {
-		if (this.islandShopCache != null)
-			this.islandShopCache.values().forEach(this.dataBase::saveObjectAsync);
+		if (this.islandUpgradesCache != null)
+			this.islandUpgradesCache.values().forEach(this.dataBase::saveObjectAsync);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class IslandShopAddon extends Addon {
 		
 		if (this.hooked)
 			this.settings = new Settings(this);
-			this.log("Island Shop addon reloaded");
+			this.log("Island upgrade addon reloaded");
 	}
 	
 	/**
@@ -101,33 +101,33 @@ public class IslandShopAddon extends Addon {
 	}
 
 	/**
-	 * @return the islandShopManager
+	 * @return the islandUpgradesManager
 	 */
-	public IslandShopManager getIslandShopManager() {
-		return islandShopManager;
+	public IslandUpgradesManager getIslandUpgradesManager() {
+		return islandUpgradesManager;
 	}
 	
-	public IslandShopRangeUpgrade getIslandShopRangeUpgrade() {
-		return this.islandShopRangeUpgrade;
+	public IslandUpgradesRangeUpgrade getIslandUpgradesRangeUpgrade() {
+		return this.islandUpgradesRangeUpgrade;
 	}
 	
-	public Database<IslandShopData> getDataBase() {
+	public Database<IslandUpgradesData> getDataBase() {
 		return this.dataBase;
 	}
 	
-	public IslandShopData getIslandShopLevel(@NonNull String targetIsland) {
-		IslandShopData islandShopData = this.islandShopCache.get(targetIsland);
-		if (islandShopData != null)
-			return islandShopData;
-		IslandShopData data = this.dataBase.objectExists(targetIsland) ?
-			Optional.ofNullable(this.dataBase.loadObject(targetIsland)).orElse(new IslandShopData(targetIsland)) :
-			new IslandShopData(targetIsland);
-		this.islandShopCache.put(targetIsland, data);
+	public IslandUpgradesData getIslandUpgradesLevel(@NonNull String targetIsland) {
+		IslandUpgradesData islandUpgradesData = this.islandUpgradesCache.get(targetIsland);
+		if (islandUpgradesData != null)
+			return islandUpgradesData;
+		IslandUpgradesData data = this.dataBase.objectExists(targetIsland) ?
+			Optional.ofNullable(this.dataBase.loadObject(targetIsland)).orElse(new IslandUpgradesData(targetIsland)) :
+			new IslandUpgradesData(targetIsland);
+		this.islandUpgradesCache.put(targetIsland, data);
 		return data;
 	}
 	
 	public void uncacheIsland(@Nullable String targetIsland, boolean save) {
-		IslandShopData data = this.islandShopCache.remove(targetIsland);
+		IslandUpgradesData data = this.islandUpgradesCache.remove(targetIsland);
 		if (data == null)
 			return;
 		if (save)
@@ -154,16 +154,16 @@ public class IslandShopAddon extends Addon {
 	
 	private boolean hooked;
 	
-	private IslandShopManager islandShopManager;
+	private IslandUpgradesManager islandUpgradesManager;
 	
-	private IslandShopRangeUpgrade islandShopRangeUpgrade;
+	private IslandUpgradesRangeUpgrade islandUpgradesRangeUpgrade;
 	
-	private Database<IslandShopData> dataBase;
+	private Database<IslandUpgradesData> dataBase;
 	
-	private Map<String, IslandShopData> islandShopCache;
+	private Map<String, IslandUpgradesData> islandUpgradesCache;
 	
 	private Level levelAddon;
 	
 	private VaultHook vault;
-
+	
 }
