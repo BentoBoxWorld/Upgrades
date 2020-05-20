@@ -2,20 +2,15 @@ package world.bentobox.islandupgrades.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
 
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.islandupgrades.IslandUpgradesAddon;
-import world.bentobox.islandupgrades.IslandUpgradesData;
+import world.bentobox.islandupgrades.api.IslandUpgradeObject;
 
 public class Panel {
-
-private IslandUpgradesAddon addon;
 	
 	public Panel(IslandUpgradesAddon addon) {
 		super();
@@ -24,46 +19,46 @@ private IslandUpgradesAddon addon;
 	
 	public void showPanel(User user) {
 		Island island = this.addon.getIslands().getIsland(user.getWorld(), user);
-		IslandUpgradesData data = this.addon.getIslandUpgradesLevel(island.getUniqueId());
-		
-		
-		long rangeLevel = data.getRangeUpgradeLevel();
 		long islandLevel = this.addon.getIslandUpgradesManager().getIslandLevel(island);
-		long numberPeople = island.getMemberSet().size();
-		
-		Map<String, Integer> rangeUpgradeInfo = this.addon.getIslandUpgradesManager().getRangeUpgradeInfos(rangeLevel, islandLevel, numberPeople, user.getWorld());
 		
 		PanelBuilder pb = new PanelBuilder().name(user.getTranslation("islandupgrades.ui.upgradepanel.title"));
-		pb.item(new PanelItemBuilder()
-				.name(rangeUpgradeInfo == null ? 
-					user.getTranslation("islandupgrades.ui.upgradepanel.norangeupgrade") :
-					user.getTranslation("islandupgrades.ui.upgradepanel.rangeupgrade", "[rangelevel]", rangeUpgradeInfo.get("upgradeRange").toString()))
-				.icon(Material.OAK_FENCE)
-				.description(this.getDescription(user, rangeUpgradeInfo, islandLevel))
-				.clickHandler(new PanelRangeClick(this.addon, rangeUpgradeInfo))
-				.build());
+		
+		this.addon.getIslandUpgradeObjectList().forEach(upgrade -> {
+			upgrade.updateUpgradeValue(user, island);
+			
+			pb.item(new PanelItemBuilder()
+					.name(upgrade.getDisplayName())
+					.icon(upgrade.getIcon())
+					.description(this.getDescription(user, upgrade, islandLevel))
+					.clickHandler(new PanelClick(this.addon, upgrade))
+					.build());
+		});
 		
 		pb.user(user).build();
 	}
 	
-	private List<String> getDescription(User user, Map<String, Integer> infos, long islandLevel) {
+	private List<String> getDescription(User user, IslandUpgradeObject upgrade, long islandLevel) {
 		List<String> descrip = new ArrayList<>();
-		if (infos == null)
+		if (upgrade.getUpgradeValues() == null)
 			descrip.add(user.getTranslation("islandupgrades.ui.upgradepanel.maxlevel"));
 		else {
-			boolean hasMoney = this.addon.getVaultHook().has(user, infos.get("vaultCost"));
-			descrip.add((infos.get("islandMinLevel") <= islandLevel ? "§a" : "§c") + 
-				user.getTranslation("islandupgrades.ui.upgradepanel.islandneed", "[islandlevel]", infos.get("islandMinLevel").toString()));
+			boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues().getMoneyCost());
+			descrip.add((upgrade.getUpgradeValues().getIslandLevel() <= islandLevel ? "§a" : "§c") + 
+				user.getTranslation("islandupgrades.ui.upgradepanel.islandneed",
+					"[islandlevel]", upgrade.getUpgradeValues().getIslandLevel().toString()));
 			
 			descrip.add((hasMoney ? "§a" : "§c") + 
-					user.getTranslation("islandupgrades.ui.upgradepanel.moneycost", "[cost]", infos.get("vaultCost").toString()));
+				user.getTranslation("islandupgrades.ui.upgradepanel.moneycost",
+					"[cost]", upgrade.getUpgradeValues().getMoneyCost().toString()));
 			
-			if (infos.get("islandMinLevel") > islandLevel) {
+			if (upgrade.getUpgradeValues().getIslandLevel() > islandLevel) {
 				descrip.add("§8" + user.getTranslation("islandupgrades.ui.upgradepanel.tryreloadlevel"));
 			}
 		}
 		
 		return descrip;
 	}
+	
+	private IslandUpgradesAddon addon;
 	
 }

@@ -2,9 +2,11 @@ package world.bentobox.islandupgrades;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -12,9 +14,10 @@ import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.hooks.VaultHook;
+import world.bentobox.islandupgrades.api.IslandUpgradeObject;
 import world.bentobox.islandupgrades.command.IslandUpgradesPlayerCommand;
 import world.bentobox.islandupgrades.config.Settings;
-import world.bentobox.islandupgrades.task.IslandUpgradesRangeUpgrade;
+import world.bentobox.islandupgrades.upgrades.RangeUpgrade;
 import world.bentobox.level.Level;
 
 public class IslandUpgradesAddon extends Addon {
@@ -51,7 +54,7 @@ public class IslandUpgradesAddon extends Addon {
 			this.islandUpgradesManager = new IslandUpgradesManager(this);
 			this.islandUpgradesManager.addGameModes(hookedGameModes);
 			
-			this.islandUpgradesRangeUpgrade = new IslandUpgradesRangeUpgrade(this);
+			this.islandUpgradeObject = new HashSet<>();
 			
 			this.dataBase = new Database<>(this, IslandUpgradesData.class);
 			this.islandUpgradesCache = new HashMap<>();
@@ -70,6 +73,8 @@ public class IslandUpgradesAddon extends Addon {
 				this.vault = null;
 			} else
 				this.vault = vault.get();
+			
+			this.addIslandUpgradeObject(new RangeUpgrade(this));
 			
 			this.log("Island upgrade addon enabled");
 		} else {
@@ -105,10 +110,6 @@ public class IslandUpgradesAddon extends Addon {
 	 */
 	public IslandUpgradesManager getIslandUpgradesManager() {
 		return islandUpgradesManager;
-	}
-	
-	public IslandUpgradesRangeUpgrade getIslandUpgradesRangeUpgrade() {
-		return this.islandUpgradesRangeUpgrade;
 	}
 	
 	public Database<IslandUpgradesData> getDataBase() {
@@ -149,6 +150,14 @@ public class IslandUpgradesAddon extends Addon {
 	public boolean isVaultProvided() {
 		return this.vault != null;
 	}
+	
+	public Set<IslandUpgradeObject> getIslandUpgradeObjectList() {
+		return this.islandUpgradeObject;
+	}
+	
+	public void addIslandUpgradeObject(IslandUpgradeObject upgrade) {
+		this.islandUpgradeObject.add(upgrade);
+	}
 
 	private Settings settings;
 	
@@ -156,7 +165,7 @@ public class IslandUpgradesAddon extends Addon {
 	
 	private IslandUpgradesManager islandUpgradesManager;
 	
-	private IslandUpgradesRangeUpgrade islandUpgradesRangeUpgrade;
+	private Set<IslandUpgradeObject> islandUpgradeObject;
 	
 	private Database<IslandUpgradesData> dataBase;
 	

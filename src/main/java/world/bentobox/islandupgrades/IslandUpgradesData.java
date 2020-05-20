@@ -1,5 +1,8 @@
 package world.bentobox.islandupgrades;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.database.objects.DataObject;
@@ -10,17 +13,17 @@ public class IslandUpgradesData implements DataObject {
 	private String uniqueId;
 	
 	@Expose
-	private long rangeUpgradeLevel;
+	private Map<String, Long> upgradesLevels;
 	
 	public IslandUpgradesData() {}
 	
-	public IslandUpgradesData(String uniqueId, long rangeUpgradeLevel) {
+	public IslandUpgradesData(String uniqueId, Map<String, Long> upgradesLevel) {
 		this.uniqueId = uniqueId;
-		this.rangeUpgradeLevel = rangeUpgradeLevel;
+		this.upgradesLevels = upgradesLevel;
 	}
 	
 	public IslandUpgradesData(String uniqueId) {
-		this(uniqueId, 1);
+		this(uniqueId, new HashMap<>());
 	}
 	
 	@Override
@@ -33,12 +36,13 @@ public class IslandUpgradesData implements DataObject {
 		this.uniqueId = uniqueId;
 	}
 	
-	public long getRangeUpgradeLevel() {
-		return rangeUpgradeLevel;
+	public long getUpgradeLevel(String name) {
+		this.upgradesLevels.putIfAbsent(name, (long) 0);
+		return this.upgradesLevels.get(name);
 	}
 	
-	public void setRangeUpgradeLevel(long rangeUpgradeLevel) {
-		this.rangeUpgradeLevel = rangeUpgradeLevel;
+	public void setUpgradeLevel(String name, long value) {
+		this.upgradesLevels.put(name, value);
 	}
 	
 }

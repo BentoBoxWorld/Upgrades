@@ -1,7 +1,5 @@
 package world.bentobox.islandupgrades.ui;
 
-import java.util.Map;
-
 import org.bukkit.event.inventory.ClickType;
 
 import world.bentobox.bentobox.api.panels.Panel;
@@ -9,31 +7,32 @@ import world.bentobox.bentobox.api.panels.PanelItem.ClickHandler;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.islandupgrades.IslandUpgradesAddon;
+import world.bentobox.islandupgrades.api.IslandUpgradeObject;
 
-public class PanelRangeClick implements ClickHandler {
+public class PanelClick implements ClickHandler {
 
-	public PanelRangeClick(IslandUpgradesAddon addon, Map<String, Integer> rangeUpgradeInfo) {
+	public PanelClick(IslandUpgradesAddon addon, IslandUpgradeObject upgrade) {
 		this.addon = addon;
-		this.rangeUpgradeInfo = rangeUpgradeInfo;
+		this.upgrade = upgrade;
 	}
 	
 	@Override
 	public boolean onClick(Panel panel, User user, ClickType clickType, int slot) {
-		if (this.rangeUpgradeInfo == null)
+		if (this.upgrade == null)
 			return true;
 		
 		Island island = this.addon.getIslands().getIsland(user.getWorld(), user);
 		
-		if (!this.addon.getIslandUpgradesRangeUpgrade().canUpgrade(user, island, this.rangeUpgradeInfo)) {
+		if (!this.upgrade.canUpgrade(user, island)) {
 			return true;
 		}
 		
 		user.closeInventory();
-		this.addon.getIslandUpgradesRangeUpgrade().doUpgrade(user, island, this.rangeUpgradeInfo);
+		this.upgrade.doUpgrade(user, island);
 		return true;
 	}
 	
 	private IslandUpgradesAddon addon;
-	private Map<String, Integer> rangeUpgradeInfo;
+	private IslandUpgradeObject upgrade;
 	
 }
