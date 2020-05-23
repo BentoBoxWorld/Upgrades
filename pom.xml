@@ -49,11 +49,56 @@
         <vault.version>1.7</vault.version>
         
         <revision>${build.version}-SNAPSHOT</revision>
-        
+
+        <!-- This allows to change between versions. -->
         <build.version>0.1.0</build.version>
+        <!-- Revision variable removes warning about dynamic version -->
+        <revision>${build.version}-SNAPSHOT</revision>
+        <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
 	</properties>
-	
+
+    <profiles>
+        <profile>
+            <!-- ci profile is activated if exist environment variable BUILD_NUMBER. -->
+            <!-- It replaces ${build.number} that is currently '-LOCAL' with
+                correct build number from JENKINS machine. -->
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <build.number>-b${env.BUILD_NUMBER}</build.number>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Master profile is activated if exist environment variable
+                GIT_BRANCH and its value is origin/master. -->
+            <!-- It will replace 'revision' with '${build.version}' so it
+                removes '-SNAPSHOT' string at the end. -->
+            <!-- Also, as this is release build, build number can be set
+                to empty string. -->
+            <!-- This profile will be used only if exist environment variable
+                GIT_BRANCH with value origin/master. -->
+            <id>master</id>
+            <activation>
+                <property>
+                    <name>env.GIT_BRANCH</name>
+                    <value>origin/master</value>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <revision>${build.version}</revision>
+                <!-- Empties build number variable. -->
+                <build.number></build.number>
+            </properties>
+        </profile>
+    </profiles>
+
 	<repositories>
 		<repository>
             <id>spigot-repo</id>
