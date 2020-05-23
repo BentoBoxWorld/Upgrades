@@ -63,10 +63,10 @@ public class RangeUpgrade extends Upgrade {
 		
 		if (upgrade == null) {
 			// No next upgrade -> lang message
-			newDisplayName = user.getTranslation("islandupgrades.ui.upgradepanel.norangeupgrade");
+			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.norangeupgrade");
 		} else {
 			// get lang message
-			newDisplayName = user.getTranslation("islandupgrades.ui.upgradepanel.rangeupgrade",
+			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.rangeupgrade",
 				"[rangelevel]", Integer.toString(upgrade.getUpgradeValue()));
 		}
 		
