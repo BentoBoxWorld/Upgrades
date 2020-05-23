@@ -15,11 +15,11 @@ public class UpgradesData implements DataObject {
 	private String uniqueId;
 	
 	@Expose
-	private Map<String, Long> upgradesLevels;
+	private Map<String, Integer> upgradesLevels;
 	
 	public UpgradesData() {}
 	
-	public UpgradesData(String uniqueId, Map<String, Long> upgradesLevel) {
+	public UpgradesData(String uniqueId, Map<String, Integer> upgradesLevel) {
 		this.uniqueId = uniqueId;
 		this.upgradesLevels = upgradesLevel;
 	}
@@ -38,12 +38,12 @@ public class UpgradesData implements DataObject {
 		this.uniqueId = uniqueId;
 	}
 	
-	public long getUpgradeLevel(String name) {
-		this.upgradesLevels.putIfAbsent(name, (long) 0);
+	public int getUpgradeLevel(String name) {
+		this.upgradesLevels.putIfAbsent(name, 0);
 		return this.upgradesLevels.get(name);
 	}
 	
-	public void setUpgradeLevel(String name, long value) {
+	public void setUpgradeLevel(String name, int value) {
 		this.upgradesLevels.put(name, value);
 	}
 	

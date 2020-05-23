@@ -33,17 +33,17 @@ public class RangeUpgrade extends Upgrade {
 		// Get the data from IslandUpgrade
 		UpgradesData islandData = islandAddon.getUpgradesLevels(island.getUniqueId());
 		// The level of this upgrade
-		long upgradeLevel = islandData.getUpgradeLevel(getName());
+		int upgradeLevel = islandData.getUpgradeLevel(getName());
 		// The number of members on the island
-		long numberPeople = island.getMemberSet().size();
+		int numberPeople = island.getMemberSet().size();
 		// The level of the island from Level Addon
-		long islandLevel;
+		int islandLevel;
 		
 		// If level addon is provided
 		if (islandAddon.isLevelProvided())
 			islandLevel = islandAddon.getUpgradesManager().getIslandLevel(island);
 		else 
-			islandLevel = 0L;
+			islandLevel = 0;
 		
 		// Get upgrades infos of range upgrade from settings
 		Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel, islandLevel, numberPeople, island.getWorld());
@@ -67,7 +67,7 @@ public class RangeUpgrade extends Upgrade {
 		} else {
 			// get lang message
 			newDisplayName = user.getTranslation("islandupgrades.ui.upgradepanel.rangeupgrade",
-				"[rangelevel]", upgrade.getUpgradeValue().toString());
+				"[rangelevel]", Integer.toString(upgrade.getUpgradeValue()));
 		}
 		
 		this.setDisplayName(newDisplayName);
@@ -109,7 +109,7 @@ public class RangeUpgrade extends Upgrade {
 		.build();
 		
 		user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone",
-			"[rangelevel]", this.getUpgradeValues().getUpgradeValue().toString());
+			"[rangelevel]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
 
 		return true;
 	}

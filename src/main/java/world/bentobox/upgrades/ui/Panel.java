@@ -19,7 +19,7 @@ public class Panel {
 	
 	public void showPanel(User user) {
 		Island island = this.addon.getIslands().getIsland(user.getWorld(), user);
-		long islandLevel = this.addon.getUpgradesManager().getIslandLevel(island);
+		int islandLevel = this.addon.getUpgradesManager().getIslandLevel(island);
 		
 		PanelBuilder pb = new PanelBuilder().name(user.getTranslation("upgrades.ui.upgradepanel.title"));
 		
@@ -37,7 +37,7 @@ public class Panel {
 		pb.user(user).build();
 	}
 	
-	private List<String> getDescription(User user, Upgrade upgrade, long islandLevel) {
+	private List<String> getDescription(User user, Upgrade upgrade, int islandLevel) {
 		List<String> descrip = new ArrayList<>();
 		if (upgrade.getUpgradeValues() == null)
 			descrip.add(user.getTranslation("upgrades.ui.upgradepanel.maxlevel"));
@@ -45,11 +45,11 @@ public class Panel {
 			boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues().getMoneyCost());
 			descrip.add((upgrade.getUpgradeValues().getIslandLevel() <= islandLevel ? "§a" : "§c") + 
 				user.getTranslation("upgrades.ui.upgradepanel.islandneed",
-					"[islandlevel]", upgrade.getUpgradeValues().getIslandLevel().toString()));
+					"[islandlevel]", Integer.toString(upgrade.getUpgradeValues().getIslandLevel())));
 			
 			descrip.add((hasMoney ? "§a" : "§c") + 
 				user.getTranslation("upgrades.ui.upgradepanel.moneycost",
-					"[cost]", upgrade.getUpgradeValues().getMoneyCost().toString()));
+					"[cost]", Integer.toString(upgrade.getUpgradeValues().getMoneyCost())));
 			
 			if (upgrade.getUpgradeValues().getIslandLevel() > islandLevel) {
 				descrip.add("§8" + user.getTranslation("upgrades.ui.upgradepanel.tryreloadlevel"));

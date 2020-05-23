@@ -195,33 +195,33 @@ public abstract class Upgrade {
 			this.upgradeValue = upgradeValue;
 		}
 		
-		public Long getIslandLevel() {
+		public int getIslandLevel() {
 			return islandLevel;
 		}
 
-		public void setIslandLevel(long islandLevel) {
+		public void setIslandLevel(int islandLevel) {
 			this.islandLevel = islandLevel;
 		}
 
-		public Long getMoneyCost() {
+		public int getMoneyCost() {
 			return moneyCost;
 		}
 		
-		public void setMoneyCost(long moneyCost) {
+		public void setMoneyCost(int moneyCost) {
 			this.moneyCost = moneyCost;
 		}
 		
-		public Long getUpgradeValue() {
+		public int getUpgradeValue() {
 			return upgradeValue;
 		}
 
-		public void setUpgradeValue(long upgradeValue) {
+		public void setUpgradeValue(int upgradeValue) {
 			this.upgradeValue = upgradeValue;
 		}
 
-		private long islandLevel;
-		private long moneyCost;
-		private long upgradeValue;
+		private int islandLevel;
+		private int moneyCost;
+		private int upgradeValue;
 	}
 
 }

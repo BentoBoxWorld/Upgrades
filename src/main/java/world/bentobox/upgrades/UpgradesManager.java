@@ -33,21 +33,21 @@ public class UpgradesManager {
 		return addon.isPresent() && this.hookedGameModes.contains(addon.get().getDescription().getName());
 	}
 	
-	public long getIslandLevel(Island island) {
+	public int getIslandLevel(Island island) {
 		if (!this.addon.isLevelProvided())
-			return 0L;
+			return 0;
 		
-		return this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
+		return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
 	}
 	
-	public List<Settings.RangeUpgradeTier> getAllRangeUpgradeTiers(World world) {
+	public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
 		if (name == null) return Collections.emptyList();
 		
-		Map<String, Settings.RangeUpgradeTier> defaultTiers = this.addon.getSettings().getDefaultRangeUpgradeTierMap();
-		Map<String, Settings.RangeUpgradeTier> customAddonTiers = this.addon.getSettings().getAddonRangeUpgradeTierMap(name);
+		Map<String, Settings.UpgradeTier> defaultTiers = this.addon.getSettings().getDefaultRangeUpgradeTierMap();
+		Map<String, Settings.UpgradeTier> customAddonTiers = this.addon.getSettings().getAddonRangeUpgradeTierMap(name);
 		
-		List<Settings.RangeUpgradeTier> tierList;
+		List<Settings.UpgradeTier> tierList;
 		
 		if (customAddonTiers.isEmpty())
 			tierList = new ArrayList<>(defaultTiers.values());
@@ -62,18 +62,18 @@ public class UpgradesManager {
 		if (tierList.isEmpty())
 			return Collections.emptyList();
 		
-		tierList.sort(Comparator.comparingInt(Settings.RangeUpgradeTier::getMaxLevel));
+		tierList.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel));
 		
 		return tierList;
 	}
 	
-	public Settings.RangeUpgradeTier getRangeUpgradeTier(long rangeLevel, World world) {
-		List<Settings.RangeUpgradeTier> tierList = this.getAllRangeUpgradeTiers(world);
+	public Settings.UpgradeTier getRangeUpgradeTier(int rangeLevel, World world) {
+		List<Settings.UpgradeTier> tierList = this.getAllRangeUpgradeTiers(world);
 		
 		if (tierList.isEmpty())
 			return null;
 		
-		Settings.RangeUpgradeTier rangeUpgradeTier = tierList.get(0);
+		Settings.UpgradeTier rangeUpgradeTier = tierList.get(0);
 		
 		if (rangeUpgradeTier.getMaxLevel() < 0)
 			return rangeUpgradeTier;
@@ -86,8 +86,8 @@ public class UpgradesManager {
 		return null;
 	}
 	
-	public Map<String, Integer> getRangeUpgradeInfos(long rangeLevel, long islandLevel, long numberPeople, World world) {
-		Settings.RangeUpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
+	public Map<String, Integer> getRangeUpgradeInfos(int rangeLevel, int islandLevel, int numberPeople, World world) {
+		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
 		
 		if (rangeUpgradeTier == null)
 			return null;
@@ -96,7 +96,7 @@ public class UpgradesManager {
 		
 		info.put("islandMinLevel", (int) rangeUpgradeTier.calculateIslandMinLevel(rangeLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) rangeUpgradeTier.calculateVaultCost(rangeLevel, islandLevel, numberPeople));
-		info.put("upgradeRange", (int) rangeUpgradeTier.calculateUpgradeRange(rangeLevel, islandLevel, numberPeople));
+		info.put("upgradeRange", (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
 		
 		return info;
 	}
