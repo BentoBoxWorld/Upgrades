@@ -10,7 +10,34 @@
 	
 	<name>Upgrades</name>
 	<description>BentoBox Addon for buying upgrade for island with vault money</description>
-  
+
+    <scm>
+        <connection>scm:git:https://github.com/BentoBoxWorld/Upgrades.git</connection>
+        <developerConnection>scm:git:git@github.com:BentoBoxWorld/Upgrades.git</developerConnection>
+        <url>https://github.com/BentoBoxWorld/Upgrades</url>
+    </scm>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.codemc.org/job/BentoBoxWorld/job/Upgrades</url>
+    </ciManagement>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/BentoBoxWorld/Upgrades/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.org/repository/maven-snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.org/repository/maven-releases</url>
+        </repository>
+    </distributionManagement>
+
   	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
