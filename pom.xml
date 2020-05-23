@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>world.bentobox</groupId>
-	<artifactId>IslandUpgrades</artifactId>
+	<artifactId>upgrades</artifactId>
 	<version>${revision}</version>
 	
-	<name>IslandUpgrades</name>
+	<name>Upgrades</name>
 	<description>BentoBox Addon for buying upgrade for island with vault money</description>
   
   	<properties>
@@ -16,8 +16,8 @@
 	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         
-        <spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
-        <bentobox.version>1.13.1</bentobox.version>
+        <spigot.version>1.15.2-R0.1-SNAPSHOT</spigot.version>
+        <bentobox.version>1.14.0-SNAPSHOT</bentobox.version>
         <level.version>2.0.0</level.version>
         <vault.version>1.7</vault.version>
         
