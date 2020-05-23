@@ -22,12 +22,12 @@ disabled-gamemodes: []
 range-upgrade:
   tier1:
     max-level: 5
-    upgrade-range: "5"
+    upgrade: "5"
     island-min-level: "2"
     vault-cost: "[level]*100"
   tier2:
     max-level: 10
-    upgrade-range: "3"
+    upgrade: "3"
     island-min-level: "4"
     vault-cost: "[level]*[numberPlayer]*200"
 
@@ -39,6 +39,6 @@ gamemodes:
     range-upgrade:
       tier3:
         max-level: 15
-        upgrade-range: "5"
+        upgrade: "5"
         island-min-level: "6"
         vault-cost: "[level]*[numberPlayer]*500"

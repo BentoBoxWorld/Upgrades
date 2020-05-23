@@ -23,7 +23,7 @@ public class Settings {
 		if (this.addon.getConfig().isSet("range-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
 			for (String key : Objects.requireNonNull(section).getKeys(false)) {
-				this.rangeUpgradeTierMap.put(key, addRangeSection(section, key));
+				this.rangeUpgradeTierMap.put(key, addUpgradeSection(section, key));
 			}
 		}
 		
@@ -37,7 +37,7 @@ public class Settings {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("range-upgrade");
 					for (String key : Objects.requireNonNull(lowSection).getKeys(false)) {
 						
-						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addRangeSection(lowSection, key));
+						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addUpgradeSection(lowSection, key));
 					}
 				}
 			}
@@ -46,23 +46,23 @@ public class Settings {
 	}
 	
 	@NonNull
-	private RangeUpgradeTier addRangeSection(ConfigurationSection section, String key) {
+	private UpgradeTier addUpgradeSection(ConfigurationSection section, String key) {
 		ConfigurationSection tierSection = section.getConfigurationSection(key);
-		RangeUpgradeTier rangeUpgradeTier = new RangeUpgradeTier(key);
-		rangeUpgradeTier.setMaxLevel(tierSection.getInt("max-level"));
-		rangeUpgradeTier.setUpgradeRange(eval(tierSection.getString("upgrade-range"), rangeUpgradeTier.getExpressionVariable()));
+		UpgradeTier upgradeTier = new UpgradeTier(key);
+		upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
+		upgradeTier.setUpgrade(eval(tierSection.getString("upgrade"), upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("island-min-level"))
-			rangeUpgradeTier.setIslandMinLevel(eval(tierSection.getString("island-min-level"), rangeUpgradeTier.getExpressionVariable()));
+			upgradeTier.setIslandMinLevel(eval(tierSection.getString("island-min-level"), upgradeTier.getExpressionVariable()));
 		else
-			rangeUpgradeTier.setIslandMinLevel(eval("0", rangeUpgradeTier.getExpressionVariable()));
+			upgradeTier.setIslandMinLevel(eval("0", upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("vault-cost"))
-			rangeUpgradeTier.setVaultCost(eval(tierSection.getString("vault-cost"), rangeUpgradeTier.getExpressionVariable()));
+			upgradeTier.setVaultCost(eval(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
 		else
-			rangeUpgradeTier.setVaultCost(eval("0", rangeUpgradeTier.getExpressionVariable()));
+			upgradeTier.setVaultCost(eval("0", upgradeTier.getExpressionVariable()));
 		
-		return rangeUpgradeTier;
+		return upgradeTier;
 		
 	}
 	
@@ -73,14 +73,14 @@ public class Settings {
 		return disabledGameModes;
 	}
 	
-	public Map<String, RangeUpgradeTier> getDefaultRangeUpgradeTierMap() {
+	public Map<String, UpgradeTier> getDefaultRangeUpgradeTierMap() {
 		return this.rangeUpgradeTierMap;
 	}
 	
 	/**
 	 * @return the rangeUpgradeTierMap
 	 */
-	public Map<String, RangeUpgradeTier> getAddonRangeUpgradeTierMap(String addon) {
+	public Map<String, UpgradeTier> getAddonRangeUpgradeTierMap(String addon) {
 		return this.customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
 	}
 
@@ -88,22 +88,22 @@ public class Settings {
 	
 	private Set<String> disabledGameModes;
 	
-	private Map<String, RangeUpgradeTier> rangeUpgradeTierMap = new HashMap<>();
+	private Map<String, UpgradeTier> rangeUpgradeTierMap = new HashMap<>();
 	
-	private Map<String, Map<String, RangeUpgradeTier>> customRangeUpgradeTierMap = new HashMap<>();
+	private Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new HashMap<>();
 	
 	// ------------------------------------------------------------------
 	// Section: Private object
 	// ------------------------------------------------------------------
 	
-	public class RangeUpgradeTier {
+	public class UpgradeTier {
 		/**
-		 * Constructor RangeUpgradeTier create a new RangeUpgradeTier instance
+		 * Constructor UpgradeTier create a new UpgradeTier instance
 		 * and set expressionVariables to default value
 		 * 
 		 * @param id
 		 */
-		public RangeUpgradeTier(String id) {
+		public UpgradeTier(String id) {
 			this.id = id;
 			this.expressionVariables = new HashMap<>();
 			this.expressionVariables.put("[level]", 0.0);
@@ -140,15 +140,15 @@ public class Settings {
 		/**
 		 * @return the upgradeRange
 		 */
-		public Expression getUpgradeRange() {
-			return upgradeRange;
+		public Expression getUpgrade() {
+			return upgrade;
 		}
 
 		/**
 		 * @param upgradeRange the upgradeRange to set
 		 */
-		public void setUpgradeRange(Expression upgradeRange) {
-			this.upgradeRange = upgradeRange;
+		public void setUpgrade(Expression upgrade) {
+			this.upgrade = upgrade;
 		}
 
 		/**
@@ -192,11 +192,11 @@ public class Settings {
 			return expressionVariables;
 		}
 		
-		public double calculateUpgradeRange(double level, double islandLevel, double numberPeople) {
+		public double calculateUpgrade(double level, double islandLevel, double numberPeople) {
 			this.updateExpressionVariable("[level]", level);
 			this.updateExpressionVariable("[islandLevel]", islandLevel);
 			this.updateExpressionVariable("[numberPlayer]", numberPeople);
-			return this.getUpgradeRange().eval();
+			return this.getUpgrade().eval();
 		}
 		
 		public double calculateIslandMinLevel(double level, double islandLevel, double numberPeople) {
@@ -223,7 +223,7 @@ public class Settings {
 
 		private int maxLevel = -1;
 
-		private Expression upgradeRange;
+		private Expression upgrade;
 		
 		private Expression islandMinLevel;
 		
