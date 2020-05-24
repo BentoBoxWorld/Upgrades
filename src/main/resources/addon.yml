@@ -8,4 +8,4 @@ icon: GOLD_INGOT
 authors:
   - Guillaume-Lebegue
 
-softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, AOneBlock, Level
+softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, AOneBlock, Level, Limits
