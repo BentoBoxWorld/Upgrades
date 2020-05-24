@@ -1,12 +1,14 @@
 package world.bentobox.upgrades.config;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -27,6 +29,11 @@ public class Settings {
 			}
 		}
 		
+		if (this.addon.getConfig().isSet("limits-upgrade")) {
+			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("limits-upgrade");
+			this.limitsUpgradeTierMap = this.loadLimits(section);
+		}
+		
 		if (this.addon.getConfig().isSet("gamemodes")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("gamemodes");
 			
@@ -40,9 +47,32 @@ public class Settings {
 						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addUpgradeSection(lowSection, key));
 					}
 				}
+				
+				if (gameModeSection.isSet("limits-upgrade")) {
+					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("limits-upgrade");
+					this.customLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadLimits(lowSection));
+				}
 			}
 		}
 		
+	}
+	
+	private Map<Material, Map<String, UpgradeTier>> loadLimits(ConfigurationSection section) {
+		Map<Material, Map<String, UpgradeTier>> mats = new EnumMap<>(Material.class);
+		for (String material: Objects.requireNonNull(section).getKeys(false)) {
+			Material mat = Material.getMaterial(material);
+			if (mat != null) {
+				Map<String, UpgradeTier> tier = new HashMap<>();
+				ConfigurationSection matSection = section.getConfigurationSection(material);
+				for (String key : Objects.requireNonNull(matSection).getKeys(false)) {
+					tier.put(key, addUpgradeSection(matSection, key));
+				}
+				mats.put(mat, tier);
+			} else {
+				this.addon.logError("Material " + material + " is not a valid material. Skipping...");
+			}
+		}
+		return mats;
 	}
 	
 	@NonNull
@@ -83,6 +113,17 @@ public class Settings {
 	public Map<String, UpgradeTier> getAddonRangeUpgradeTierMap(String addon) {
 		return this.customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
 	}
+	
+	public Map<Material, Map<String, UpgradeTier>> getDefaultLimitsUpgradeTierMap() {
+		return this.limitsUpgradeTierMap;
+	}
+	
+	/**
+	 * @return the rangeUpgradeTierMap
+	 */
+	public Map<Material, Map<String, UpgradeTier>> getAddonLimitsUpgradeTierMap(String addon) {
+		return this.customLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+	}
 
 	private UpgradesAddon addon;
 	
@@ -91,6 +132,10 @@ public class Settings {
 	private Map<String, UpgradeTier> rangeUpgradeTierMap = new HashMap<>();
 	
 	private Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new HashMap<>();
+	
+	private Map<Material, Map<String, UpgradeTier>> limitsUpgradeTierMap = new EnumMap<>(Material.class);
+	
+	private Map<String, Map<Material, Map<String, UpgradeTier>>> customLimitsUpgradeTierMap = new HashMap<>();
 	
 	// ------------------------------------------------------------------
 	// Section: Private object

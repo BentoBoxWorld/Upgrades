@@ -31,6 +31,19 @@ range-upgrade:
     island-min-level: "4"
     vault-cost: "[level]*[numberPlayer]*200"
 
+limits-upgrade:
+  HOPPER:
+    tier1:
+      max-level: 2
+      upgrade: "1"
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "([level]-2)*[numberPlayer]*500"
+
 # GameMode differences
 # List any tiers that you want to add
 # You can overwrite a tier by using the same name
@@ -42,3 +55,10 @@ gamemodes:
         upgrade: "5"
         island-min-level: "6"
         vault-cost: "[level]*[numberPlayer]*500"
+    limits-upgrade:
+      HOPPER:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
