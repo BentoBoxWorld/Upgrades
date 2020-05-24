@@ -71,17 +71,18 @@ public class UpgradesManager {
 	
 	public Map<Material, List<Settings.UpgradeTier>> getAllLimitsUpgradeTiers(World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-		if (name == null)
+		if (name == null) {
 			return Collections.emptyMap();
+		}
 		
 		Map<Material, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultLimitsUpgradeTierMap();
 		Map<Material, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonLimitsUpgradeTierMap(name);
 		
 		Map<Material, List<Settings.UpgradeTier>> tierList = new EnumMap<>(Material.class);
 		
-		if (customAddonTiers.isEmpty())
+		if (customAddonTiers.isEmpty()) {
 			defaultTiers.forEach((mat, tiers) -> tierList.put(mat, new ArrayList<>(tiers.values())));
-		else {
+		} else {
 			customAddonTiers.forEach((mat, tiers) -> {
 				Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
 				if (defaultTiers.containsKey(mat))
@@ -95,8 +96,9 @@ public class UpgradesManager {
 			defaultTiers.forEach((mat, tiers) -> tierList.putIfAbsent(mat, new ArrayList<>(tiers.values())));
 		}
 		
-		if (tierList.isEmpty())
+		if (tierList.isEmpty()) {
 			return Collections.emptyMap();
+		}
 		
 		tierList.forEach((mat, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
 		
@@ -125,11 +127,13 @@ public class UpgradesManager {
 	public Settings.UpgradeTier getLimitsUpgradeTier(Material mat, int limitsLevel, World world) {
 		Map<Material, List<Settings.UpgradeTier>> matTierList = this.getAllLimitsUpgradeTiers(world);
 		
-		if (matTierList.isEmpty())
+		if (matTierList.isEmpty()) {
 			return null;
+		}
 		
-		if (!matTierList.containsKey(mat))
+		if (!matTierList.containsKey(mat)) {
 			return null;
+		}
 		
 		List<Settings.UpgradeTier> tierList = matTierList.get(mat);
 		
@@ -151,22 +155,22 @@ public class UpgradesManager {
 		
 		info.put("islandMinLevel", (int) rangeUpgradeTier.calculateIslandMinLevel(rangeLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) rangeUpgradeTier.calculateVaultCost(rangeLevel, islandLevel, numberPeople));
-		info.put("upgradeRange", (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
+		info.put("upgrade", (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
 		
 		return info;
 	}
 	
 	public Map<String, Integer> getLimitsUpgradeInfos(Material mat, int limitsLevel, int islandLevel, int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getLimitsUpgradeTier(mat, limitsLevel, world);
-		
-		if (limitsUpgradeTier == null)
+		if (limitsUpgradeTier == null) {
 			return null;
+		}
 		
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
-		info.put("upgradeRange", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
+		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 		
 		return info;
 	}

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.bukkit.Material;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -87,9 +86,9 @@ public class UpgradesAddon extends Addon {
 				this.vault = vault.get();
 			
 			this.registerUpgrade(new RangeUpgrade(this));
-
+			
 			if (this.isLimitsProvided())
-				this.registerUpgrade(new LimitsUpgrade(this, Material.HOPPER));
+				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new LimitsUpgrade(this, mat)));
 			
 			this.log("Upgrades addon enabled");
 		} else {

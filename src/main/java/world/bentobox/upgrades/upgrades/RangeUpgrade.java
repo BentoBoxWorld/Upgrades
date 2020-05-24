@@ -53,7 +53,7 @@ public class RangeUpgrade extends Upgrade {
 		if (upgradeInfos == null)
 			upgrade = null;
 		else
-			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgradeRange"));
+			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
 		
 		// Update the upgrade values
 		this.setUpgradeValues(upgrade);

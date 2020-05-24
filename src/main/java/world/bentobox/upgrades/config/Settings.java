@@ -124,6 +124,17 @@ public class Settings {
 	public Map<Material, Map<String, UpgradeTier>> getAddonLimitsUpgradeTierMap(String addon) {
 		return this.customLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
 	}
+	
+	public Set<Material> getMaterialsLimitsUpgrade() {
+		Set<Material> materials = new HashSet<>();
+		
+		this.customLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+			materials.addAll(addonUpgrade.keySet());
+		});
+		materials.addAll(this.limitsUpgradeTierMap.keySet());
+		
+		return materials;
+	}
 
 	private UpgradesAddon addon;
 	

@@ -48,7 +48,7 @@ limits-upgrade:
 # List any tiers that you want to add
 # You can overwrite a tier by using the same name
 gamemodes:
-  BSkyblock:
+  BSkyBlock:
     range-upgrade:
       tier3:
         max-level: 15
