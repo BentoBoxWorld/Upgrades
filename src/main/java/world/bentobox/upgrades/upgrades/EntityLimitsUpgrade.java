@@ -2,29 +2,27 @@ package world.bentobox.upgrades.upgrades;
 
 import java.util.Map;
 
-import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
-
-
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-public class LimitsUpgrade extends Upgrade {
-
-	public LimitsUpgrade(UpgradesAddon addon, Material block) {
-		super(addon, "LimitsUpgrade-" + block.toString(), block.toString() + " limits Upgrade", block);
-		this.block = block;
+public class EntityLimitsUpgrade extends Upgrade {
+	
+	public EntityLimitsUpgrade(UpgradesAddon addon, EntityType entity) {
+		super(addon, "LimitsUpgrade-" + entity.toString(), entity.toString() + " limits Upgrade", addon.getSettings().getEntityIcon(entity));
+		this.entity = entity;
 	}
 	
 	@Override
 	public void updateUpgradeValue(User user, Island island) {
 		UpgradesAddon upgradeAddon = this.getUpgradesAddon();
 		UpgradesData islandData = upgradeAddon.getUpgradesLevels(island.getUniqueId());
-		int upgradeLevel = islandData.getUpgradeLevel(getName());
+		int upgradeLevel = islandData.getUpgradeLevel(this.getName());
 		int numberPeople = island.getMemberSet().size();
 		int islandLevel;
 		
@@ -33,7 +31,10 @@ public class LimitsUpgrade extends Upgrade {
 		else
 			islandLevel = 0;
 		
-		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getLimitsUpgradeInfos(this.block, upgradeLevel, islandLevel, numberPeople, island.getWorld());
+		upgradeAddon.logWarning("upgradelevel: " + upgradeLevel);
+		upgradeAddon.logWarning("number people: " + numberPeople);
+		upgradeAddon.logWarning("islandLevel: " + islandLevel);
+		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeInfos(this.entity, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 		
 		if (upgradeInfos == null)
@@ -47,10 +48,10 @@ public class LimitsUpgrade extends Upgrade {
 		
 		if (upgrade == null) {
 			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade",
-				"[block]", this.block.toString());
+				"[block]", this.entity.toString());
 		} else {
 			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade",
-				"[block]", this.block.toString(), "[level]", Integer.toString(upgrade.getUpgradeValue()));
+				"[block]", this.entity.toString(), "[level]", Integer.toString(upgrade.getUpgradeValue()));
 		}
 		
 		this.setDisplayName(newDisplayName);
@@ -64,28 +65,27 @@ public class LimitsUpgrade extends Upgrade {
 			return false;
 		
 		BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
-		Map<Material, Integer> materialLimits = bLListener.getMaterialLimits(island.getWorld(), island.getUniqueId());
+		Map<EntityType, Integer> entityLimits = islandAddon.getUpgradesManager().getEntityLimits(island);
 		
-		if (!materialLimits.containsKey(this.block) || materialLimits.get(this.block) == -1) {
-			this.getUpgradesAddon().logWarning("User tried to upgrade " + this.block.toString() + " limits but it has no limits. This is probably a configuration problem.");
+		if (!entityLimits.containsKey(this.entity) || entityLimits.get(this.entity) == -1) {
+			this.getUpgradesAddon().logWarning("User tried to upgrade " + this.entity.toString() + " limits but it has no limits. This is probably a configuration problem.");
 			user.sendMessage("upgrades.error.increasenolimits");
 			return false;
 		}
 		
 		if (!super.doUpgrade(user, island))
 			return false;
+		 
+		int newCount = (int) (entityLimits.get(this.entity) + this.getUpgradeValues().getUpgradeValue());
 		
-		int oldCount = materialLimits.get(this.block); 
-		int newCount = (int) (oldCount + this.getUpgradeValues().getUpgradeValue());
-		
-		bLListener.getIsland(island.getUniqueId()).setBlockLimit(this.block, newCount);
+		bLListener.getIsland(island.getUniqueId()).setEntityLimit(this.entity, newCount);
 		
 		user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
-			"[block]", this.block.toString(), "[level]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
+			"[block]", this.entity.toString(), "[level]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
 		
 		return true;
 	}
 	
-	private Material block;
-	
+	private EntityType entity;
+
 }

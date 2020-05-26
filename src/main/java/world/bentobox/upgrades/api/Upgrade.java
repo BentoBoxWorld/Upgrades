@@ -41,8 +41,10 @@ public abstract class Upgrade {
 		if (!islandUpgrade.isPresent()) {
 			this.addon.logError("Island Upgrade Addon couldn't be found");
 			this.addon.setState(State.DISABLED);
-		} else
+		} else {
 			this.upgradesAddon = (UpgradesAddon) islandUpgrade.get();
+			this.addon.log("Added upgrade -> " + name);
+		}
 	}
 	
 	/**

@@ -10,7 +10,7 @@ upgrades:
       rangeupgradedone: "&aYour island range was upgraded of [rangelevel] blocks"
       limitsupgrade: "[block] limits upgrade of [level]"
       nolimitsupgrade: "&7[block] limits upgrade"
-      limitsupgradedone: "&aYour island [block] limits was upgraded of [level] blocks"
+      limitsupgradedone: "&aYour island [block] limits was upgraded of [level]"
       maxlevel: "Max level reached"
       islandneed: "Island Min Level: [islandlevel]"
       moneycost: "Money cost: [cost]"

@@ -18,7 +18,8 @@ import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.upgrades.LimitsUpgrade;
+import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
+import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
 import world.bentobox.level.Level;
 import world.bentobox.limits.Limits;
@@ -85,10 +86,12 @@ public class UpgradesAddon extends Addon {
 			} else
 				this.vault = vault.get();
 			
-			this.registerUpgrade(new RangeUpgrade(this));
+			if (this.isLimitsProvided()) {
+				this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
+				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
+			}
 			
-			if (this.isLimitsProvided())
-				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new LimitsUpgrade(this, mat)));
+			this.registerUpgrade(new RangeUpgrade(this));
 			
 			this.log("Upgrades addon enabled");
 		} else {
