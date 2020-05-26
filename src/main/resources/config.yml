@@ -11,12 +11,14 @@ disabled-gamemodes: []
 #      island-min-level: Minimum level required to upgrade (if level addon is provided)
 #      vault-cost: Money cost of upgrade
 # Note: for upgrade-range, island-min-level and vault-cost:
-#      Mathematical expression can be used (+,-,*,/,^,(,))
+#      Mathematical expression can be used (+,-,*,/,^)
 #      Mathematical function can be used (sqrt,sin,cost,tan)
 #      Special value can be used:
 #         [level] : Is the actual level for this upgrade
 #         [islandLevel] : Is the islandLevel from level addon
 #         [numberPlayer] : Is the number of players in team
+#
+# Note: ( and ) or not functional as of yet
 #
 # Caution: You should always check that at max level, your players won't attain max range for island
 range-upgrade:
@@ -31,14 +33,60 @@ range-upgrade:
     island-min-level: "4"
     vault-cost: "[level]*[numberPlayer]*200"
 
+block-limits-upgrade:
+  HOPPER:
+    tier1:
+      max-level: 2
+      upgrade: "1"
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "[level]*[numberPlayer]*500"
+
+entity-limits-upgrade:
+  CHICKEN:
+    tier1:
+      max-level: 2
+      upgrade: "1"
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "[level]*[numberPlayer]*500"
+
 # GameMode differences
 # List any tiers that you want to add
 # You can overwrite a tier by using the same name
 gamemodes:
-  BSkyblock:
+  BSkyBlock:
+
     range-upgrade:
       tier3:
         max-level: 15
         upgrade: "5"
         island-min-level: "6"
         vault-cost: "[level]*[numberPlayer]*500"
+
+    block-limits-upgrade:
+      HOPPER:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
+    entity-limits-upgrade:
+      CHICKEN:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
+entity-icon:
+  CHICKEN: CHICKEN_SPAWN_EGG

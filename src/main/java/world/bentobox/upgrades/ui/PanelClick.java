@@ -18,7 +18,7 @@ public class PanelClick implements ClickHandler {
 	
 	@Override
 	public boolean onClick(Panel panel, User user, ClickType clickType, int slot) {
-		if (this.upgrade == null)
+		if (this.upgrade == null || this.upgrade.getUpgradeValues() == null)
 			return true;
 		
 		Island island = this.addon.getIslands().getIsland(user.getWorld(), user);

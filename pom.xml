@@ -48,6 +48,7 @@
         <spigot.version>1.15.2-R0.1-SNAPSHOT</spigot.version>
         <bentobox.version>1.14.0-SNAPSHOT</bentobox.version>
         <level.version>2.0.0</level.version>
+        <limits.version>1.12.1</limits.version>
         <vault.version>1.7</vault.version>
         
         <revision>${build.version}-SNAPSHOT</revision>
@@ -133,6 +134,12 @@
 			<groupId>world.bentobox</groupId>
             <artifactId>level</artifactId>
             <version>${level.version}</version>
+            <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>world.bentobox</groupId>
+            <artifactId>limits</artifactId>
+            <version>${limits.version}</version>
             <scope>provided</scope>
 		</dependency>
 		<dependency>

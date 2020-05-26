@@ -18,8 +18,11 @@ import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
+import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
+import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
 import world.bentobox.level.Level;
+import world.bentobox.limits.Limits;
 
 public class UpgradesAddon extends Addon {
 
@@ -67,6 +70,14 @@ public class UpgradesAddon extends Addon {
 				this.levelAddon = null;
 			} else
 				this.levelAddon = (Level) level.get();
+
+			Optional<Addon> limits = this.getAddonByName("Limits");
+		
+			if (!limits.isPresent()) {
+				this.logWarning("Limits addon not found so Island Upgrade won't look for IslandLevel");
+				this.limitsAddon = null;
+			} else
+				this.limitsAddon = (Limits) limits.get();
 			
 			Optional<VaultHook> vault = this.getPlugin().getVault();
 			if (!vault.isPresent()) {
@@ -74,6 +85,11 @@ public class UpgradesAddon extends Addon {
 				this.vault = null;
 			} else
 				this.vault = vault.get();
+			
+			if (this.isLimitsProvided()) {
+				this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
+				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
+			}
 			
 			this.registerUpgrade(new RangeUpgrade(this));
 			
@@ -139,6 +155,10 @@ public class UpgradesAddon extends Addon {
 	public Level getLevelAddon() {
 		return this.levelAddon;
 	}
+
+	public Limits getLimitsAddon() {
+		return this.limitsAddon;
+	}
 	
 	public VaultHook getVaultHook() {
 		return this.vault;
@@ -146,6 +166,10 @@ public class UpgradesAddon extends Addon {
 	
 	public boolean isLevelProvided() {
 		return this.levelAddon != null;
+	}
+
+	public boolean isLimitsProvided() {
+		return this.limitsAddon != null;
 	}
 	
 	public boolean isVaultProvided() {
@@ -173,6 +197,8 @@ public class UpgradesAddon extends Addon {
 	private Map<String, UpgradesData> upgradesCache;
 	
 	private Level levelAddon;
+
+	private Limits limitsAddon;
 	
 	private VaultHook vault;
 	
