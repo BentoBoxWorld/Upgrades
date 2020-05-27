@@ -22,6 +22,15 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	}
 	
 	@Override
+	public boolean canExecute(User user, String label, List<String> args) {
+		boolean hasIsland = getIslands().getIsland(getWorld(), user) != null;
+		
+		if (!hasIsland)
+			user.sendMessage("general.errors.no-island");
+		return hasIsland;
+	}
+	
+	@Override
 	public boolean execute(User user, String label, List<String> args) {
 		if (args.size() == 0) {
 			new Panel(this.addon).showPanel(user);

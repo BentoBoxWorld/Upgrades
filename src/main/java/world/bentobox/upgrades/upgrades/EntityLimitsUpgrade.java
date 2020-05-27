@@ -31,9 +31,6 @@ public class EntityLimitsUpgrade extends Upgrade {
 		else
 			islandLevel = 0;
 		
-		upgradeAddon.logWarning("upgradelevel: " + upgradeLevel);
-		upgradeAddon.logWarning("number people: " + numberPeople);
-		upgradeAddon.logWarning("islandLevel: " + islandLevel);
 		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeInfos(this.entity, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 		
