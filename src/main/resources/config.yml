@@ -11,14 +11,12 @@ disabled-gamemodes: []
 #      island-min-level: Minimum level required to upgrade (if level addon is provided)
 #      vault-cost: Money cost of upgrade
 # Note: for upgrade-range, island-min-level and vault-cost:
-#      Mathematical expression can be used (+,-,*,/,^)
+#      Mathematical expression can be used (+,-,*,/,^,(,))
 #      Mathematical function can be used (sqrt,sin,cost,tan)
 #      Special value can be used:
 #         [level] : Is the actual level for this upgrade
 #         [islandLevel] : Is the islandLevel from level addon
 #         [numberPlayer] : Is the number of players in team
-#
-# Note: ( and ) or not functional as of yet
 #
 # Caution: You should always check that at max level, your players won't attain max range for island
 range-upgrade:
@@ -44,7 +42,7 @@ block-limits-upgrade:
       max-level: 5
       upgrade: "1"
       island-min-level: "4"
-      vault-cost: "[level]*[numberPlayer]*500"
+      vault-cost: "([level]-2)*[numberPlayer]*700"
 
 entity-limits-upgrade:
   CHICKEN:
@@ -57,7 +55,7 @@ entity-limits-upgrade:
       max-level: 5
       upgrade: "1"
       island-min-level: "4"
-      vault-cost: "[level]*[numberPlayer]*500"
+      vault-cost: "([level]-2)*[numberPlayer]*700"
 
 # GameMode differences
 # List any tiers that you want to add

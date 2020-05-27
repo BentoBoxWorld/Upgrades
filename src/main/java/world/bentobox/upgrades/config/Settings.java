@@ -453,13 +453,13 @@ public class Settings {
 
 	            Expression x;
 	            int startPos = this.pos;
-	            // Parentheses do not work
-	            /*if (eat('(')) { // parentheses
+	            if (eat('(')) { // parentheses
 	                x = parseExpression();
 	                eat(')');
-	            } else*/ if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+	            } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
 	                while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
-	                x = (() -> Double.parseDouble(str.substring(startPos, this.pos)));
+	                final Integer innerPos = new Integer(this.pos);
+	                x = (() -> Double.parseDouble(str.substring(startPos, innerPos)));
 	            } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') { // functions
 	                while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') nextChar();
 	                String func = str.substring(startPos, this.pos);
