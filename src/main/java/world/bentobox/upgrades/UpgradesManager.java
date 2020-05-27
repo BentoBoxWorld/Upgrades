@@ -240,8 +240,6 @@ public class UpgradesManager {
 			return null;
 		}
 		
-		this.addon.logWarning("selected maxtier: " + limitsUpgradeTier.getMaxLevel());
-		
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));

@@ -33,6 +33,10 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	@Override
 	public boolean execute(User user, String label, List<String> args) {
 		if (args.size() == 0) {
+			if (getIslands().getIsland(getWorld(), user) == null) {
+				user.sendMessage("general.errors.no-island");
+				return false;
+			}
 			new Panel(this.addon).showPanel(user);
 			return true;
 		}
