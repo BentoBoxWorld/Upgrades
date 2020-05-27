@@ -18,6 +18,7 @@ import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
+import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
@@ -92,6 +93,8 @@ public class UpgradesAddon extends Addon {
 			}
 			
 			this.registerUpgrade(new RangeUpgrade(this));
+			
+			this.registerListener(new IslandChangeListener(this));
 			
 			this.log("Upgrades addon enabled");
 		} else {
