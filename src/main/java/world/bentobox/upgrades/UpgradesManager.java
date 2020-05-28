@@ -41,6 +41,11 @@ public class UpgradesManager {
 		if (!this.addon.isLevelProvided())
 			return 0;
 		
+		if (island == null) {
+			this.addon.logError("Island couldn't be found");
+			return 0;
+		}
+		
 		return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
 	}
 	

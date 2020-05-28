@@ -23,7 +23,7 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	
 	@Override
 	public boolean canExecute(User user, String label, List<String> args) {
-		boolean hasIsland = getIslands().getIsland(getWorld(), user) != null;
+		boolean hasIsland = getIslands().getIsland(user.getWorld(), user) != null;
 		
 		if (!hasIsland)
 			user.sendMessage("general.errors.no-island");
@@ -33,7 +33,7 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	@Override
 	public boolean execute(User user, String label, List<String> args) {
 		if (args.size() == 0) {
-			if (getIslands().getIsland(getWorld(), user) == null) {
+			if (getIslands().getIsland(user.getWorld(), user) == null) {
 				user.sendMessage("general.errors.no-island");
 				return false;
 			}
