@@ -56,7 +56,7 @@ public class RangeUpgrade extends Upgrade {
 			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
 		
 		// Update the upgrade values
-		this.setUpgradeValues(upgrade);
+		this.setUpgradeValues(user, upgrade);
 		
 		// Update the display name
 		String newDisplayName;
@@ -79,7 +79,7 @@ public class RangeUpgrade extends Upgrade {
 	@Override
 	public boolean doUpgrade(User user, Island island) {
 		// Get the new range
-		long newRange = island.getProtectionRange() + this.getUpgradeValues().getUpgradeValue();
+		long newRange = island.getProtectionRange() + this.getUpgradeValues(user).getUpgradeValue();
 		
 		// If newRange is more than the authorized range (Config problem)
 		if (newRange > island.getRange()) {
@@ -109,7 +109,7 @@ public class RangeUpgrade extends Upgrade {
 		.build();
 		
 		user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone",
-			"[rangelevel]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
+			"[rangelevel]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
 
 		return true;
 	}

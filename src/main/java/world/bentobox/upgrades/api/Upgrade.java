@@ -1,7 +1,10 @@
 package world.bentobox.upgrades.api;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bukkit.Material;
 
@@ -34,8 +37,9 @@ public abstract class Upgrade {
 		this.name = name;
 		this.displayName = displayName;
 		this.icon = icon;
-		this.upgradeValues = null;
 		this.addon = addon;
+		
+		this.playerCache = new HashMap<>();
 		
 		Optional<Addon> islandUpgrade = this.addon.getAddonByName("upgrades");
 		if (!islandUpgrade.isPresent()) {
@@ -67,16 +71,17 @@ public abstract class Upgrade {
 	 * @return: Can upgrade
 	 */
 	public boolean canUpgrade(User user, Island island) {
+		UpgradeValues upgradeValues = this.getUpgradeValues(user);
 		boolean can = true;
 		
 		if (this.upgradesAddon.isLevelProvided() &&
-			this.upgradesAddon.getUpgradesManager().getIslandLevel(island) < this.upgradeValues.getIslandLevel()) {
+			this.upgradesAddon.getUpgradesManager().getIslandLevel(island) < upgradeValues.getIslandLevel()) {
 			
 			can = false;
 		}
 		
 		if (this.upgradesAddon.isVaultProvided() &&
-			!this.upgradesAddon.getVaultHook().has(user, this.upgradeValues.getMoneyCost())) {
+			!this.upgradesAddon.getVaultHook().has(user, upgradeValues.getMoneyCost())) {
 			
 			can = false;
 		}
@@ -95,9 +100,10 @@ public abstract class Upgrade {
 	 * @return: If upgrade was successful
 	 */
 	public boolean doUpgrade(User user, Island island) {
+		UpgradeValues upgradeValues = this.getUpgradeValues(user);
 		
 		if (this.upgradesAddon.isVaultProvided()) {
-			EconomyResponse response = this.upgradesAddon.getVaultHook().withdraw(user, this.upgradeValues.getMoneyCost());
+			EconomyResponse response = this.upgradesAddon.getVaultHook().withdraw(user, upgradeValues.getMoneyCost());
 			if (!response.transactionSuccess()) {
 				this.addon.logWarning("User Money withdrawing failed user: " + user.getName() + " reason: " + response.errorMessage);
 				user.sendMessage("upgrades.error.costwithdraw");
@@ -142,15 +148,15 @@ public abstract class Upgrade {
 	/**
 	 * @return: The actual upgradeValues
 	 */
-	public UpgradeValues getUpgradeValues() {
-		return this.upgradeValues;
+	public UpgradeValues getUpgradeValues(User user) {
+		return this.playerCache.get(user.getUniqueId());
 	}
 	
 	/**
 	 * @param upgrade: Values to upgrades
 	 */
-	public void setUpgradeValues(UpgradeValues upgrade) {
-		this.upgradeValues = upgrade;
+	public void setUpgradeValues(User user, UpgradeValues upgrade) {
+		this.playerCache.put(user.getUniqueId(), upgrade);
 	}
 	
 	/**
@@ -185,9 +191,9 @@ public abstract class Upgrade {
 	private final String name;
 	private String displayName;
 	private Material icon;
-	private UpgradeValues upgradeValues;
 	private Addon addon;
 	private UpgradesAddon upgradesAddon;
+	private Map<UUID, UpgradeValues> playerCache;
 	
 	public class UpgradeValues {
 		
