@@ -39,23 +39,23 @@ public class Panel {
 	
 	private List<String> getDescription(User user, Upgrade upgrade, int islandLevel) {
 		List<String> descrip = new ArrayList<>();
-		if (upgrade.getUpgradeValues() == null)
+		if (upgrade.getUpgradeValues(user) == null)
 			descrip.add(user.getTranslation("upgrades.ui.upgradepanel.maxlevel"));
 		else {
-			boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues().getMoneyCost());
+			boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues(user).getMoneyCost());
 			if (this.addon.isLevelProvided()) {
-				descrip.add((upgrade.getUpgradeValues().getIslandLevel() <= islandLevel ? "§a" : "§c") + 
+				descrip.add((upgrade.getUpgradeValues(user).getIslandLevel() <= islandLevel ? "§a" : "§c") + 
 					user.getTranslation("upgrades.ui.upgradepanel.islandneed",
-						"[islandlevel]", Integer.toString(upgrade.getUpgradeValues().getIslandLevel())));
+						"[islandlevel]", Integer.toString(upgrade.getUpgradeValues(user).getIslandLevel())));
 			}
 			
 			if (this.addon.isVaultProvided()) {
 				descrip.add((hasMoney ? "§a" : "§c") + 
 					user.getTranslation("upgrades.ui.upgradepanel.moneycost",
-						"[cost]", Integer.toString(upgrade.getUpgradeValues().getMoneyCost())));
+						"[cost]", Integer.toString(upgrade.getUpgradeValues(user).getMoneyCost())));
 			}
 			
-			if (this.addon.isLevelProvided() && upgrade.getUpgradeValues().getIslandLevel() > islandLevel) {
+			if (this.addon.isLevelProvided() && upgrade.getUpgradeValues(user).getIslandLevel() > islandLevel) {
 				descrip.add("§8" + user.getTranslation("upgrades.ui.upgradepanel.tryreloadlevel"));
 			}
 		}

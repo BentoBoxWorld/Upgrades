@@ -39,7 +39,7 @@ public class EntityLimitsUpgrade extends Upgrade {
 		else
 			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
 		
-		this.setUpgradeValues(upgrade);
+		this.setUpgradeValues(user, upgrade);
 		
 		String newDisplayName;
 		
@@ -73,12 +73,12 @@ public class EntityLimitsUpgrade extends Upgrade {
 		if (!super.doUpgrade(user, island))
 			return false;
 		 
-		int newCount = (int) (entityLimits.get(this.entity) + this.getUpgradeValues().getUpgradeValue());
+		int newCount = (int) (entityLimits.get(this.entity) + this.getUpgradeValues(user).getUpgradeValue());
 		
 		bLListener.getIsland(island.getUniqueId()).setEntityLimit(this.entity, newCount);
 		
 		user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
-			"[block]", this.entity.toString(), "[level]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
+			"[block]", this.entity.toString(), "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
 		
 		return true;
 	}

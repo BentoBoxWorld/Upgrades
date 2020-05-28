@@ -41,7 +41,7 @@ public class BlockLimitsUpgrade extends Upgrade {
 		else
 			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
 		
-		this.setUpgradeValues(upgrade);
+		this.setUpgradeValues(user, upgrade);
 		
 		String newDisplayName;
 		
@@ -76,12 +76,12 @@ public class BlockLimitsUpgrade extends Upgrade {
 			return false;
 		
 		int oldCount = materialLimits.get(this.block); 
-		int newCount = (int) (oldCount + this.getUpgradeValues().getUpgradeValue());
+		int newCount = (int) (oldCount + this.getUpgradeValues(user).getUpgradeValue());
 		
 		bLListener.getIsland(island.getUniqueId()).setBlockLimit(this.block, newCount);
 		
 		user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
-			"[block]", this.block.toString(), "[level]", Integer.toString(this.getUpgradeValues().getUpgradeValue()));
+			"[block]", this.block.toString(), "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
 		
 		return true;
 	}
