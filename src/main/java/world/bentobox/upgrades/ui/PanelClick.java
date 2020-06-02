@@ -6,14 +6,13 @@ import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem.ClickHandler;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 
 public class PanelClick implements ClickHandler {
 
-	public PanelClick(UpgradesAddon addon, Upgrade upgrade) {
-		this.addon = addon;
+	public PanelClick(Upgrade upgrade, Island island) {
 		this.upgrade = upgrade;
+		this.island = island;
 	}
 	
 	@Override
@@ -21,18 +20,16 @@ public class PanelClick implements ClickHandler {
 		if (this.upgrade == null || this.upgrade.getUpgradeValues(user) == null)
 			return true;
 		
-		Island island = this.addon.getIslands().getIsland(user.getWorld(), user);
-		
-		if (!this.upgrade.canUpgrade(user, island)) {
+		if (!this.upgrade.canUpgrade(user, this.island)) {
 			return true;
 		}
 		
 		user.closeInventory();
-		this.upgrade.doUpgrade(user, island);
+		this.upgrade.doUpgrade(user, this.island);
 		return true;
 	}
 	
-	private UpgradesAddon addon;
 	private Upgrade upgrade;
+	private Island island;
 	
 }
