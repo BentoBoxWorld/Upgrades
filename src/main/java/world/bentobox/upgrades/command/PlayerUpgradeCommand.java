@@ -4,6 +4,7 @@ import java.util.List;
 
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.ui.Panel;
 
@@ -23,20 +24,36 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	
 	@Override
 	public boolean canExecute(User user, String label, List<String> args) {
-		boolean hasIsland = getIslands().getIsland(user.getWorld(), user) != null;
+		Island island = getIslands().getIsland(user.getWorld(), user);
 		
-		if (!hasIsland)
+		if (island == null) {
 			user.sendMessage("general.errors.no-island");
-		return hasIsland;
+			return false;
+		}
+		
+		if (!island.onIsland(user.getLocation())) {
+			user.sendMessage("upgrades.error.notonisland");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	@Override
 	public boolean execute(User user, String label, List<String> args) {
 		if (args.size() == 0) {
-			if (getIslands().getIsland(user.getWorld(), user) == null) {
+			Island island = getIslands().getIsland(user.getWorld(), user); 
+			
+			if (island == null) {
 				user.sendMessage("general.errors.no-island");
 				return false;
 			}
+			
+			if (!island.onIsland(user.getLocation())) {
+				user.sendMessage("upgrades.error.notonisland");
+				return false;
+			}
+			
 			new Panel(this.addon).showPanel(user);
 			return true;
 		}
