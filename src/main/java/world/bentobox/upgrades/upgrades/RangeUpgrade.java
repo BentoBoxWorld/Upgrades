@@ -49,6 +49,12 @@ public class RangeUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 		
+		// Get new description
+		String description = islandAddon.getUpgradesManager().getRangeUpgradeTierName(upgradeLevel, island.getWorld()) + " (" + upgradeLevel + "/" +
+							islandAddon.getUpgradesManager().getRangeUpgradeMax(island.getWorld()) + ")";
+		// Set new description
+		this.setOwnDescription(user, description);
+		
 		// If null -> no next upgrades
 		if (upgradeInfos == null)
 			upgrade = null;

@@ -25,11 +25,17 @@ public class Panel {
 		
 		this.addon.getAvailableUpgrades().forEach(upgrade -> {
 			upgrade.updateUpgradeValue(user, this.island);
+			String ownDescription = upgrade.getOwnDescription(user);
+			List<String> fullDescription = new ArrayList<>();
+			
+			if (ownDescription != null)
+				fullDescription.add(ownDescription);
+			fullDescription.addAll(this.getDescription(user, upgrade, islandLevel));
 			
 			pb.item(new PanelItemBuilder()
 					.name(upgrade.getDisplayName())
 					.icon(upgrade.getIcon())
-					.description(this.getDescription(user, upgrade, islandLevel))
+					.description(fullDescription)
 					.clickHandler(new PanelClick(upgrade, this.island))
 					.build());
 		});
@@ -39,6 +45,7 @@ public class Panel {
 	
 	private List<String> getDescription(User user, Upgrade upgrade, int islandLevel) {
 		List<String> descrip = new ArrayList<>();
+		
 		if (upgrade.getUpgradeValues(user) == null)
 			descrip.add(user.getTranslation("upgrades.ui.upgradepanel.maxlevel"));
 		else {

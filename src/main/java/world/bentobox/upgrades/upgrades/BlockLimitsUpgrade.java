@@ -36,6 +36,12 @@ public class BlockLimitsUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeInfos(this.block, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 		
+		// Get new description
+		String description = upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeTierName(this.block, upgradeLevel, island.getWorld()) + " (" + upgradeLevel + "/" +
+							upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeMax(this.block, island.getWorld()) + ")";
+		// Set new description
+		this.setOwnDescription(user, description);
+		
 		if (upgradeInfos == null)
 			upgrade = null;
 		else

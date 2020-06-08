@@ -224,6 +224,19 @@ public class UpgradesManager {
 		return info;
 	}
 	
+	public String getRangeUpgradeTierName(int rangeLevel, World world) {
+		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
+		
+		if (rangeUpgradeTier == null)
+			return null;
+		return rangeUpgradeTier.getTierName();
+	}
+	
+	public int getRangeUpgradeMax(World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		return this.addon.getSettings().getMaxRangeUpgrade(name);
+	}
+	
 	public Map<String, Integer> getBlockLimitsUpgradeInfos(Material mat, int limitsLevel, int islandLevel, int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
 		if (limitsUpgradeTier == null) {
@@ -239,6 +252,19 @@ public class UpgradesManager {
 		return info;
 	}
 	
+	public String getBlockLimitsUpgradeTierName(Material mat, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return null;
+		return limitsUpgradeTier.getTierName();
+	}
+	
+	public int getBlockLimitsUpgradeMax(Material mat, World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		return this.addon.getSettings().getMaxBlockLimitsUpgrade(mat, name);
+	}
+	
 	public Map<String, Integer> getEntityLimitsUpgradeInfos(EntityType ent, int limitsLevel, int islandLevel, int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
 		if (limitsUpgradeTier == null) {
@@ -252,6 +278,19 @@ public class UpgradesManager {
 		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 		
 		return info;
+	}
+	
+	public String getEntityLimitsUpgradeTierName(EntityType ent, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return null;
+		return limitsUpgradeTier.getTierName();
+	}
+	
+	public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		return this.addon.getSettings().getMaxEntityLimitsUpgrade(ent, name);
 	}
 	
 	public Map<EntityType, Integer> getEntityLimits(Island island) {

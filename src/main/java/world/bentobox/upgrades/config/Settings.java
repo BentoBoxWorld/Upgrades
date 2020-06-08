@@ -29,13 +29,17 @@ public class Settings {
 		if (this.addon.getConfig().isSet("range-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
 			for (String key : Objects.requireNonNull(section).getKeys(false)) {
-				this.rangeUpgradeTierMap.put(key, addUpgradeSection(section, key));
+				UpgradeTier newUpgrade = addUpgradeSection(section, key);
+				
+				if (this.maxRangeUpgrade < newUpgrade.getMaxLevel())
+					this.maxRangeUpgrade = newUpgrade.getMaxLevel();
+				this.rangeUpgradeTierMap.put(key, newUpgrade);
 			}
 		}
 		
 		if (this.addon.getConfig().isSet("block-limits-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("block-limits-upgrade");
-			this.blockLimitsUpgradeTierMap = this.loadBlockLimits(section);
+			this.blockLimitsUpgradeTierMap = this.loadBlockLimits(section, null);
 		}
 		
 		if (this.addon.getConfig().isSet("entity-icon")) {
@@ -55,7 +59,7 @@ public class Settings {
 		
 		if (this.addon.getConfig().isSet("entity-limits-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-limits-upgrade");
-			this.entityLimitsUpgradeTierMap = this.loadEntityLimits(section);
+			this.entityLimitsUpgradeTierMap = this.loadEntityLimits(section, null);
 		}
 		
 		if (this.addon.getConfig().isSet("gamemodes")) {
@@ -67,26 +71,30 @@ public class Settings {
 				if (gameModeSection.isSet("range-upgrade")) {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("range-upgrade");
 					for (String key : Objects.requireNonNull(lowSection).getKeys(false)) {
+						UpgradeTier newUpgrade = addUpgradeSection(lowSection, key);
 						
-						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, addUpgradeSection(lowSection, key));
+						if (this.customMaxRangeUpgrade.get(gameMode) == null || this.customMaxRangeUpgrade.get(gameMode) < newUpgrade.getMaxLevel())
+							this.customMaxRangeUpgrade.put(gameMode, newUpgrade.getMaxLevel());
+						
+						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, newUpgrade);
 					}
 				}
 				
 				if (gameModeSection.isSet("block-limits-upgrade")) {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("block-limits-upgrade");
-					this.customBlockLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadBlockLimits(lowSection));
+					this.customBlockLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadBlockLimits(lowSection, gameMode));
 				}
 				
 				if (gameModeSection.isSet("entity-limits-upgrade")) {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("entity-limits-upgrade");
-					this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadEntityLimits(lowSection));
+					this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadEntityLimits(lowSection, gameMode));
 				}
 			}
 		}
 		
 	}
 	
-	private Map<Material, Map<String, UpgradeTier>> loadBlockLimits(ConfigurationSection section) {
+	private Map<Material, Map<String, UpgradeTier>> loadBlockLimits(ConfigurationSection section, String gameMode) {
 		Map<Material, Map<String, UpgradeTier>> mats = new EnumMap<>(Material.class);
 		for (String material: Objects.requireNonNull(section).getKeys(false)) {
 			Material mat = Material.getMaterial(material);
@@ -94,7 +102,23 @@ public class Settings {
 				Map<String, UpgradeTier> tier = new HashMap<>();
 				ConfigurationSection matSection = section.getConfigurationSection(material);
 				for (String key : Objects.requireNonNull(matSection).getKeys(false)) {
-					tier.put(key, addUpgradeSection(matSection, key));
+					UpgradeTier newUpgrade = addUpgradeSection(matSection, key);
+					
+					if (gameMode == null) {
+						if (this.maxBlockLimitsUpgrade.get(mat) == null || this.maxBlockLimitsUpgrade.get(mat) < newUpgrade.getMaxLevel())
+							this.maxBlockLimitsUpgrade.put(mat, newUpgrade.getMaxLevel());
+					} else {
+						if (this.customMaxBlockLimitsUpgrade.get(gameMode) == null) {
+							Map<Material, Integer> newMap = new EnumMap<>(Material.class);
+							newMap.put(mat, newUpgrade.getMaxLevel());
+							this.customMaxBlockLimitsUpgrade.put(gameMode, newMap);
+						} else {
+							if (this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) == null || this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) < newUpgrade.getMaxLevel())
+								this.customMaxBlockLimitsUpgrade.get(gameMode).put(mat, newUpgrade.getMaxLevel());
+						}
+					}
+					
+					tier.put(key, newUpgrade);
 				}
 				mats.put(mat, tier);
 			} else {
@@ -104,7 +128,7 @@ public class Settings {
 		return mats;
 	}
 	
-	private Map<EntityType, Map<String, UpgradeTier>> loadEntityLimits(ConfigurationSection section) {
+	private Map<EntityType, Map<String, UpgradeTier>> loadEntityLimits(ConfigurationSection section, String gameMode) {
 		Map<EntityType, Map<String, UpgradeTier>> ents = new EnumMap<>(EntityType.class);
 		for (String entity: Objects.requireNonNull(section).getKeys(false)) {
 			EntityType ent = this.getEntityType(entity);
@@ -112,7 +136,23 @@ public class Settings {
 				Map<String, UpgradeTier> tier = new HashMap<>();
 				ConfigurationSection entSection = section.getConfigurationSection(entity);
 				for (String key : Objects.requireNonNull(entSection).getKeys(false)) {
-					tier.put(key, addUpgradeSection(entSection, key));
+					UpgradeTier newUpgrade = addUpgradeSection(entSection, key);
+					
+					if (gameMode == null) {
+						if (this.maxEntityLimitsUpgrade.get(ent) == null || this.maxEntityLimitsUpgrade.get(ent) < newUpgrade.getMaxLevel())
+							this.maxEntityLimitsUpgrade.put(ent, newUpgrade.getMaxLevel());
+					} else {
+						if (this.customMaxEntityLimitsUpgrade.get(gameMode) == null) {
+							Map<EntityType, Integer> newMap = new EnumMap<>(EntityType.class);
+							newMap.put(ent, newUpgrade.getMaxLevel());
+							this.customMaxEntityLimitsUpgrade.put(gameMode, newMap);
+						} else {
+							if (this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) == null || this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) < newUpgrade.getMaxLevel())
+								this.customMaxEntityLimitsUpgrade.get(gameMode).put(ent, newUpgrade.getMaxLevel());
+						}
+					}
+
+					tier.put(key, newUpgrade);
 				}
 				ents.put(ent, tier);
 			} else {
@@ -129,6 +169,7 @@ public class Settings {
 	private UpgradeTier addUpgradeSection(ConfigurationSection section, String key) {
 		ConfigurationSection tierSection = section.getConfigurationSection(key);
 		UpgradeTier upgradeTier = new UpgradeTier(key);
+		upgradeTier.setTierName(tierSection.getName());
 		upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
 		upgradeTier.setUpgrade(parse(tierSection.getString("upgrade"), upgradeTier.getExpressionVariable()));
 		
@@ -153,6 +194,10 @@ public class Settings {
 		return disabledGameModes;
 	}
 	
+	public int getMaxRangeUpgrade(String addon) {
+		return this.customMaxRangeUpgrade.getOrDefault(addon, this.maxRangeUpgrade);
+	}
+	
 	public Map<String, UpgradeTier> getDefaultRangeUpgradeTierMap() {
 		return this.rangeUpgradeTierMap;
 	}
@@ -162,6 +207,10 @@ public class Settings {
 	 */
 	public Map<String, UpgradeTier> getAddonRangeUpgradeTierMap(String addon) {
 		return this.customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+	}
+	
+	public int getMaxBlockLimitsUpgrade(Material mat, String addon) {
+		return this.customMaxBlockLimitsUpgrade.getOrDefault(addon, this.maxBlockLimitsUpgrade).getOrDefault(mat, 0);
 	}
 	
 	public Map<Material, Map<String, UpgradeTier>> getDefaultBlockLimitsUpgradeTierMap() {
@@ -188,6 +237,10 @@ public class Settings {
 	
 	public Material getEntityIcon(EntityType entity) {
 		return this.entityIcon.getOrDefault(entity, null);
+	}
+	
+	public int getMaxEntityLimitsUpgrade(EntityType entity, String addon) {
+		return this.customMaxEntityLimitsUpgrade.getOrDefault(addon, this.maxEntityLimitsUpgrade).getOrDefault(entity, 0);
 	}
 	
 	public Map<EntityType, Map<String, UpgradeTier>> getDefaultEntityLimitsUpgradeTierMap() {
@@ -220,15 +273,27 @@ public class Settings {
 	
 	private Set<String> disabledGameModes;
 	
+	private int maxRangeUpgrade = 0;
+	
+	private Map<String, Integer> customMaxRangeUpgrade = new HashMap<>();
+	
 	private Map<String, UpgradeTier> rangeUpgradeTierMap = new HashMap<>();
 	
 	private Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new HashMap<>();
+	
+	private Map<Material, Integer> maxBlockLimitsUpgrade = new EnumMap<>(Material.class);
+	
+	private Map<String, Map<Material, Integer>> customMaxBlockLimitsUpgrade = new HashMap<>();
 	
 	private Map<Material, Map<String, UpgradeTier>> blockLimitsUpgradeTierMap = new EnumMap<>(Material.class);
 	
 	private Map<String, Map<Material, Map<String, UpgradeTier>>> customBlockLimitsUpgradeTierMap = new HashMap<>();
 	
 	private Map<EntityType, Material> entityIcon = new EnumMap<>(EntityType.class); 
+	
+	private Map<EntityType, Integer> maxEntityLimitsUpgrade = new EnumMap<>(EntityType.class);
+	
+	private Map<String, Map<EntityType, Integer>> customMaxEntityLimitsUpgrade = new HashMap<>();
 	
 	private Map<EntityType, Map<String, UpgradeTier>> entityLimitsUpgradeTierMap = new EnumMap<>(EntityType.class);
 	
@@ -263,6 +328,14 @@ public class Settings {
 		 */
 		public String getId() {
 			return id;
+		}
+		
+		public String getTierName() {
+			return this.tierName;
+		}
+		
+		public void setTierName(String tierName) {
+			this.tierName = tierName;
 		}
 		
 		/**
@@ -364,6 +437,8 @@ public class Settings {
 		private final String id;
 
 		private int maxLevel = -1;
+		
+		private String tierName;
 
 		private Expression upgrade;
 		

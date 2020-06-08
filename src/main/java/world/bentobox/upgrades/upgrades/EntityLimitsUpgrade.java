@@ -34,6 +34,12 @@ public class EntityLimitsUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeInfos(this.entity, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 		
+		// Get new description
+		String description = upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeTierName(this.entity, upgradeLevel, island.getWorld()) + " (" + upgradeLevel + "/" +
+							upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeMax(this.entity, island.getWorld()) + ")";
+		// Set new description
+		this.setOwnDescription(user, description);
+		
 		if (upgradeInfos == null)
 			upgrade = null;
 		else

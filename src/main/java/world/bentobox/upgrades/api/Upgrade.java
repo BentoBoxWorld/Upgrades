@@ -40,6 +40,7 @@ public abstract class Upgrade {
 		this.addon = addon;
 		
 		this.playerCache = new HashMap<>();
+		this.ownDescription = new HashMap<>();
 		
 		Optional<Addon> islandUpgrade = this.addon.getAddonByName("upgrades");
 		if (!islandUpgrade.isPresent()) {
@@ -145,6 +146,25 @@ public abstract class Upgrade {
 		return this.icon;
 	}
 	
+	public int getUpgradeLevel(Island island) {
+		return this.upgradesAddon.getUpgradesLevels(island.getUniqueId()).getUpgradeLevel(this.name);
+	}
+	
+	/**
+	 * @return: The actual description for the user
+	 */
+	public String getOwnDescription(User user) {
+		return this.ownDescription.get(user.getUniqueId());
+	}
+	
+	/**
+	 * @param user: User to set the description
+	 * @param description: Description to set
+	 */
+	public void setOwnDescription(User user, String description) {
+		this.ownDescription.put(user.getUniqueId(), description);
+	}
+	
 	/**
 	 * @return: The actual upgradeValues
 	 */
@@ -194,6 +214,7 @@ public abstract class Upgrade {
 	private Addon addon;
 	private UpgradesAddon upgradesAddon;
 	private Map<UUID, UpgradeValues> playerCache;
+	private Map<UUID, String> ownDescription;
 	
 	public class UpgradeValues {
 		
