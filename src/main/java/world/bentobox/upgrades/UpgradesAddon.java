@@ -96,7 +96,9 @@ public class UpgradesAddon extends Addon {
 			this.registerUpgrade(new RangeUpgrade(this));
 			
 			this.registerListener(new IslandChangeListener(this));
-			this.registerListener(new JoinPermCheckListener());
+			
+			if (this.isLimitsProvided())
+				this.registerListener(new JoinPermCheckListener());
 			
 			this.log("Upgrades addon enabled");
 		} else {
