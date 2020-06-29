@@ -28,7 +28,7 @@ public class Panel {
 			String ownDescription = upgrade.getOwnDescription(user);
 			List<String> fullDescription = new ArrayList<>();
 			
-			if (ownDescription != null)
+			if (ownDescription != null && upgrade.getUpgradeValues(user) != null)
 				fullDescription.add(ownDescription);
 			fullDescription.addAll(this.getDescription(user, upgrade, islandLevel));
 			
