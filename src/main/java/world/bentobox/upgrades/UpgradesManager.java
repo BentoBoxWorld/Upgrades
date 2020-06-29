@@ -224,6 +224,14 @@ public class UpgradesManager {
 		return info;
 	}
 	
+	public int getRangePermissionLevel(int rangeLevel, World world) {
+		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
+		
+		if (rangeUpgradeTier == null)
+			return 0;
+		return rangeUpgradeTier.getPermissionLevel();
+	}
+	
 	public String getRangeUpgradeTierName(int rangeLevel, World world) {
 		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
 		
@@ -252,6 +260,14 @@ public class UpgradesManager {
 		return info;
 	}
 	
+	public int getBlockLimitsPermissionLevel(Material mat, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return 0;
+		return limitsUpgradeTier.getPermissionLevel();
+	}
+	
 	public String getBlockLimitsUpgradeTierName(Material mat, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
 		
@@ -278,6 +294,14 @@ public class UpgradesManager {
 		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 		
 		return info;
+	}
+	
+	public int getEntityLimitsPermissionLevel(EntityType ent, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return 0;
+		return limitsUpgradeTier.getPermissionLevel();
 	}
 	
 	public String getEntityLimitsUpgradeTierName(EntityType ent, int limitsLevel, World world) {

@@ -2,7 +2,10 @@ package world.bentobox.upgrades.upgrades;
 
 import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
@@ -59,6 +62,59 @@ public class EntityLimitsUpgrade extends Upgrade {
 		
 		this.setDisplayName(newDisplayName);
 	}
+	
+	@Override
+	public boolean isShowed(User user, Island island) {
+		// Get the addon
+		UpgradesAddon upgradesAddon = this.getUpgradesAddon();
+		// Get the data from upgrades
+		UpgradesData islandData = upgradesAddon.getUpgradesLevels(island.getUniqueId());
+		// Get level of the upgrade
+		int upgradeLevel = islandData.getUpgradeLevel(this.getName());
+		// Permission level required
+		int permissionLevel = upgradesAddon.getUpgradesManager().getEntityLimitsPermissionLevel(this.entity, upgradeLevel, island.getWorld());
+		
+		// If default permission, then true
+		if (permissionLevel == 0)
+			return true;
+		
+		Player player = user.getPlayer();
+		String gamemode = island.getGameMode();
+		String permissionStart = gamemode + ".upgrades." + this.getName() + "."; 
+		
+		// For each permission of the player
+		for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
+			
+			// If permission is the one we search 
+			if (!perms.getValue() || !perms.getPermission().startsWith(permissionStart))
+				continue;
+			
+			if (perms.getPermission().contains(permissionStart + "*")) {
+				this.logError(player.getName(), perms.getPermission(), "Wildcards are not allowed.");
+				return false;
+			}
+			
+			String[] split = perms.getPermission().split("\\.");
+			if (split.length != 4) {
+				logError(player.getName(), perms.getPermission(), "format must be '" + permissionStart + "LEVEL'");
+				return false;
+			}
+			
+			if (!NumberUtils.isDigits(split[3])) {
+				logError(player.getName(), perms.getPermission(), "The last part must be a number");
+				return false;
+			}
+			
+			if (permissionLevel <= Integer.parseInt(split[3]))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private void logError(String name, String perm, String error) {
+        this.getUpgradesAddon().logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
+    }
 	
 	@Override
 	public boolean doUpgrade(User user, Island island) {
