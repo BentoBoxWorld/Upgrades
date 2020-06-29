@@ -183,6 +183,9 @@ public class Settings {
 		else
 			upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
 		
+		if (tierSection.isSet("permission-level"))
+			upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
+		
 		return upgradeTier;
 		
 	}
@@ -351,6 +354,20 @@ public class Settings {
 		public void setMaxLevel(int maxLevel) {
 			this.maxLevel = maxLevel;
 		}
+		
+		/**
+		 * @return the level of permission
+		 */
+		public Integer getPermissionLevel() {
+			return this.permissionLevel;
+		}
+		
+		/**
+		 * @param level of permission to set
+		 */
+		public void setPermissionLevel(Integer level) {
+			this.permissionLevel = level;
+		}
 
 		/**
 		 * @return the upgradeRange
@@ -439,6 +456,8 @@ public class Settings {
 		private int maxLevel = -1;
 		
 		private String tierName;
+		
+		private Integer permissionLevel = 0;
 
 		private Expression upgrade;
 		

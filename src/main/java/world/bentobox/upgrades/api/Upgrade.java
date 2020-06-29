@@ -53,13 +53,25 @@ public abstract class Upgrade {
 	}
 	
 	/**
-	 * This fonction is called every times a user open the interface
+	 * This function is called every times a user open the interface
 	 * You should make it update the upgradeValues
 	 * 
 	 * @param user: This is the user that ask for the interface
 	 * @param island: This is the island concerned by the interface
 	 */
 	public abstract void updateUpgradeValue(User user, Island island);
+	
+	/**
+	 * This function is called every times a user open the interface
+	 * If it return false, the upgrade won't be showed to the user
+	 * 
+	 * @param user: This is the user that ask for the interface
+	 * @param island: This is the island concerned by the interface
+	 * @return If true, then upgrade is shown else, it is hided
+	 */
+	public boolean isShowed(User user, Island island) {
+		return true;
+	}
 	
 	/**
 	 * This function return true if the user can upgrade for this island.

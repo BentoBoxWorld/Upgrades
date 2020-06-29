@@ -8,8 +8,15 @@ disabled-gamemodes: []
 # Each tier must contain:
 #      max-level: Upgrade level up to which tier apply
 #      upgrade-range: How much block is added to the range with each upgrade
+#
+# Each tier can contain:
 #      island-min-level: Minimum level required to upgrade (if level addon is provided)
 #      vault-cost: Money cost of upgrade
+#      permission-level: Is the level of permission needed to upgrade
+#         permission: "[GAMEMODE].upgrades.[UPGRADE].[LEVEL]"
+#             Exemple for bskyblock with range-upgrade with a permission level of 2
+#                 "bskyblock.upgrades.range-upgrade.2"
+#
 # Note: for upgrade-range, island-min-level and vault-cost:
 #      Mathematical expression can be used (+,-,*,/,^,(,))
 #      Mathematical function can be used (sqrt,sin,cost,tan)
@@ -43,6 +50,7 @@ block-limits-upgrade:
       upgrade: "1"
       island-min-level: "4"
       vault-cost: "([level]-2)*[numberPlayer]*700"
+      permission-level: 1
 
 entity-limits-upgrade:
   CHICKEN:
@@ -56,6 +64,7 @@ entity-limits-upgrade:
       upgrade: "1"
       island-min-level: "4"
       vault-cost: "([level]-2)*[numberPlayer]*700"
+      permission-level: 3
 
 # GameMode differences
 # List any tiers that you want to add

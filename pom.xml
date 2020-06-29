@@ -54,7 +54,7 @@
         <revision>${build.version}-SNAPSHOT</revision>
 
         <!-- This allows to change between versions. -->
-        <build.version>0.1.0</build.version>
+        <build.version>0.2.0</build.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->

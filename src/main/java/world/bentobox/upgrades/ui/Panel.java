@@ -25,6 +25,10 @@ public class Panel {
 		
 		this.addon.getAvailableUpgrades().forEach(upgrade -> {
 			upgrade.updateUpgradeValue(user, this.island);
+			
+			if (!upgrade.isShowed(user, this.island))
+				return;
+			
 			String ownDescription = upgrade.getOwnDescription(user);
 			List<String> fullDescription = new ArrayList<>();
 			
