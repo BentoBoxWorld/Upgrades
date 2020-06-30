@@ -26,6 +26,7 @@ disabled-gamemodes: []
 #         [numberPlayer] : Is the number of players in team
 #
 # Caution: You should always check that at max level, your players won't attain max range for island
+# Permission upgrade name: rangeupgrade
 range-upgrade:
   tier1:
     max-level: 5
@@ -38,8 +39,10 @@ range-upgrade:
     island-min-level: "4"
     vault-cost: "[level]*[numberPlayer]*200"
 
+# Permission upgrade name: limitsupgrade-[BLOCK]    -> In lower case
 block-limits-upgrade:
   HOPPER:
+    # Permission upgrade name: limitsupgrade-hopper
     tier1:
       max-level: 2
       upgrade: "1"
@@ -52,8 +55,10 @@ block-limits-upgrade:
       vault-cost: "([level]-2)*[numberPlayer]*700"
       permission-level: 1
 
+# Permission upgrade name: limitsupgrade-[ENTITY]    -> In lower case
 entity-limits-upgrade:
   CHICKEN:
+    # Permission upgrade name: limitsupgrade-chicken
     tier1:
       max-level: 2
       upgrade: "1"

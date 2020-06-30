@@ -81,6 +81,7 @@ public class EntityLimitsUpgrade extends Upgrade {
 		Player player = user.getPlayer();
 		String gamemode = island.getGameMode();
 		String permissionStart = gamemode + ".upgrades." + this.getName() + "."; 
+		permissionStart = permissionStart.toLowerCase();
 		
 		// For each permission of the player
 		for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
