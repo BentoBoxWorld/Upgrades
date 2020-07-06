@@ -29,12 +29,7 @@ public class BlockLimitsUpgrade extends Upgrade {
 		UpgradesData islandData = upgradeAddon.getUpgradesLevels(island.getUniqueId());
 		int upgradeLevel = islandData.getUpgradeLevel(getName());
 		int numberPeople = island.getMemberSet().size();
-		int islandLevel;
-		
-		if (upgradeAddon.isLevelProvided())
-			islandLevel = upgradeAddon.getUpgradesManager().getIslandLevel(island);
-		else
-			islandLevel = 0;
+		int islandLevel = upgradeAddon.getUpgradesManager().getIslandLevel(island);
 		
 		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeInfos(this.block, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
