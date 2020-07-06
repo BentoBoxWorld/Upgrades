@@ -155,6 +155,42 @@ public class UpgradesManager {
 		return tierList;
 	}
 	
+	public Map<String, List<Settings.CommandUpgradeTier>> getAllCommandUpgradeTiers(World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		if (name == null) {
+			return Collections.emptyMap();
+		}
+		
+		Map<String, Map<String, Settings.CommandUpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultCommandUpgradeTierMap();
+		Map<String, Map<String, Settings.CommandUpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonCommandUpgradeTierMap(name);
+		
+		Map<String, List<Settings.CommandUpgradeTier>> tierList = new HashMap<>();
+		
+		if (customAddonTiers.isEmpty()) {
+			defaultTiers.forEach((cmd, tiers) -> tierList.put(cmd, new ArrayList<>(tiers.values())));
+		} else {
+			customAddonTiers.forEach((cmd, tiers) -> {
+				Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
+				if (defaultTiers.containsKey(cmd))
+					uniqueIDSet.addAll(defaultTiers.get(cmd).keySet());
+				List<Settings.CommandUpgradeTier> cmdTier = new ArrayList<>(uniqueIDSet.size());
+				
+				uniqueIDSet.forEach(id -> cmdTier.add(tiers.getOrDefault(id, defaultTiers.get(cmd).get(id))));
+				tierList.put(cmd, cmdTier);
+			});
+			
+			defaultTiers.forEach((cmd, tiers) -> tierList.putIfAbsent(cmd, new ArrayList<>(tiers.values())));
+		}
+		
+		if (tierList.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		
+		tierList.forEach((cmd, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+		
+		return tierList;
+	}
+	
 	public Settings.UpgradeTier getRangeUpgradeTier(int rangeLevel, World world) {
 		List<Settings.UpgradeTier> tierList = this.getAllRangeUpgradeTiers(world);
 		
@@ -210,6 +246,27 @@ public class UpgradesManager {
 		
 		for (int i = 0; i < tierList.size(); i++) {
 			if (limitsLevel <= tierList.get(i).getMaxLevel())
+				return tierList.get(i);
+		}
+		
+		return null;
+	}
+	
+	public Settings.CommandUpgradeTier getCommandUpgradeTier(String cmd, int cmdLevel, World world) {
+		Map<String, List<Settings.CommandUpgradeTier>> cmdTierList = this.getAllCommandUpgradeTiers(world);
+		
+		if (cmdTierList.isEmpty()) {
+			return null;
+		}
+		
+		if (!cmdTierList.containsKey(cmd)) {
+			return null;
+		}
+		
+		List<Settings.CommandUpgradeTier> tierList = cmdTierList.get(cmd);
+		
+		for (int i = 0; i < tierList.size(); i++) {
+			if (cmdLevel <= tierList.get(i).getMaxLevel())
 				return tierList.get(i);
 		}
 		
@@ -322,6 +379,58 @@ public class UpgradesManager {
 	public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
 		return this.addon.getSettings().getMaxEntityLimitsUpgrade(ent, name);
+	}
+	
+	public Map<String, Integer> getCommandUpgradeInfos(String cmd, int cmdLevel, int islandLevel, int numberPeople, World world) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+		if (cmdUpgradeTier == null) {
+			return null;
+		}
+		
+		Map<String, Integer> info = new HashMap<>();
+		
+		info.put("islandMinLevel", (int) cmdUpgradeTier.calculateIslandMinLevel(cmdLevel, islandLevel, numberPeople));
+		info.put("vaultCost", (int) cmdUpgradeTier.calculateVaultCost(cmdLevel, islandLevel, numberPeople));
+		info.put("upgrade", (int) cmdUpgradeTier.calculateUpgrade(cmdLevel, islandLevel, numberPeople));
+		
+		return info;
+	}
+	
+	public int getCommandPermissionLevel(String cmd, int cmdLevel, World world) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+		
+		if (cmdUpgradeTier == null)
+			return 0;
+		return cmdUpgradeTier.getPermissionLevel();
+	}
+	
+	public String getCommandUpgradeTierName(String cmd, int cmdLevel, World world) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+		
+		if (cmdUpgradeTier == null)
+			return null;
+		return cmdUpgradeTier.getTierName();
+	}
+	
+	public int getCommandUpgradeMax(String cmd, World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		return this.addon.getSettings().getMaxCommandUpgrade(cmd, name);
+	}
+	
+	public List<String> getCommandList(String cmd, int cmdLevel, World world, String playerName) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+		
+		if (cmdUpgradeTier == null)
+			return Collections.emptyList();
+		return cmdUpgradeTier.getCommandList(playerName, cmdLevel);
+	}
+	
+	public Boolean isCommantConsole(String cmd, int cmdLevel, World world) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+		
+		if (cmdUpgradeTier == null)
+			return false;
+		return cmdUpgradeTier.getConsole();
 	}
 	
 	public Map<EntityType, Integer> getEntityLimits(Island island) {

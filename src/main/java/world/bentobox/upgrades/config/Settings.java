@@ -62,6 +62,23 @@ public class Settings {
 			this.entityLimitsUpgradeTierMap = this.loadEntityLimits(section, null);
 		}
 		
+		if (this.addon.getConfig().isSet("command-icon")) {
+			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("command-icon");
+			for (String commandId: Objects.requireNonNull(section).getKeys(false)) {
+				String material = section.getString(commandId);
+				Material mat = Material.getMaterial(material);
+				if (mat == null)
+					this.addon.logError("Config: Material " + material + " is not a valid material");
+				else
+					this.commandIcon.put(commandId, mat);
+			}
+		}
+		
+		if (this.addon.getConfig().isSet("command-upgrade")) {
+			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("command-upgrade");
+			this.commandUpgradeTierMap = this.loadCommand(section, null);
+		}
+		
 		if (this.addon.getConfig().isSet("gamemodes")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("gamemodes");
 			
@@ -88,6 +105,11 @@ public class Settings {
 				if (gameModeSection.isSet("entity-limits-upgrade")) {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("entity-limits-upgrade");
 					this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadEntityLimits(lowSection, gameMode));
+				}
+				
+				if (gameModeSection.isSet("command-upgrade")) {
+					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("command-upgrade");
+					this.customCommandUpgradeTierMap.computeIfAbsent(gameMode, k -> loadCommand(lowSection, gameMode));
 				}
 			}
 		}
@@ -165,6 +187,48 @@ public class Settings {
 		return ents;
 	}
 	
+	private Map<String, Map<String, CommandUpgradeTier>> loadCommand(ConfigurationSection section, String gamemode) {
+		Map<String, Map<String, CommandUpgradeTier>> commands = new HashMap<>();
+		
+		for (String commandId: Objects.requireNonNull(section).getKeys(false)) {
+			if (this.commandIcon.containsKey(commandId)) {
+				String name = commandId;
+				Map<String, CommandUpgradeTier> tier = new HashMap<>();
+				ConfigurationSection cmdSection = section.getConfigurationSection(commandId);
+				for (String key: Objects.requireNonNull(cmdSection).getKeys(false)) {
+					if (key.equals("name")) {
+						name = cmdSection.getString(key);
+					} else {
+						CommandUpgradeTier newUpgrade = addCommandUpgradeSection(cmdSection, key);
+						
+						if (gamemode == null) {
+							if (this.maxCommandUpgrade.get(key) == null || this.maxCommandUpgrade.get(key) < newUpgrade.getMaxLevel())
+								this.maxCommandUpgrade.put(key, newUpgrade.getMaxLevel());
+						} else {
+							if (this.customMaxCommandUpgrade.get(gamemode) == null) {
+								Map<String, Integer> newMap = new HashMap<>();
+								newMap.put(key, newUpgrade.getMaxLevel());
+								this.customMaxCommandUpgrade.put(gamemode, newMap);
+							} else {
+								if (this.customMaxCommandUpgrade.get(gamemode).get(key) == null || this.customMaxCommandUpgrade.get(gamemode).get(key) < newUpgrade.getMaxLevel())
+									this.customMaxCommandUpgrade.get(gamemode).put(key, newUpgrade.getMaxLevel());
+							}
+						}
+						
+						tier.put(key, newUpgrade);
+					}
+				}
+				if (!this.commandName.containsKey(commandId) || name != commandId)
+					this.commandName.put(commandId, name);
+				commands.put(commandId, tier);
+			} else {
+				this.addon.logError("Command " + commandId + " is missing a corresponding icon. Skipping...");
+			}
+		}
+		
+		return commands;
+	}
+	
 	@NonNull
 	private UpgradeTier addUpgradeSection(ConfigurationSection section, String key) {
 		ConfigurationSection tierSection = section.getConfigurationSection(key);
@@ -185,6 +249,43 @@ public class Settings {
 		
 		if (tierSection.isSet("permission-level"))
 			upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
+		else
+			upgradeTier.setPermissionLevel(0);
+		
+		return upgradeTier;
+		
+	}
+	
+	@NonNull
+	private CommandUpgradeTier addCommandUpgradeSection(ConfigurationSection section, String key) {
+		ConfigurationSection tierSection = section.getConfigurationSection(key);
+		CommandUpgradeTier upgradeTier = new CommandUpgradeTier(key);
+		upgradeTier.setTierName(tierSection.getName());
+		upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
+		upgradeTier.setUpgrade(parse("0", upgradeTier.getExpressionVariable()));
+		
+		if (tierSection.isSet("island-min-level"))
+			upgradeTier.setIslandMinLevel(parse(tierSection.getString("island-min-level"), upgradeTier.getExpressionVariable()));
+		else
+			upgradeTier.setIslandMinLevel(parse("0", upgradeTier.getExpressionVariable()));
+		
+		if (tierSection.isSet("vault-cost"))
+			upgradeTier.setVaultCost(parse(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
+		else
+			upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
+		
+		if (tierSection.isSet("permission-level"))
+			upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
+		else
+			upgradeTier.setPermissionLevel(0);
+		
+		if (tierSection.isSet("console") && tierSection.isBoolean("console"))
+			upgradeTier.setConsole(tierSection.getBoolean("console"));
+		else
+			upgradeTier.setConsole(false);
+		
+		if (tierSection.isSet("command"))
+			upgradeTier.setCommandList(tierSection.getStringList("command"));
 		
 		return upgradeTier;
 		
@@ -271,6 +372,40 @@ public class Settings {
 	private EntityType getEntityType(String key) {
         return Arrays.stream(EntityType.values()).filter(v -> v.name().equalsIgnoreCase(key)).findFirst().orElse(null);
     }
+	
+	public int getMaxCommandUpgrade(String commandUpgrade, String addon) {
+		return this.customMaxCommandUpgrade.getOrDefault(addon, this.maxCommandUpgrade).getOrDefault(commandUpgrade, 0);
+	}
+	
+	public Map<String, Map<String, CommandUpgradeTier>> getDefaultCommandUpgradeTierMap() {
+		return this.commandUpgradeTierMap;
+	}
+	
+	/**
+	 * @return the rangeUpgradeTierMap
+	 */
+	public Map<String, Map<String, CommandUpgradeTier>> getAddonCommandUpgradeTierMap(String addon) {
+		return this.customCommandUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+	}
+	
+	public Set<String> getCommandUpgrade() {
+		Set<String> command = new HashSet<>();
+		
+		this.customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+			command.addAll(addonUpgrade.keySet());
+		});
+		command.addAll(this.commandUpgradeTierMap.keySet());
+		
+		return command;
+	}
+	
+	public Material getCommandIcon(String command) {
+		return this.commandIcon.getOrDefault(command, null);
+	}
+	
+	public String getCommandName(String command) {
+		return this.commandName.get(command);
+	}
 
 	private UpgradesAddon addon;
 	
@@ -301,6 +436,18 @@ public class Settings {
 	private Map<EntityType, Map<String, UpgradeTier>> entityLimitsUpgradeTierMap = new EnumMap<>(EntityType.class);
 	
 	private Map<String, Map<EntityType, Map<String, UpgradeTier>>> customEntityLimitsUpgradeTierMap = new HashMap<>();
+	
+	private Map<String, Integer> maxCommandUpgrade = new HashMap<>();
+	
+	private Map<String, Map<String, Integer>> customMaxCommandUpgrade = new HashMap<>();
+	
+	private Map<String, Map<String, CommandUpgradeTier>> commandUpgradeTierMap = new HashMap<>();
+	
+	private Map<String, Map<String, Map<String, CommandUpgradeTier>>> customCommandUpgradeTierMap = new HashMap<>();
+	
+	private Map<String, Material> commandIcon = new HashMap<>();
+	
+	private Map<String, String> commandName = new HashMap<>();
 	
 	// ------------------------------------------------------------------
 	// Section: Private object
@@ -466,6 +613,42 @@ public class Settings {
 		private Expression vaultCost;
 		
 		private Map<String, Double> expressionVariables;
+	}
+	
+	public class CommandUpgradeTier extends UpgradeTier {
+		
+		public CommandUpgradeTier(String id) {
+			super(id);
+			this.commandList = new ArrayList<String>();
+		}
+		
+		public void setConsole(Boolean console) {
+			this.console = console;
+		}
+		
+		public Boolean getConsole() {
+			return this.console;
+		}
+		
+		public void setCommandList(List<String> commandsList) {
+			this.commandList = commandsList;
+		}
+		
+		public List<String> getCommandList(String playerName, int level) {
+			List<String> formatedList = new ArrayList<String>(this.commandList.size());
+			
+			this.commandList.forEach(cmd -> {
+				String fcmd = cmd.replace("[player]", playerName)
+						.replace("[level]", Integer.toString(level));
+				formatedList.add(fcmd);
+			});
+			return formatedList;
+		}
+		
+		private List<String> commandList;
+		
+		private Boolean console;
+		
 	}
 	
 	

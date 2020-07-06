@@ -40,13 +40,7 @@ public class RangeUpgrade extends Upgrade {
 		// The number of members on the island
 		int numberPeople = island.getMemberSet().size();
 		// The level of the island from Level Addon
-		int islandLevel;
-		
-		// If level addon is provided
-		if (islandAddon.isLevelProvided())
-			islandLevel = islandAddon.getUpgradesManager().getIslandLevel(island);
-		else 
-			islandLevel = 0;
+		int islandLevel = islandAddon.getUpgradesManager().getIslandLevel(island);
 		
 		// Get upgrades infos of range upgrade from settings
 		Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel, islandLevel, numberPeople, island.getWorld());

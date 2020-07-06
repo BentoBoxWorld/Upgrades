@@ -22,7 +22,7 @@ disabled-gamemodes: []
 #      Mathematical function can be used (sqrt,sin,cost,tan)
 #      Special value can be used:
 #         [level] : Is the actual level for this upgrade
-#         [islandLevel] : Is the islandLevel from level addon
+#         [islandLevel] : Is the islandLevel from level addon !!!!Can be 0!!!!
 #         [numberPlayer] : Is the number of players in team
 #
 # Caution: You should always check that at max level, your players won't attain max range for island
@@ -71,6 +71,28 @@ entity-limits-upgrade:
       vault-cost: "([level]-2)*[numberPlayer]*700"
       permission-level: 3
 
+# For the command section:
+#     [player] : is the name of the player
+#     [level] : is the level of the upgrade
+command-upgrade:
+  lambda-upgrade:
+    name: "Lambda upgrade"
+    tier1:
+      max-level: 1
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+      console: true
+      command:
+        - "say [player] has upgrade his lambda to level [level]"
+    tier2:
+      max-level: 2
+      island-min-level: "2"
+      vault-cost: "[level]*200"
+      console: true
+      command: 
+        - "say [player] has upgrade his lambda to level [level]"
+        - "say [player] has attained max"
+
 # GameMode differences
 # List any tiers that you want to add
 # You can overwrite a tier by using the same name
@@ -100,5 +122,19 @@ gamemodes:
           island-min-level: "2"
           vault-cost: "[level]*200"
 
+    command-upgrade:
+      lambda-upgrade:
+        tier2:
+          max-level: 2
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+          console: true
+          command:
+            - "say [player] has upgrade his lambda to level [level]"
+            - "say [player] has attained max on BSkyBlock"
+
 entity-icon:
   CHICKEN: CHICKEN_SPAWN_EGG
+
+command-icon:
+  lambda-upgrade: GRASS

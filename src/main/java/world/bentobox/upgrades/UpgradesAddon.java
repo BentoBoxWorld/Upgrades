@@ -21,6 +21,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
 import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
+import world.bentobox.upgrades.upgrades.CommandUpgrade;
 import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
 import world.bentobox.level.Level;
@@ -92,6 +93,8 @@ public class UpgradesAddon extends Addon {
 				this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
 				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
 			}
+			
+			this.getSettings().getCommandUpgrade().forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings().getCommandIcon(cmd))));
 			
 			this.registerUpgrade(new RangeUpgrade(this));
 			
