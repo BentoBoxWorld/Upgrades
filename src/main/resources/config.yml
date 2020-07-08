@@ -19,7 +19,7 @@ disabled-gamemodes: []
 #
 # Note: for upgrade-range, island-min-level and vault-cost:
 #      Mathematical expression can be used (+,-,*,/,^,(,))
-#      Mathematical function can be used (sqrt,sin,cost,tan)
+#      Mathematical function can be used (sqrt,sin,cos,tan)
 #      Special value can be used:
 #         [level] : Is the actual level for this upgrade
 #         [islandLevel] : Is the islandLevel from level addon !!!!Can be 0!!!!
@@ -93,7 +93,7 @@ command-upgrade:
       console: true
       command: 
         - "say [player] has upgrade his lambda to level [level]"
-        - "say [player] has attained max"
+        - "say [player] has reached the max level"
 
 # GameMode differences
 # List any tiers that you want to add
