@@ -24,7 +24,7 @@ public class Settings {
 		this.addon = addon;
 		this.addon.saveDefaultConfig();
 		
-		this.hasRangeUpgrade = true;
+		this.hasRangeUpgrade = false;
 		
 		this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
 		
