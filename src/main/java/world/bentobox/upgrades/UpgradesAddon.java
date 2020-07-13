@@ -84,7 +84,7 @@ public class UpgradesAddon extends Addon {
 			
 			Optional<VaultHook> vault = this.getPlugin().getVault();
 			if (!vault.isPresent()) {
-				this.logWarning("Vault plugin not found si Upgrades won't look for money");
+				this.logWarning("Vault plugin not found so Upgrades won't look for money");
 				this.vault = null;
 			} else
 				this.vault = vault.get();
@@ -96,7 +96,8 @@ public class UpgradesAddon extends Addon {
 			
 			this.getSettings().getCommandUpgrade().forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings().getCommandIcon(cmd))));
 			
-			this.registerUpgrade(new RangeUpgrade(this));
+			if (this.getSettings().getHasRangeUpgrade())
+				this.registerUpgrade(new RangeUpgrade(this));
 			
 			this.registerListener(new IslandChangeListener(this));
 			

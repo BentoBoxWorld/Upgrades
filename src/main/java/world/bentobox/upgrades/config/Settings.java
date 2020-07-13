@@ -24,6 +24,8 @@ public class Settings {
 		this.addon = addon;
 		this.addon.saveDefaultConfig();
 		
+		this.hasRangeUpgrade = true;
+		
 		this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
 		
 		if (this.addon.getConfig().isSet("range-upgrade")) {
@@ -33,6 +35,8 @@ public class Settings {
 				
 				if (this.maxRangeUpgrade < newUpgrade.getMaxLevel())
 					this.maxRangeUpgrade = newUpgrade.getMaxLevel();
+				
+				this.hasRangeUpgrade = true;
 				this.rangeUpgradeTierMap.put(key, newUpgrade);
 			}
 		}
@@ -92,6 +96,8 @@ public class Settings {
 						
 						if (this.customMaxRangeUpgrade.get(gameMode) == null || this.customMaxRangeUpgrade.get(gameMode) < newUpgrade.getMaxLevel())
 							this.customMaxRangeUpgrade.put(gameMode, newUpgrade.getMaxLevel());
+						
+						this.hasRangeUpgrade = true;
 						
 						this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new HashMap<>()).put(key, newUpgrade);
 					}
@@ -298,6 +304,10 @@ public class Settings {
 		return disabledGameModes;
 	}
 	
+	public boolean getHasRangeUpgrade() {
+		return this.hasRangeUpgrade;
+	}
+	
 	public int getMaxRangeUpgrade(String addon) {
 		return this.customMaxRangeUpgrade.getOrDefault(addon, this.maxRangeUpgrade);
 	}
@@ -412,6 +422,8 @@ public class Settings {
 	private Set<String> disabledGameModes;
 	
 	private int maxRangeUpgrade = 0;
+	
+	private boolean hasRangeUpgrade;
 	
 	private Map<String, Integer> customMaxRangeUpgrade = new HashMap<>();
 	
