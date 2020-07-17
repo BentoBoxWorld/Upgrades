@@ -53,7 +53,6 @@ public class Panel {
 		if (upgrade.getUpgradeValues(user) == null)
 			descrip.add(user.getTranslation("upgrades.ui.upgradepanel.maxlevel"));
 		else {
-			boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues(user).getMoneyCost());
 			if (this.addon.isLevelProvided()) {
 				descrip.add((upgrade.getUpgradeValues(user).getIslandLevel() <= islandLevel ? "§a" : "§c") + 
 					user.getTranslation("upgrades.ui.upgradepanel.islandneed",
@@ -61,6 +60,7 @@ public class Panel {
 			}
 			
 			if (this.addon.isVaultProvided()) {
+				boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues(user).getMoneyCost());
 				descrip.add((hasMoney ? "§a" : "§c") + 
 					user.getTranslation("upgrades.ui.upgradepanel.moneycost",
 						"[cost]", Integer.toString(upgrade.getUpgradeValues(user).getMoneyCost())));
