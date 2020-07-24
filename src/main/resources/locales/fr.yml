@@ -1,0 +1,25 @@
+---
+upgrades:
+  commands:
+    main:
+      description: Ouvre l'interface d'achats d'améliorations
+  ui:
+    upgradepanel:
+      title: Magasin d'améliorations de l'ile
+      rangeupgrade: Amélioration de [rangelevel] blocs
+      norangeupgrade: "&7 Zone agrandie"
+      rangeupgradedone: "&a La zone de ton ile a été augmentée de [rangelevel] blocs"
+      limitsupgrade: "[block] limite augmentée de [level]"
+      nolimitsupgrade: "&7 [block] limites augmentée"
+      limitsupgradedone: "&a La limite de [block] de ton ile a été augmentée de [level]"
+      maxlevel: Niveau maximum atteint
+      islandneed: 'Niveau minimum de l''''ile: [islandlevel]'
+      moneycost: 'Coût: [cost]'
+      tryreloadlevel: N'oublie pas de mettre à jour le niveau de ton île
+  error:
+    notonisland: "&c Tu dois etre sur ton ile pour faire ça"
+    rangeovermax: "&c Tu as essayé d'améliorer ton île au dessus du maximum? Contacte
+      un administrateur"
+    increasenolimits: "&c Tu ne peux pas augmenter la limite de quelque chose sans
+      limite. Contacte un administrateur"
+    costwithdraw: "&c Impossible de retirer l'argent. Contacte un administrateur"
