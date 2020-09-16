@@ -14,6 +14,7 @@ upgrades:
       maxlevel: "Max level reached"
       islandneed: "Island Min Level: [islandlevel]"
       moneycost: "Money cost: [cost]"
+      itemcost: "Item cost: [cost]"
       tryreloadlevel: "Don't forget to update your island level with the level command"
   error:
     notonisland: "&c You need to be on your island to do that"

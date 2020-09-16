@@ -59,12 +59,19 @@ public class Panel {
 						"[islandlevel]", Integer.toString(upgrade.getUpgradeValues(user).getIslandLevel())));
 			}
 			
-			if (this.addon.isVaultProvided()) {
-				boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues(user).getMoneyCost());
-				descrip.add((hasMoney ? "§a" : "§c") + 
-					user.getTranslation("upgrades.ui.upgradepanel.moneycost",
-						"[cost]", Integer.toString(upgrade.getUpgradeValues(user).getMoneyCost())));
-			}
+            if (upgrade.getUpgradeValues(user).getCurrency() == Upgrade.Currency.MONEY) {
+                if (this.addon.isVaultProvided()) {
+                    boolean hasMoney = this.addon.getVaultHook().has(user, upgrade.getUpgradeValues(user).getMoneyCost());
+                    descrip.add((hasMoney ? "§a" : "§c") + 
+                        user.getTranslation("upgrades.ui.upgradepanel.moneycost",
+                            "[cost]", Integer.toString(upgrade.getUpgradeValues(user).getMoneyCost())));
+                }
+            } else if (upgrade.getUpgradeValues(user).getCurrency() == Upgrade.Currency.ITEMS) {
+                boolean hasItems = user.getInventory().containsAtLeast(addon.getSettings().getPaymentItem(), upgrade.getUpgradeValues(user).getItemCost());
+                descrip.add((hasItems ? "§a" : "§c") + 
+                    user.getTranslation("upgrades.ui.upgradepanel.itemcost",
+                        "[cost]", Integer.toString(upgrade.getUpgradeValues(user).getItemCost())));
+            }
 			
 			if (this.addon.isLevelProvided() && upgrade.getUpgradeValues(user).getIslandLevel() > islandLevel) {
 				descrip.add("§8" + user.getTranslation("upgrades.ui.upgradepanel.tryreloadlevel"));

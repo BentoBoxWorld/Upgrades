@@ -15,6 +15,7 @@ upgrades:
       maxlevel: Niveau maximum atteint
       islandneed: 'Niveau minimum de l''''ile: [islandlevel]'
       moneycost: 'Coût: [cost]'
+      itemcost: "Item cost: [cost]"
       tryreloadlevel: N'oublie pas de mettre à jour le niveau de ton île
   error:
     notonisland: "&c Tu dois etre sur ton ile pour faire ça"

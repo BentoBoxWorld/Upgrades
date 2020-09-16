@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.inventory.ItemStack;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.addons.Addon.State;
 import world.bentobox.bentobox.api.user.User;
@@ -115,14 +116,34 @@ public abstract class Upgrade {
 	public boolean doUpgrade(User user, Island island) {
 		UpgradeValues upgradeValues = this.getUpgradeValues(user);
 		
-		if (this.upgradesAddon.isVaultProvided()) {
-			EconomyResponse response = this.upgradesAddon.getVaultHook().withdraw(user, upgradeValues.getMoneyCost());
-			if (!response.transactionSuccess()) {
-				this.addon.logWarning("User Money withdrawing failed user: " + user.getName() + " reason: " + response.errorMessage);
-				user.sendMessage("upgrades.error.costwithdraw");
-				return false;
-			}
-		}
+        switch (upgradeValues.getCurrency()) {
+            case ITEMS:
+                ItemStack itemremove = upgradesAddon.getSettings().getPaymentItem();
+                if (user.getInventory().containsAtLeast(itemremove, upgradeValues.getItemCost())) {
+                    int items = upgradeValues.getItemCost();
+                    ItemStack is = itemremove.clone();
+                    is.setAmount(is.getMaxStackSize());
+                    while (items > is.getMaxStackSize()) {
+                        user.getInventory().removeItem(is);
+                        items -= is.getAmount();
+                    }
+                    is.setAmount(items);
+                    user.getInventory().removeItem(is);
+                } else {
+                    return false;
+                }
+                break;
+            case MONEY:
+            default:
+                if (this.upgradesAddon.isVaultProvided()) {
+                    EconomyResponse response = this.upgradesAddon.getVaultHook().withdraw(user, upgradeValues.getMoneyCost());
+                    if (!response.transactionSuccess()) {
+                        this.addon.logWarning("User Money withdrawing failed user: " + user.getName() + " reason: " + response.errorMessage);
+                        user.sendMessage("upgrades.error.costwithdraw");
+                        return false;
+                    }
+                }
+        }
 		
 		UpgradesData data = this.upgradesAddon.getUpgradesLevels(island.getUniqueId());
 		data.setUpgradeLevel(this.name, data.getUpgradeLevel(this.name) + 1);
@@ -230,12 +251,19 @@ public abstract class Upgrade {
 	
 	public class UpgradeValues {
 		
-		public UpgradeValues(Integer islandLevel, Integer moneyCost, Integer upgradeValue) {
+		public UpgradeValues(int islandLevel, Currency currency, int cost, int upgradeValue) {
 			this.islandLevel = islandLevel;
-			this.moneyCost = moneyCost;
+            this.currency = currency;
+            if (currency == Currency.ITEMS) {
+                this.itemCost = cost;
+                this.moneyCost = 0;
+            } else {
+                this.itemCost = 0;
+                this.moneyCost = cost;
+            }
 			this.upgradeValue = upgradeValue;
 		}
-		
+        
 		public int getIslandLevel() {
 			return islandLevel;
 		}
@@ -260,9 +288,32 @@ public abstract class Upgrade {
 			this.upgradeValue = upgradeValue;
 		}
 
+        public int getItemCost() {
+            return itemCost;
+        }
+
+        public void setItemCost(int itemCost) {
+            this.itemCost = itemCost;
+        }
+
+        public Currency getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(Currency currency) {
+            this.currency = currency;
+        }
+
 		private int islandLevel;
 		private int moneyCost;
 		private int upgradeValue;
+        private int itemCost;
+        private Currency currency;
 	}
+    
+    public enum Currency {
+        MONEY,
+        ITEMS;
+    }
 
 }

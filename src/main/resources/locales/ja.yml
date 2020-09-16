@@ -15,6 +15,7 @@ upgrades:
       maxlevel: 最大レベルに達しました
       islandneed: 島の最小レベル：[islandlevel]
       moneycost: 費用：[cost]
+      itemcost: "Item cost: [cost]"
       tryreloadlevel: levelコマンドで島のレベルを更新することを忘れないでください
   error:
     notonisland: "＆cあなたはそれをするためにあなたの島にいる必要があります"

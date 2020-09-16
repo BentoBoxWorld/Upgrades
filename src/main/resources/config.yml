@@ -4,6 +4,11 @@
 # IslandUpgrades will not work in these game modes
 disabled-gamemodes: []
 
+# The item used to pay for upgrades if the use-vault property of upgrades is set to false.
+payment-item:
+  ==: org.bukkit.inventory.ItemStack
+  type: EMERALD
+  
 # Range Upgrade Default Tiers
 # Each tier must contain:
 #      max-level: Upgrade level up to which tier apply
@@ -32,12 +37,16 @@ range-upgrade:
     max-level: 5
     upgrade: "5"
     island-min-level: "2"
+    use-vault: true
     vault-cost: "[level]*100"
+    item-cost: "[level]*1"
   tier2:
     max-level: 10
     upgrade: "3"
     island-min-level: "4"
+    use-vault: true
     vault-cost: "[level]*[numberPlayer]*200"
+    item-cost: "[level]*[numberPlayer]*2"
 
 # Permission upgrade name: limitsupgrade-[BLOCK]    -> In lower case
 block-limits-upgrade:
@@ -47,12 +56,16 @@ block-limits-upgrade:
       max-level: 2
       upgrade: "1"
       island-min-level: "2"
+      use-vault: true
       vault-cost: "[level]*100"
+      item-cost: "[level]*1"
     tier2:
       max-level: 5
       upgrade: "1"
       island-min-level: "4"
+      use-vault: true
       vault-cost: "([level]-2)*[numberPlayer]*700"
+      item-cost: "([level]-2)*[numberPlayer]*7"
       permission-level: 1
 
 # Permission upgrade name: limitsupgrade-[ENTITY]    -> In lower case
@@ -63,12 +76,16 @@ entity-limits-upgrade:
       max-level: 2
       upgrade: "1"
       island-min-level: "2"
+      use-vault: true
       vault-cost: "[level]*100"
+      item-cost: "[level]*1"
     tier2:
       max-level: 5
       upgrade: "1"
       island-min-level: "4"
+      use-vault: true
       vault-cost: "([level]-2)*[numberPlayer]*700"
+      item-cost: "([level]-2)*[numberPlayer]*7"
       permission-level: 3
 
 # For the command section:
@@ -82,14 +99,18 @@ command-upgrade:
     tier1:
       max-level: 1
       island-min-level: "2"
+      use-vault: true
       vault-cost: "[level]*100"
+      item-cost: "[level]*1"
       console: true
       command:
         - "say [player] has upgrade his lambda to level [level]"
     tier2:
       max-level: 2
       island-min-level: "2"
+      use-vault: true
       vault-cost: "[level]*200"
+      item-cost: "[level]*2"
       console: true
       command: 
         - "say [player] has upgrade his lambda to level [level]"
@@ -106,7 +127,9 @@ gamemodes:
         max-level: 15
         upgrade: "5"
         island-min-level: "6"
+        use-vault: true
         vault-cost: "[level]*[numberPlayer]*500"
+        item-cost: "[level]*[numberPlayer]*5"
 
     block-limits-upgrade:
       HOPPER:
@@ -114,7 +137,9 @@ gamemodes:
           max-level: 2
           upgrade: "1"
           island-min-level: "2"
+          use-vault: true
           vault-cost: "[level]*200"
+          item-cost: "[level]*2"
 
     entity-limits-upgrade:
       CHICKEN:
@@ -122,14 +147,18 @@ gamemodes:
           max-level: 2
           upgrade: "1"
           island-min-level: "2"
+          use-vault: true
           vault-cost: "[level]*200"
+          item-cost: "[level]*2"
 
     command-upgrade:
       lambda-upgrade:
         tier2:
           max-level: 2
           island-min-level: "2"
+          use-vault: true
           vault-cost: "[level]*200"
+          item-cost: "[level]*2"
           console: true
           command:
             - "say [player] has upgrade his lambda to level [level]"

@@ -282,6 +282,8 @@ public class UpgradesManager {
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) rangeUpgradeTier.calculateIslandMinLevel(rangeLevel, islandLevel, numberPeople));
+        info.put("useVault", rangeUpgradeTier.isUseVault() ? 1 : 0);
+		info.put("itemCost", (int) rangeUpgradeTier.calculateItemCost(rangeLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) rangeUpgradeTier.calculateVaultCost(rangeLevel, islandLevel, numberPeople));
 		info.put("upgrade", (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
 		
@@ -318,6 +320,8 @@ public class UpgradesManager {
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+		info.put("useVault", limitsUpgradeTier.isUseVault() ? 1 : 0);
+		info.put("itemCost", (int) limitsUpgradeTier.calculateItemCost(limitsLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
 		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 		
@@ -354,6 +358,8 @@ public class UpgradesManager {
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+		info.put("useVault", limitsUpgradeTier.isUseVault() ? 1 : 0);
+		info.put("itemCost", (int) limitsUpgradeTier.calculateItemCost(limitsLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
 		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 		
@@ -390,6 +396,8 @@ public class UpgradesManager {
 		Map<String, Integer> info = new HashMap<>();
 		
 		info.put("islandMinLevel", (int) cmdUpgradeTier.calculateIslandMinLevel(cmdLevel, islandLevel, numberPeople));
+		info.put("useVault", cmdUpgradeTier.isUseVault() ? 1 : 0);
+		info.put("itemCost", (int) cmdUpgradeTier.calculateItemCost(cmdLevel, islandLevel, numberPeople));
 		info.put("vaultCost", (int) cmdUpgradeTier.calculateVaultCost(cmdLevel, islandLevel, numberPeople));
 		info.put("upgrade", (int) cmdUpgradeTier.calculateUpgrade(cmdLevel, islandLevel, numberPeople));
 		

@@ -39,8 +39,12 @@ public class CommandUpgrade extends Upgrade {
 		
 		if (upgradeInfos == null)
 			upgrade = null;
-		else
-			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+        else {
+            if (upgradeInfos.get("useVault") == 0)
+                upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), Currency.ITEMS, upgradeInfos.get("itemCost"), upgradeInfos.get("upgrade"));
+            else    
+                upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), Currency.MONEY, upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+        }
 		
 		this.setUpgradeValues(user, upgrade);
 	}

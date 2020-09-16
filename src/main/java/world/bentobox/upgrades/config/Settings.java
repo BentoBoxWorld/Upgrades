@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
+import org.bukkit.Bukkit;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
 
 import world.bentobox.upgrades.UpgradesAddon;
@@ -27,6 +29,8 @@ public class Settings {
 		this.hasRangeUpgrade = false;
 		
 		this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
+        
+        this.paymentItem = this.addon.getConfig().getItemStack("payment-item");
 		
 		if (this.addon.getConfig().isSet("range-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
@@ -241,6 +245,7 @@ public class Settings {
 		UpgradeTier upgradeTier = new UpgradeTier(key);
 		upgradeTier.setTierName(tierSection.getName());
 		upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
+		upgradeTier.setUseVault(tierSection.getBoolean("use-vault"));
 		upgradeTier.setUpgrade(parse(tierSection.getString("upgrade"), upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("island-min-level"))
@@ -252,6 +257,11 @@ public class Settings {
 			upgradeTier.setVaultCost(parse(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
 		else
 			upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
+        
+		if (tierSection.isSet("item-cost"))
+			upgradeTier.setItemCost(parse(tierSection.getString("item-cost"), upgradeTier.getExpressionVariable()));
+		else
+			upgradeTier.setItemCost(parse("0", upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("permission-level"))
 			upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
@@ -268,6 +278,7 @@ public class Settings {
 		CommandUpgradeTier upgradeTier = new CommandUpgradeTier(key);
 		upgradeTier.setTierName(tierSection.getName());
 		upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
+        upgradeTier.setUseVault(tierSection.getBoolean("use-vault"));
 		upgradeTier.setUpgrade(parse("0", upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("island-min-level"))
@@ -279,6 +290,11 @@ public class Settings {
 			upgradeTier.setVaultCost(parse(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
 		else
 			upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
+        
+		if (tierSection.isSet("item-cost"))
+			upgradeTier.setItemCost(parse(tierSection.getString("item-cost"), upgradeTier.getExpressionVariable()));
+		else
+			upgradeTier.setItemCost(parse("0", upgradeTier.getExpressionVariable()));
 		
 		if (tierSection.isSet("permission-level"))
 			upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
@@ -303,7 +319,11 @@ public class Settings {
 	public Set<String> getDisabledGameModes() {
 		return disabledGameModes;
 	}
-	
+
+    public ItemStack getPaymentItem() {
+        return paymentItem;
+    }
+    
 	public boolean getHasRangeUpgrade() {
 		return this.hasRangeUpgrade;
 	}
@@ -420,6 +440,8 @@ public class Settings {
 	private UpgradesAddon addon;
 	
 	private Set<String> disabledGameModes;
+    
+    private ItemStack paymentItem;
 	
 	private int maxRangeUpgrade = 0;
 	
@@ -528,6 +550,20 @@ public class Settings {
 			this.permissionLevel = level;
 		}
 
+        /**
+         * @return whether vault or items should be used
+         */
+        public boolean isUseVault() {
+            return useVault;
+        }
+
+        /**
+         * @param usevault whether vault or items should be used
+         */
+        public void setUseVault(boolean usevault) {
+            this.useVault = usevault;
+        }
+
 		/**
 		 * @return the upgradeRange
 		 */
@@ -569,6 +605,20 @@ public class Settings {
 		public void setVaultCost(Expression vaultCost) {
 			this.vaultCost = vaultCost;
 		}
+        
+		/**
+		 * @return the itemCost
+		 */
+		public Expression getItemCost() {
+			return itemCost;
+		}
+
+		/**
+		 * @param itemCost the itemCost to set
+		 */
+		public void setItemCost(Expression itemCost) {
+			this.itemCost = itemCost;
+		}
 		
 		/**
 		 * Value to set for the math parser
@@ -603,6 +653,13 @@ public class Settings {
 			this.updateExpressionVariable("[numberPlayer]", numberPeople);
 			return this.getVaultCost().eval();
 		}
+        
+		public double calculateItemCost(double level, double islandLevel, double numberPeople) {
+			this.updateExpressionVariable("[level]", level);
+			this.updateExpressionVariable("[islandLevel]", islandLevel);
+			this.updateExpressionVariable("[numberPlayer]", numberPeople);
+			return this.getItemCost().eval();
+		}
 
 
 		// ----------------------------------------------------------------------
@@ -617,12 +674,16 @@ public class Settings {
 		private String tierName;
 		
 		private Integer permissionLevel = 0;
+        
+        private boolean useVault;
 
 		private Expression upgrade;
 		
 		private Expression islandMinLevel;
 		
 		private Expression vaultCost;
+
+        private Expression itemCost;
 		
 		private Map<String, Double> expressionVariables;
 	}
