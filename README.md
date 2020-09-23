@@ -39,9 +39,11 @@ The config.yml has the following sections:
 * **Range Upgrade Tiers** - specify default Range upgrade tiers. Upgrading this will augment island protection size
 * **Block Limits Upgrade Tier** - specify default Block Limits tiers. Upgrading this will augment the block limits of the limits addon
 * **Entity Limits Upgrade Tier** - specify default Entity Limits tiers. Upgrading this will augment the entity limits of the limits addon
+* **Entity Group Limits Upgrade Tier** - specify default Entity Group Limits tiers. Upgrading this will augment the entity group limits of the limits addon
 * **Command Upgrade Tier** - specify default Command Tiers. You can link command to this upgrade.
 * **GameMode** - ability to specify upgrade tiers for specific game mode.
 * **Entity Icon** - This list the icons for Entity Upgrades
+* **Entity Group Icon** - This list the icons for Entity Group Upgrades
 * **Command Icon** - This list the icons for Command Upgrades
 
 ### Other Add-ons
