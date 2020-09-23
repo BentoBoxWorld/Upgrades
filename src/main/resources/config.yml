@@ -71,6 +71,23 @@ entity-limits-upgrade:
       vault-cost: "([level]-2)*[numberPlayer]*700"
       permission-level: 3
 
+# Permission upgrade name: limitsupgrade-[GROUP]    -> In lower case
+entity-group-limits-upgrade:
+  # this name has to match with your entity group names in the limits addon if installed
+  group1:
+    # Permission upgrade name: limitsupgrade-group1
+    tier1:
+      max-level: 2
+      upgrade: "1"
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "([level]-2)*[numberPlayer]*700"
+      permission-level: 3
+
 # For the command section:
 #     [player] : is the name of the player
 #     [level] : is the level of the upgrade
@@ -124,6 +141,15 @@ gamemodes:
           island-min-level: "2"
           vault-cost: "[level]*200"
 
+    entity-group-limits-upgrade:
+      # has to match with the entity group name in the limits addon
+      group1:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
     command-upgrade:
       lambda-upgrade:
         tier2:
@@ -137,6 +163,9 @@ gamemodes:
 
 entity-icon:
   CHICKEN: CHICKEN_SPAWN_EGG
+
+entity-group-icon:
+  group1: CHICKEN_SPAWN_EGG
 
 command-icon:
   lambda-upgrade: GRASS

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -154,6 +155,42 @@ public class UpgradesManager {
 		
 		return tierList;
 	}
+    
+	public Map<String, List<Settings.UpgradeTier>> getAllEntityGroupLimitsUpgradeTiers(World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		if (name == null) {
+			return Collections.emptyMap();
+		}
+		
+		Map<String, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultEntityGroupLimitsUpgradeTierMap();
+		Map<String, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonEntityGroupLimitsUpgradeTierMap(name);
+		
+		Map<String, List<Settings.UpgradeTier>> tierList = new HashMap<>();
+		
+		if (customAddonTiers.isEmpty()) {
+			defaultTiers.forEach((ent, tiers) -> tierList.put(ent, new ArrayList<>(tiers.values())));
+		} else {
+			customAddonTiers.forEach((ent, tiers) -> {
+				Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
+				if (defaultTiers.containsKey(ent))
+					uniqueIDSet.addAll(defaultTiers.get(ent).keySet());
+				List<Settings.UpgradeTier> entTier = new ArrayList<>(uniqueIDSet.size());
+				
+				uniqueIDSet.forEach(id -> entTier.add(tiers.getOrDefault(id, defaultTiers.get(ent).get(id))));
+				tierList.put(ent, entTier);
+			});
+			
+			defaultTiers.forEach((ent, tiers) -> tierList.putIfAbsent(ent, new ArrayList<>(tiers.values())));
+		}
+		
+		if (tierList.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		
+		tierList.forEach((ent, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+		
+		return tierList;
+	}
 	
 	public Map<String, List<Settings.CommandUpgradeTier>> getAllCommandUpgradeTiers(World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
@@ -243,6 +280,27 @@ public class UpgradesManager {
 		}
 		
 		List<Settings.UpgradeTier> tierList = entTierList.get(ent);
+		
+		for (int i = 0; i < tierList.size(); i++) {
+			if (limitsLevel <= tierList.get(i).getMaxLevel())
+				return tierList.get(i);
+		}
+		
+		return null;
+	}
+    
+	public Settings.UpgradeTier getEntityGroupLimitsUpgradeTier(String group, int limitsLevel, World world) {
+		Map<String, List<Settings.UpgradeTier>> entTierList = this.getAllEntityGroupLimitsUpgradeTiers(world);
+		
+		if (entTierList.isEmpty()) {
+			return null;
+		}
+		
+		if (!entTierList.containsKey(group)) {
+			return null;
+		}
+		
+		List<Settings.UpgradeTier> tierList = entTierList.get(group);
 		
 		for (int i = 0; i < tierList.size(); i++) {
 			if (limitsLevel <= tierList.get(i).getMaxLevel())
@@ -359,9 +417,32 @@ public class UpgradesManager {
 		
 		return info;
 	}
+    
+	public Map<String, Integer> getEntityGroupLimitsUpgradeInfos(String group, int limitsLevel, int islandLevel, int numberPeople, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
+		if (limitsUpgradeTier == null) {
+			return null;
+		}
+		
+		Map<String, Integer> info = new HashMap<>();
+		
+		info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+		info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
+		info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
+		
+		return info;
+	}
 	
 	public int getEntityLimitsPermissionLevel(EntityType ent, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return 0;
+		return limitsUpgradeTier.getPermissionLevel();
+	}
+    
+	public int getEntityGroupLimitsPermissionLevel(String group, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
 		
 		if (limitsUpgradeTier == null)
 			return 0;
@@ -375,10 +456,23 @@ public class UpgradesManager {
 			return null;
 		return limitsUpgradeTier.getTierName();
 	}
+    
+	public String getEntityGroupLimitsUpgradeTierName(String group, int limitsLevel, World world) {
+		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
+		
+		if (limitsUpgradeTier == null)
+			return null;
+		return limitsUpgradeTier.getTierName();
+	}
 	
 	public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
 		return this.addon.getSettings().getMaxEntityLimitsUpgrade(ent, name);
+	}
+    
+	public int getEntityGroupLimitsUpgradeMax(String group, World world) {
+		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+		return this.addon.getSettings().getMaxEntityGroupLimitsUpgrade(group, name);
 	}
 	
 	public Map<String, Integer> getCommandUpgradeInfos(String cmd, int cmdLevel, int islandLevel, int numberPeople, World world) {
@@ -441,6 +535,18 @@ public class UpgradesManager {
 		IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
 		if (ibc != null) ibc.getEntityLimits().forEach(entityLimits::put);
 		return entityLimits;
+	}
+    
+	public Map<String, Integer> getEntityGroupLimits(Island island) {
+		if (!this.addon.isLimitsProvided())
+			return Collections.emptyMap();
+		
+		Map<String, Integer> entityGroupLimits = new HashMap<>(this.addon.getLimitsAddon().getSettings().getGroupLimits().values()
+                .stream().flatMap(e -> e.stream()).distinct()
+                .collect(Collectors.toMap(e -> e.getName(), e -> e.getLimit())));
+		IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
+		if (ibc != null) ibc.getEntityGroupLimits().forEach(entityGroupLimits::put);
+		return entityGroupLimits;
 	}
 	
 	private UpgradesAddon addon;
