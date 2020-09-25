@@ -3,6 +3,7 @@ package world.bentobox.upgrades.command;
 import java.util.List;
 
 import world.bentobox.bentobox.api.commands.CompositeCommand;
+import world.bentobox.bentobox.api.localization.TextVariables;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
@@ -33,6 +34,13 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 		
 		if (!island.onIsland(user.getLocation())) {
 			user.sendMessage("upgrades.error.notonisland");
+			return false;
+		}
+		
+		if (!island.isAllowed(user, UpgradesAddon.UPGRADES_RANK_RIGHT)) {
+			user.sendMessage("general.errors.insufficient-rank",
+				TextVariables.RANK,
+				user.getTranslation(this.addon.getPlugin().getRanksManager().getRank(island.getRank(user))));
 			return false;
 		}
 		

@@ -8,12 +8,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.bukkit.Material;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import world.bentobox.bentobox.api.addons.Addon;
+import world.bentobox.bentobox.api.flags.Flag;
+import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.hooks.VaultHook;
+import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.config.Settings;
@@ -51,6 +55,8 @@ public class UpgradesAddon extends Addon {
 				if (g.getPlayerCommand().isPresent()) {
 					
 					new PlayerUpgradeCommand(this, g.getPlayerCommand().get());
+					
+					UpgradesAddon.UPGRADES_RANK_RIGHT.addGameModeAddon(g);
 					
 					this.hooked = true;
 					hookedGameModes.add(g.getDescription().getName());
@@ -103,6 +109,8 @@ public class UpgradesAddon extends Addon {
 			
 			if (this.isLimitsProvided())
 				this.registerListener(new JoinPermCheckListener());
+			
+			getPlugin().getFlagsManager().registerFlag(UpgradesAddon.UPGRADES_RANK_RIGHT);
 			
 			this.log("Upgrades addon enabled");
 		} else {
@@ -212,5 +220,13 @@ public class UpgradesAddon extends Addon {
 	private Limits limitsAddon;
 	
 	private VaultHook vault;
+	
+	public final static Flag UPGRADES_RANK_RIGHT =
+			new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
+				.type(Flag.Type.PROTECTION)
+				.mode(Flag.Mode.BASIC)
+				.clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
+				.defaultRank(RanksManager.MEMBER_RANK)
+				.build();
 	
 }
