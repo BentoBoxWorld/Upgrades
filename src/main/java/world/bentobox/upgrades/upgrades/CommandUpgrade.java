@@ -103,7 +103,7 @@ public class CommandUpgrade extends Upgrade {
 		if (!super.doUpgrade(user, island))
 			return false;
 		
-		List<String> commands = upgradeAddon.getUpgradesManager().getCommandList(this.cmdId, upgradeLevel, island.getWorld(), user.getName());
+		List<String> commands = upgradeAddon.getUpgradesManager().getCommandList(this.cmdId, upgradeLevel, island, user.getName());
 		Boolean isConsole = upgradeAddon.getUpgradesManager().isCommantConsole(this.cmdId, upgradeLevel, island.getWorld());
 		
 		commands.forEach(cmd -> {

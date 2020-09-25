@@ -74,6 +74,7 @@ entity-limits-upgrade:
 # For the command section:
 #     [player] : is the name of the player
 #     [level] : is the level of the upgrade
+#     [owner] : is the name of the island's owner
 # Permission upgrade name: command-[NAME]       -> In lower case + NAME != name:
 command-upgrade:
   lambda-upgrade:

@@ -417,12 +417,12 @@ public class UpgradesManager {
 		return this.addon.getSettings().getMaxCommandUpgrade(cmd, name);
 	}
 	
-	public List<String> getCommandList(String cmd, int cmdLevel, World world, String playerName) {
-		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
+	public List<String> getCommandList(String cmd, int cmdLevel, Island island, String playerName) {
+		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, island.getWorld());
 		
 		if (cmdUpgradeTier == null)
 			return Collections.emptyList();
-		return cmdUpgradeTier.getCommandList(playerName, cmdLevel);
+		return cmdUpgradeTier.getCommandList(playerName, island, cmdLevel);
 	}
 	
 	public Boolean isCommantConsole(String cmd, int cmdLevel, World world) {

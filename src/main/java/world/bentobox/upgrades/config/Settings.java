@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.eclipse.jdt.annotation.NonNull;
 
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 
 public class Settings {
@@ -646,12 +647,14 @@ public class Settings {
 			this.commandList = commandsList;
 		}
 		
-		public List<String> getCommandList(String playerName, int level) {
+		public List<String> getCommandList(String playerName, Island island, int level) {
 			List<String> formatedList = new ArrayList<String>(this.commandList.size());
+			String owner = island.getPlugin().getPlayers().getName(island.getOwner());
 			
 			this.commandList.forEach(cmd -> {
 				String fcmd = cmd.replace("[player]", playerName)
-						.replace("[level]", Integer.toString(level));
+						.replace("[level]", Integer.toString(level))
+						.replace("[owner]", owner);
 				formatedList.add(fcmd);
 			});
 			return formatedList;
