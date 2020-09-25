@@ -20,3 +20,9 @@ upgrades:
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
     increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
     costwithdraw: "&c Couldn't withdraw money. You should talk about this to an administrator"
+
+protection:
+  flags:
+    UPGRADES_RANK_RIGHT:
+      name: "Upgrade Rank"
+      description: "Switch who can upgrade"
