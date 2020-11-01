@@ -31,9 +31,8 @@ public class CommandUpgrade extends Upgrade {
 		
 		Map<String, Integer> upgradeInfos = upgradesAddon.getUpgradesManager().getCommandUpgradeInfos(this.cmdId, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
-		
-		String description = upgradesAddon.getUpgradesManager().getCommandUpgradeTierName(this.cmdId, upgradeLevel, island.getWorld()) + " (" + upgradeLevel + "/" +
-				upgradesAddon.getUpgradesManager().getCommandUpgradeMax(this.cmdId, island.getWorld()) + ")";
+
+		String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel", "[name]",  upgradesAddon.getUpgradesManager().getCommandUpgradeTierName(this.cmdId, upgradeLevel, island.getWorld()), "[current]", Integer.toString(upgradeLevel), "[max]", Integer.toString(upgradesAddon.getUpgradesManager().getCommandUpgradeMax(this.cmdId, island.getWorld())));
 		
 		this.setOwnDescription(user, description);
 		
