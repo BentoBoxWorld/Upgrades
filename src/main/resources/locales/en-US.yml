@@ -15,6 +15,7 @@ upgrades:
       islandneed: "Island Min Level: [islandlevel]"
       moneycost: "Money cost: [cost]"
       tryreloadlevel: "Don't forget to update your island level with the level command"
+      tiernameandlevel: "&e&o&l[tier]&e &7(&a[currentlevel] &7/ &2[maxlevel]&7)" 
   error:
     notonisland: "&c You need to be on your island to do that"
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
