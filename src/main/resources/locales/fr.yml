@@ -16,6 +16,7 @@ upgrades:
       islandneed: 'Niveau minimum de l''''ile: [islandlevel]'
       moneycost: 'Coût: [cost]'
       tryreloadlevel: N'oublie pas de mettre à jour le niveau de ton île
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
   error:
     notonisland: "&c Tu dois etre sur ton ile pour faire ça"
     rangeovermax: "&c Tu as essayé d'améliorer ton île au dessus du maximum? Contacte
