@@ -1,8 +1,3 @@
-protection: 
-  flags: 
-    UPGRADES_RANK_RIGHT: 
-      description: "Switch who can upgrade"
-      name: "Upgrade Rank"
 upgrades: 
   commands: 
     main: 
@@ -26,3 +21,8 @@ upgrades:
       tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
       title: "Island upgrade shop"
       tryreloadlevel: "Don't forget to update your island level with the level command"
+protection: 
+  flags: 
+    UPGRADES_RANK_RIGHT: 
+      description: "Switch who can upgrade"
+      name: "Upgrade Rank"
