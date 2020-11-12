@@ -264,7 +264,6 @@ public class UpgradesManager {
 			if (limitsLevel <= tierList.get(i).getMaxLevel())
 				return tierList.get(i);
 		}
-		
 		return null;
 	}
 	

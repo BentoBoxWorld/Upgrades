@@ -260,16 +260,17 @@ public class Settings {
 						CommandUpgradeTier newUpgrade = addCommandUpgradeSection(cmdSection, key);
 						
 						if (gamemode == null) {
-							if (this.maxCommandUpgrade.get(key) == null || this.maxCommandUpgrade.get(key) < newUpgrade.getMaxLevel())
-								this.maxCommandUpgrade.put(key, newUpgrade.getMaxLevel());
+							if (this.maxCommandUpgrade.get(name) == null || this.maxCommandUpgrade.get(name) < newUpgrade.getMaxLevel()) {
+								this.maxCommandUpgrade.put(name, newUpgrade.getMaxLevel());
+							}
 						} else {
 							if (this.customMaxCommandUpgrade.get(gamemode) == null) {
 								Map<String, Integer> newMap = new HashMap<>();
-								newMap.put(key, newUpgrade.getMaxLevel());
+								newMap.put(name, newUpgrade.getMaxLevel());
 								this.customMaxCommandUpgrade.put(gamemode, newMap);
 							} else {
-								if (this.customMaxCommandUpgrade.get(gamemode).get(key) == null || this.customMaxCommandUpgrade.get(gamemode).get(key) < newUpgrade.getMaxLevel())
-									this.customMaxCommandUpgrade.get(gamemode).put(key, newUpgrade.getMaxLevel());
+								if (this.customMaxCommandUpgrade.get(gamemode).get(name) == null || this.customMaxCommandUpgrade.get(gamemode).get(name) < newUpgrade.getMaxLevel())
+									this.customMaxCommandUpgrade.get(gamemode).put(name, newUpgrade.getMaxLevel());
 							}
 						}
 						
