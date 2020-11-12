@@ -1,4 +1,3 @@
----
 upgrades:
   commands:
     main:
@@ -16,6 +15,7 @@ upgrades:
       islandneed: 島の最小レベル：[islandlevel]
       moneycost: 費用：[cost]
       tryreloadlevel: levelコマンドで島のレベルを更新することを忘れないでください
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
   error:
     notonisland: "＆cあなたはそれをするためにあなたの島にいる必要があります"
     rangeovermax: "＆c島の範囲を最大値以上にアップグレードしようとしましたか？これについて管理者に相談する必要があります"
