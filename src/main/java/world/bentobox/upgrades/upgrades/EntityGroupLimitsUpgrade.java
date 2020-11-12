@@ -37,8 +37,10 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
         UpgradeValues upgrade;
 
         // Get new description
-		String description = upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()) + " (" + upgradeLevel + "/" +
-							upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld()) + ")";
+        String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+        		"[name]", upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()),
+        		"[current]", Integer.toString(upgradeLevel),
+        		"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld())));
         // Set new description
         this.setOwnDescription(user, description);
 
