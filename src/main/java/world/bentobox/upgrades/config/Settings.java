@@ -62,9 +62,26 @@ public class Settings {
 			}
 		}
 		
+		if (this.addon.getConfig().isSet("entity-group-icon")) {
+			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-group-icon");
+			for (String group : Objects.requireNonNull(section).getKeys(false)) {
+				String material = section.getString(group);
+				Material mat = Material.getMaterial(material);
+				if (mat == null)
+					this.addon.logError("Config: Material " + material + " is not a valid material");
+				else
+					this.entityGroupIcon.put(group, mat);
+			}
+		}
+		
 		if (this.addon.getConfig().isSet("entity-limits-upgrade")) {
 			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-limits-upgrade");
 			this.entityLimitsUpgradeTierMap = this.loadEntityLimits(section, null);
+		}
+		
+        if (this.addon.getConfig().isSet("entity-group-limits-upgrade")) {
+			ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-group-limits-upgrade");
+			this.entityGroupLimitsUpgradeTierMap = this.loadEntityGroupLimits(section, null);
 		}
 		
 		if (this.addon.getConfig().isSet("command-icon")) {
@@ -112,6 +129,11 @@ public class Settings {
 				if (gameModeSection.isSet("entity-limits-upgrade")) {
 					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("entity-limits-upgrade");
 					this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadEntityLimits(lowSection, gameMode));
+				}
+				
+				if (gameModeSection.isSet("entity-group-limits-upgrade")) {
+					ConfigurationSection lowSection = gameModeSection.getConfigurationSection("entity-group-limits-upgrade");
+					this.customEntityGroupLimitsUpgradeTierMap.computeIfAbsent(gameMode, k -> loadEntityGroupLimits(lowSection, gameMode));
 				}
 				
 				if (gameModeSection.isSet("command-upgrade")) {
@@ -190,6 +212,35 @@ public class Settings {
 				else
 					this.addon.logError("Entity " + entity+ " is missing a corresponding icon. Skipping...");
 			}
+		}
+		return ents;
+	}
+	
+	private Map<String, Map<String, UpgradeTier>> loadEntityGroupLimits(ConfigurationSection section, String gameMode) {
+		Map<String, Map<String, UpgradeTier>> ents = new HashMap<>();
+		for (String entitygroup : Objects.requireNonNull(section).getKeys(false)) {
+            Map<String, UpgradeTier> tier = new HashMap<>();
+            ConfigurationSection entSection = section.getConfigurationSection(entitygroup);
+            for (String key : Objects.requireNonNull(entSection).getKeys(false)) {
+                UpgradeTier newUpgrade = addUpgradeSection(entSection, key);
+
+                if (gameMode == null) {
+                    if (this.maxEntityGroupLimitsUpgrade.get(entitygroup) == null || this.maxEntityGroupLimitsUpgrade.get(entitygroup) < newUpgrade.getMaxLevel())
+                        this.maxEntityGroupLimitsUpgrade.put(entitygroup, newUpgrade.getMaxLevel());
+                } else {
+                    if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode) == null) {
+                        Map<String, Integer> newMap = new HashMap<>();
+                        newMap.put(entitygroup, newUpgrade.getMaxLevel());
+                        this.customMaxEntityGroupLimitsUpgrade.put(gameMode, newMap);
+                    } else {
+                        if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) == null || this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) < newUpgrade.getMaxLevel())
+                            this.customMaxEntityGroupLimitsUpgrade.get(gameMode).put(entitygroup, newUpgrade.getMaxLevel());
+                    }
+                }
+
+                tier.put(key, newUpgrade);
+            }
+            ents.put(entitygroup, tier);
 		}
 		return ents;
 	}
@@ -354,12 +405,24 @@ public class Settings {
 		return this.entityIcon.getOrDefault(entity, null);
 	}
 	
+	public Material getEntityGroupIcon(String group) {
+		return this.entityGroupIcon.getOrDefault(group, null);
+	}
+	
 	public int getMaxEntityLimitsUpgrade(EntityType entity, String addon) {
 		return this.customMaxEntityLimitsUpgrade.getOrDefault(addon, this.maxEntityLimitsUpgrade).getOrDefault(entity, 0);
 	}
 	
+	public int getMaxEntityGroupLimitsUpgrade(String group, String addon) {
+		return this.customMaxEntityGroupLimitsUpgrade.getOrDefault(addon, this.maxEntityGroupLimitsUpgrade).getOrDefault(group, 0);
+	}
+	
 	public Map<EntityType, Map<String, UpgradeTier>> getDefaultEntityLimitsUpgradeTierMap() {
 		return this.entityLimitsUpgradeTierMap;
+	}
+	
+	public Map<String, Map<String, UpgradeTier>> getDefaultEntityGroupLimitsUpgradeTierMap() {
+		return this.entityGroupLimitsUpgradeTierMap;
 	}
 	
 	/**
@@ -367,6 +430,10 @@ public class Settings {
 	 */
 	public Map<EntityType, Map<String, UpgradeTier>> getAddonEntityLimitsUpgradeTierMap(String addon) {
 		return this.customEntityLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+	}
+	
+	public Map<String, Map<String, UpgradeTier>> getAddonEntityGroupLimitsUpgradeTierMap(String addon) {
+		return this.customEntityGroupLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
 	}
 	
 	public Set<EntityType> getEntityLimitsUpgrade() {
@@ -378,6 +445,17 @@ public class Settings {
 		entity.addAll(this.entityLimitsUpgradeTierMap.keySet());
 		
 		return entity;
+	}
+	
+	public Set<String> getEntityGroupLimitsUpgrade() {
+		Set<String> groups = new HashSet<>();
+		
+		this.customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+			groups.addAll(addonUpgrade.keySet());
+		});
+		groups.addAll(this.entityGroupLimitsUpgradeTierMap.keySet());
+		
+		return groups;
 	}
 	
 	private EntityType getEntityType(String key) {
@@ -442,13 +520,23 @@ public class Settings {
 	
 	private Map<EntityType, Material> entityIcon = new EnumMap<>(EntityType.class); 
 	
+	private Map<String, Material> entityGroupIcon = new HashMap<>(); 
+	
 	private Map<EntityType, Integer> maxEntityLimitsUpgrade = new EnumMap<>(EntityType.class);
+	
+	private Map<String, Integer> maxEntityGroupLimitsUpgrade = new HashMap<>();
 	
 	private Map<String, Map<EntityType, Integer>> customMaxEntityLimitsUpgrade = new HashMap<>();
 	
+	private Map<String, Map<String, Integer>> customMaxEntityGroupLimitsUpgrade = new HashMap<>();
+	
 	private Map<EntityType, Map<String, UpgradeTier>> entityLimitsUpgradeTierMap = new EnumMap<>(EntityType.class);
 	
+	private Map<String, Map<String, UpgradeTier>> entityGroupLimitsUpgradeTierMap = new HashMap<>();
+	
 	private Map<String, Map<EntityType, Map<String, UpgradeTier>>> customEntityLimitsUpgradeTierMap = new HashMap<>();
+	
+	private Map<String, Map<String, Map<String, UpgradeTier>>> customEntityGroupLimitsUpgradeTierMap = new HashMap<>();
 	
 	private Map<String, Integer> maxCommandUpgrade = new HashMap<>();
 	
