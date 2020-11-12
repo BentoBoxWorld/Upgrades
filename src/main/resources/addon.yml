@@ -1,6 +1,7 @@
 name: Upgrades
 main: world.bentobox.upgrades.UpgradesAddon
 version: ${version}${build.number}
+api-version: '1.14'
 repository: "BentoBoxWorld/Upgrades"
 metrics: true
 icon: GOLD_INGOT
