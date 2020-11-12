@@ -32,14 +32,18 @@ public class CommandUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = upgradesAddon.getUpgradesManager().getCommandUpgradeInfos(this.cmdId, upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 
-		String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel", "[name]",  upgradesAddon.getUpgradesManager().getCommandUpgradeTierName(this.cmdId, upgradeLevel, island.getWorld()), "[current]", Integer.toString(upgradeLevel), "[max]", Integer.toString(upgradesAddon.getUpgradesManager().getCommandUpgradeMax(this.cmdId, island.getWorld())));
-		
-		this.setOwnDescription(user, description);
-		
-		if (upgradeInfos == null)
+		if (upgradeInfos == null) {
 			upgrade = null;
-		else
+		} else {
+			String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+					"[name]",  upgradesAddon.getUpgradesManager().getCommandUpgradeTierName(this.cmdId, upgradeLevel, island.getWorld()),
+					"[current]", Integer.toString(upgradeLevel),
+					"[max]", Integer.toString(upgradesAddon.getUpgradesManager().getCommandUpgradeMax(this.cmdId, island.getWorld())));
+			
+			this.setOwnDescription(user, description);
+		
 			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+		}
 		
 		this.setUpgradeValues(user, upgrade);
 	}

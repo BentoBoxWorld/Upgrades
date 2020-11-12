@@ -34,17 +34,21 @@ public class BlockLimitsUpgrade extends Upgrade {
 				upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
 
-		// Get new description
-		String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel", "[name]", upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeTierName(this.block, upgradeLevel,
-				island.getWorld()), "[current]", Integer.toString(upgradeLevel), "[max]", Integer.toString(upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeMax(this.block, island.getWorld())));
-		// Set new description
-		this.setOwnDescription(user, description);
-
-		if (upgradeInfos == null)
+		if (upgradeInfos == null) {
 			upgrade = null;
-		else
+		} else {
+			// Get new description
+			String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+					"[name]", upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeTierName(this.block, upgradeLevel, island.getWorld()),
+					"[current]", Integer.toString(upgradeLevel),
+					"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getBlockLimitsUpgradeMax(this.block, island.getWorld())));
+			
+			// Set new description
+			this.setOwnDescription(user, description);
+						
 			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"),
 					upgradeInfos.get("upgrade"));
+		}
 
 		this.setUpgradeValues(user, upgrade);
 

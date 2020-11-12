@@ -46,18 +46,22 @@ public class RangeUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel,
 				islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
-		// Get new description
-		String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel", "[name]",  islandAddon.getUpgradesManager().getRangeUpgradeTierName(upgradeLevel, island.getWorld()), "[current]", Integer.toString(upgradeLevel), "[max]", Integer.toString(islandAddon.getUpgradesManager().getRangeUpgradeMax(island.getWorld())));
-		// Set new description
-		this.setOwnDescription(user, description);
-
+		
 		// If null -> no next upgrades
-		if (upgradeInfos == null)
+		if (upgradeInfos == null) {
 			upgrade = null;
-		else
-			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"),
-					upgradeInfos.get("upgrade"));
+		} else {
+			// Get new description
+			String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+					"[name]",  islandAddon.getUpgradesManager().getRangeUpgradeTierName(upgradeLevel, island.getWorld()),
+					"[current]", Integer.toString(upgradeLevel),
+					"[max]", Integer.toString(islandAddon.getUpgradesManager().getRangeUpgradeMax(island.getWorld())));
+			
+			// Set new description
+			this.setOwnDescription(user, description);
 
+			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+		}
 		// Update the upgrade values
 		this.setUpgradeValues(user, upgrade);
 

@@ -38,18 +38,22 @@ public class EntityLimitsUpgrade extends Upgrade {
 		Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeInfos(this.entity,
 				upgradeLevel, islandLevel, numberPeople, island.getWorld());
 		UpgradeValues upgrade;
-		// Get new description
-		String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel", "[name]", upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeTierName(this.entity, upgradeLevel,
-				island.getWorld()), "[current]", Integer.toString(upgradeLevel), "[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeMax(this.entity, island.getWorld())));
-		// Set new description
-		this.setOwnDescription(user, description);
-
-		if (upgradeInfos == null)
+		
+		if (upgradeInfos == null) {
 			upgrade = null;
-		else
-			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"),
-					upgradeInfos.get("upgrade"));
+		} else {
+			// Get new description
+			String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+					"[name]", upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeTierName(this.entity, upgradeLevel, island.getWorld()),
+					"[current]", Integer.toString(upgradeLevel),
+					"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityLimitsUpgradeMax(this.entity, island.getWorld())));
+			
+			// Set new description
+			this.setOwnDescription(user, description);
 
+			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+		}
+		
 		this.setUpgradeValues(user, upgrade);
 
 		String newDisplayName;

@@ -36,19 +36,21 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
         Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeInfos(this.group, upgradeLevel, islandLevel, numberPeople, island.getWorld());
         UpgradeValues upgrade;
 
-        // Get new description
-        String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
-        		"[name]", upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()),
-        		"[current]", Integer.toString(upgradeLevel),
-        		"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld())));
-        // Set new description
-        this.setOwnDescription(user, description);
+        if (upgradeInfos == null) {
+	        upgrade = null;
+    	} else {
+    		// Get new description
+	        String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+	        		"[name]", upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()),
+	        		"[current]", Integer.toString(upgradeLevel),
+	        		"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld())));
+	        
+	        // Set new description
+	        this.setOwnDescription(user, description);
 
-        if (upgradeInfos == null)
-            upgrade = null;
-        else
             upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
-
+    	}
+        
         this.setUpgradeValues(user, upgrade);
 
         String newDisplayName;
