@@ -260,17 +260,17 @@ public class Settings {
 						CommandUpgradeTier newUpgrade = addCommandUpgradeSection(cmdSection, key);
 						
 						if (gamemode == null) {
-							if (this.maxCommandUpgrade.get(name) == null || this.maxCommandUpgrade.get(name) < newUpgrade.getMaxLevel()) {
-								this.maxCommandUpgrade.put(name, newUpgrade.getMaxLevel());
+							if (this.maxCommandUpgrade.get(commandId) == null || this.maxCommandUpgrade.get(commandId) < newUpgrade.getMaxLevel()) {
+								this.maxCommandUpgrade.put(commandId, newUpgrade.getMaxLevel());
 							}
 						} else {
 							if (this.customMaxCommandUpgrade.get(gamemode) == null) {
 								Map<String, Integer> newMap = new HashMap<>();
-								newMap.put(name, newUpgrade.getMaxLevel());
+								newMap.put(commandId, newUpgrade.getMaxLevel());
 								this.customMaxCommandUpgrade.put(gamemode, newMap);
 							} else {
-								if (this.customMaxCommandUpgrade.get(gamemode).get(name) == null || this.customMaxCommandUpgrade.get(gamemode).get(name) < newUpgrade.getMaxLevel())
-									this.customMaxCommandUpgrade.get(gamemode).put(name, newUpgrade.getMaxLevel());
+								if (this.customMaxCommandUpgrade.get(gamemode).get(commandId) == null || this.customMaxCommandUpgrade.get(gamemode).get(commandId) < newUpgrade.getMaxLevel())
+									this.customMaxCommandUpgrade.get(gamemode).put(commandId, newUpgrade.getMaxLevel());
 							}
 						}
 						
@@ -464,7 +464,12 @@ public class Settings {
     }
 	
 	public int getMaxCommandUpgrade(String commandUpgrade, String addon) {
-		return this.customMaxCommandUpgrade.getOrDefault(addon, this.maxCommandUpgrade).getOrDefault(commandUpgrade, 0);
+		if (this.customMaxCommandUpgrade.containsKey(addon)) {
+			if (this.customMaxCommandUpgrade.get(addon).containsKey(commandUpgrade)) {
+				return this.customMaxCommandUpgrade.get(addon).get(commandUpgrade);
+			}
+		}
+		return this.maxCommandUpgrade.getOrDefault(commandUpgrade, 0);
 	}
 	
 	public Map<String, Map<String, CommandUpgradeTier>> getDefaultCommandUpgradeTierMap() {
