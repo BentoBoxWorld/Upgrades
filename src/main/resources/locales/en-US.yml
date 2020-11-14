@@ -1,13 +1,16 @@
 upgrades: 
   commands: 
-    main: 
+    main:
+      parameters: ""
       description: "Open the upgrade shop interface"
+    admin:
+      description: "Open the admin interface for upgrade"
   error: 
     costwithdraw: "&c Couldn't withdraw money. You should talk about this to an administrator"
     increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
     notonisland: "&c You need to be on your island to do that"
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
-  ui: 
+  ui:
     upgradepanel: 
       islandneed: "Island Min Level: [islandlevel]"
       limitsupgrade: "[block] limits upgrade of [level]"
@@ -21,6 +24,12 @@ upgrades:
       tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
       title: "Island upgrade shop"
       tryreloadlevel: "Don't forget to update your island level with the level command"
+    buttons:
+      return: "Return"
+      exit: "Exit"
+      addupgrade: "Add upgrade"
+    titles:
+      adminupgrade: "Admin upgrade"
 protection: 
   flags: 
     UPGRADES_RANK_RIGHT: 

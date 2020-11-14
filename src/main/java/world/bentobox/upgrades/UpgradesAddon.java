@@ -20,6 +20,7 @@ import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
+import world.bentobox.upgrades.command.admin.AdminCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
@@ -61,6 +62,10 @@ public class UpgradesAddon extends Addon {
 					
 					this.hooked = true;
 					hookedGameModes.add(g.getDescription().getName());
+				}
+				if (g.getAdminCommand().isPresent()) {
+					
+					new AdminCommand(this, g.getAdminCommand().get(), g);
 				}
 			});
 		
