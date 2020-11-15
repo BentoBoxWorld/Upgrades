@@ -110,7 +110,7 @@ public class UpgradesAddon extends Addon {
 			this.registerListener(new IslandChangeListener(this));
 			
 			if (this.isLimitsProvided())
-				this.registerListener(new JoinPermCheckListener());
+				this.registerListener(new JoinPermCheckListener(this));
 			
 			getPlugin().getFlagsManager().registerFlag(UpgradesAddon.UPGRADES_RANK_RIGHT);
 			
