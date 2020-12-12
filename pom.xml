@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>world.bentobox</groupId>
@@ -59,12 +59,16 @@
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
+        <!-- SonarCloud Analysis -->
+        <sonar.projectKey>BentoBoxWorld_Upgrades</sonar.projectKey>
+        <sonar.organization>bentobox-world</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <profiles>
         <profile>
             <!-- ci profile is activated if exist environment variable BUILD_NUMBER. -->
-            <!-- It replaces ${build.number} that is currently '-LOCAL' with
+            <!-- It replaces ${build.number} that is currently '-LOCAL' with 
                 correct build number from JENKINS machine. -->
             <id>ci</id>
             <activation>
@@ -78,13 +82,13 @@
             </properties>
         </profile>
         <profile>
-            <!-- Master profile is activated if exist environment variable
+            <!-- Master profile is activated if exist environment variable 
                 GIT_BRANCH and its value is origin/master. -->
-            <!-- It will replace 'revision' with '${build.version}' so it
+            <!-- It will replace 'revision' with '${build.version}' so it 
                 removes '-SNAPSHOT' string at the end. -->
-            <!-- Also, as this is release build, build number can be set
+            <!-- Also, as this is release build, build number can be set 
                 to empty string. -->
-            <!-- This profile will be used only if exist environment variable
+            <!-- This profile will be used only if exist environment variable 
                 GIT_BRANCH with value origin/master. -->
             <id>master</id>
             <activation>
@@ -152,12 +156,12 @@
 
     <build>
         <!-- By default ${revision} is ${build.version}-SNAPSHOT -->
-        <!-- If GIT_BRANCH variable is set to origin/master, then it will
+        <!-- If GIT_BRANCH variable is set to origin/master, then it will 
             be only ${build.version}. -->
 
         <!-- By default ${build.number} is -LOCAL. -->
         <!-- If the BUILD_NUMBER variable is set, then it will be -b[number]. -->
-        <!-- If GIT_BRANCH variable is set to origin/master, then it will
+        <!-- If GIT_BRANCH variable is set to origin/master, then it will 
             be the empty string. -->
         <finalName>${project.name}-${revision}${build.number}</finalName>
         <defaultGoal>clean package</defaultGoal>
