@@ -16,160 +16,160 @@ import world.bentobox.upgrades.api.Upgrade;
 
 /**
  * Upgrade Object for range upgrade
- * 
+ *
  * @author Ikkino
  *
  */
 public class RangeUpgrade extends Upgrade {
 
-	public RangeUpgrade(UpgradesAddon addon) {
-		super(addon, "RangeUpgrade", "RangeUpgrade", Material.OAK_FENCE);
-	}
+    public RangeUpgrade(UpgradesAddon addon) {
+        super(addon, "RangeUpgrade", "RangeUpgrade", Material.OAK_FENCE);
+    }
 
-	/**
-	 * When user open the interface
-	 */
-	@Override
-	public void updateUpgradeValue(User user, Island island) {
-		// Get the addon
-		UpgradesAddon islandAddon = this.getUpgradesAddon();
-		// Get the data from IslandUpgrade
-		UpgradesData islandData = islandAddon.getUpgradesLevels(island.getUniqueId());
-		// The level of this upgrade
-		int upgradeLevel = islandData.getUpgradeLevel(getName());
-		// The number of members on the island
-		int numberPeople = island.getMemberSet().size();
-		// The level of the island from Level Addon
-		int islandLevel = islandAddon.getUpgradesManager().getIslandLevel(island);
+    /**
+     * When user open the interface
+     */
+    @Override
+    public void updateUpgradeValue(User user, Island island) {
+        // Get the addon
+        UpgradesAddon islandAddon = this.getUpgradesAddon();
+        // Get the data from IslandUpgrade
+        UpgradesData islandData = islandAddon.getUpgradesLevels(island.getUniqueId());
+        // The level of this upgrade
+        int upgradeLevel = islandData.getUpgradeLevel(getName());
+        // The number of members on the island
+        int numberPeople = island.getMemberSet().size();
+        // The level of the island from Level Addon
+        int islandLevel = islandAddon.getUpgradesManager().getIslandLevel(island);
 
-		// Get upgrades infos of range upgrade from settings
-		Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel,
-				islandLevel, numberPeople, island.getWorld());
-		UpgradeValues upgrade;
-		
-		// If null -> no next upgrades
-		if (upgradeInfos == null) {
-			upgrade = null;
-		} else {
-			// Get new description
-			String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
-					"[name]",  islandAddon.getUpgradesManager().getRangeUpgradeTierName(upgradeLevel, island.getWorld()),
-					"[current]", Integer.toString(upgradeLevel),
-					"[max]", Integer.toString(islandAddon.getUpgradesManager().getRangeUpgradeMax(island.getWorld())));
-			
-			// Set new description
-			this.setOwnDescription(user, description);
+        // Get upgrades infos of range upgrade from settings
+        Map<String, Integer> upgradeInfos = islandAddon.getUpgradesManager().getRangeUpgradeInfos(upgradeLevel,
+                islandLevel, numberPeople, island.getWorld());
+        UpgradeValues upgrade;
 
-			upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
-		}
-		// Update the upgrade values
-		this.setUpgradeValues(user, upgrade);
+        // If null -> no next upgrades
+        if (upgradeInfos == null) {
+            upgrade = null;
+        } else {
+            // Get new description
+            String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+                    "[name]",  islandAddon.getUpgradesManager().getRangeUpgradeTierName(upgradeLevel, island.getWorld()),
+                    "[current]", Integer.toString(upgradeLevel),
+                    "[max]", Integer.toString(islandAddon.getUpgradesManager().getRangeUpgradeMax(island.getWorld())));
 
-		// Update the display name
-		String newDisplayName;
+            // Set new description
+            this.setOwnDescription(user, description);
 
-		if (upgrade == null) {
-			// No next upgrade -> lang message
-			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.norangeupgrade");
-		} else {
-			// get lang message
-			newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.rangeupgrade", "[rangelevel]",
-					Integer.toString(upgrade.getUpgradeValue()));
-		}
+            upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
+        }
+        // Update the upgrade values
+        this.setUpgradeValues(user, upgrade);
 
-		this.setDisplayName(newDisplayName);
-	}
+        // Update the display name
+        String newDisplayName;
 
-	@Override
-	public boolean isShowed(User user, Island island) {
-		// Get the addon
-		UpgradesAddon upgradesAddon = this.getUpgradesAddon();
-		// Get the data from upgrades
-		UpgradesData islandData = upgradesAddon.getUpgradesLevels(island.getUniqueId());
-		// Get level of the upgrade
-		int upgradeLevel = islandData.getUpgradeLevel(this.getName());
-		// Permission level required
-		int permissionLevel = upgradesAddon.getUpgradesManager().getRangePermissionLevel(upgradeLevel,
-				island.getWorld());
+        if (upgrade == null) {
+            // No next upgrade -> lang message
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.norangeupgrade");
+        } else {
+            // get lang message
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.rangeupgrade", "[rangelevel]",
+                    Integer.toString(upgrade.getUpgradeValue()));
+        }
 
-		// If default permission, then true
-		if (permissionLevel == 0)
-			return true;
+        this.setDisplayName(newDisplayName);
+    }
 
-		Player player = user.getPlayer();
-		String gamemode = island.getGameMode();
-		String permissionStart = gamemode + ".upgrades." + this.getName() + ".";
-		permissionStart = permissionStart.toLowerCase();
+    @Override
+    public boolean isShowed(User user, Island island) {
+        // Get the addon
+        UpgradesAddon upgradesAddon = this.getUpgradesAddon();
+        // Get the data from upgrades
+        UpgradesData islandData = upgradesAddon.getUpgradesLevels(island.getUniqueId());
+        // Get level of the upgrade
+        int upgradeLevel = islandData.getUpgradeLevel(this.getName());
+        // Permission level required
+        int permissionLevel = upgradesAddon.getUpgradesManager().getRangePermissionLevel(upgradeLevel,
+                island.getWorld());
 
-		// For each permission of the player
-		for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
+        // If default permission, then true
+        if (permissionLevel == 0)
+            return true;
 
-			// If permission is the one we search
-			if (!perms.getValue() || !perms.getPermission().startsWith(permissionStart))
-				continue;
+        Player player = user.getPlayer();
+        String gamemode = island.getGameMode();
+        String permissionStart = gamemode + ".upgrades." + this.getName() + ".";
+        permissionStart = permissionStart.toLowerCase();
 
-			if (perms.getPermission().contains(permissionStart + "*")) {
-				this.logError(player.getName(), perms.getPermission(), "Wildcards are not allowed.");
-				return false;
-			}
+        // For each permission of the player
+        for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
 
-			String[] split = perms.getPermission().split("\\.");
-			if (split.length != 4) {
-				logError(player.getName(), perms.getPermission(), "format must be '" + permissionStart + "LEVEL'");
-				return false;
-			}
+            // If permission is the one we search
+            if (!perms.getValue() || !perms.getPermission().startsWith(permissionStart))
+                continue;
 
-			if (!NumberUtils.isDigits(split[3])) {
-				logError(player.getName(), perms.getPermission(), "The last part must be a number");
-				return false;
-			}
+            if (perms.getPermission().contains(permissionStart + "*")) {
+                this.logError(player.getName(), perms.getPermission(), "Wildcards are not allowed.");
+                return false;
+            }
 
-			if (permissionLevel <= Integer.parseInt(split[3]))
-				return true;
-		}
+            String[] split = perms.getPermission().split("\\.");
+            if (split.length != 4) {
+                logError(player.getName(), perms.getPermission(), "format must be '" + permissionStart + "LEVEL'");
+                return false;
+            }
 
-		return false;
-	}
+            if (!NumberUtils.isDigits(split[3])) {
+                logError(player.getName(), perms.getPermission(), "The last part must be a number");
+                return false;
+            }
 
-	private void logError(String name, String perm, String error) {
-		this.getUpgradesAddon()
-				.logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
-	}
+            if (permissionLevel <= Integer.parseInt(split[3]))
+                return true;
+        }
 
-	/**
-	 * When user do upgrade
-	 */
-	@Override
-	public boolean doUpgrade(User user, Island island) {
-		// Get the new range
-		long newRange = island.getProtectionRange() + this.getUpgradeValues(user).getUpgradeValue();
+        return false;
+    }
 
-		// If newRange is more than the authorized range (Config problem)
-		if (newRange > island.getRange()) {
-			this.getUpgradesAddon().logWarning(
-					"User tried to upgrade their island range over the max. This is probably a configuration problem.");
-			user.sendMessage("upgrades.error.rangeovermax");
-			return false;
-		}
+    private void logError(String name, String perm, String error) {
+        this.getUpgradesAddon()
+        .logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
+    }
 
-		// if super doUpgrade not worked
-		if (!super.doUpgrade(user, island))
-			return false;
+    /**
+     * When user do upgrade
+     */
+    @Override
+    public boolean doUpgrade(User user, Island island) {
+        // Get the new range
+        long newRange = (long)island.getProtectionRange() + this.getUpgradeValues(user).getUpgradeValue();
 
-		// Save oldRange for rangeChange event
-		int oldRange = island.getProtectionRange();
+        // If newRange is more than the authorized range (Config problem)
+        if (newRange > island.getRange()) {
+            this.getUpgradesAddon().logWarning(
+                    "User tried to upgrade their island range over the max. This is probably a configuration problem.");
+            user.sendMessage("upgrades.error.rangeovermax");
+            return false;
+        }
 
-		// Set range
-		island.setProtectionRange((int) newRange);
+        // if super doUpgrade not worked
+        if (!super.doUpgrade(user, island))
+            return false;
 
-		// Launch range change event
-		IslandEvent.builder().island(island).location(island.getCenter()).reason(IslandEvent.Reason.RANGE_CHANGE)
-				.involvedPlayer(user.getUniqueId()).admin(false).protectionRange((int) newRange, oldRange).build();
+        // Save oldRange for rangeChange event
+        int oldRange = island.getProtectionRange();
 
-		user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone", "[rangelevel]",
-				Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
+        // Set range
+        island.setProtectionRange((int) newRange);
 
-		return true;
-	}
+        // Launch range change event
+        IslandEvent.builder().island(island).location(island.getCenter()).reason(IslandEvent.Reason.RANGE_CHANGE)
+        .involvedPlayer(user.getUniqueId()).admin(false).protectionRange((int) newRange, oldRange).build();
+
+        user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone", "[rangelevel]",
+                Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
+
+        return true;
+    }
 
 }
