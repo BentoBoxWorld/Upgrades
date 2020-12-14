@@ -10,6 +10,11 @@ upgrades:
     increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
     notonisland: "&c You need to be on your island to do that"
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
+    loaderror: "&c [what] faild to load. You should look at the consol for error"
+    upgradeinvalid: "&c Upgrade [what] [upgradeId] not valid. It will be ignored"
+  message:
+    skipupgradeload: "&c Upgrade [what] [upgradeId] was already loaded"
+    upgradeload: "&a Upgrade [what] [upgradeId] was loaded"
   ui:
     upgradepanel: 
       islandneed: "Island Min Level: [islandlevel]"
