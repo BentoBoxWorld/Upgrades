@@ -8,7 +8,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 public class Panel {
 	
@@ -47,7 +47,7 @@ public class Panel {
 		pb.user(user).build();
 	}
 	
-	private List<String> getDescription(User user, Upgrade upgrade, int islandLevel) {
+	private List<String> getDescription(User user, UpgradeAPI upgrade, int islandLevel) {
 		List<String> descrip = new ArrayList<>();
 		
 		if (upgrade.getUpgradeValues(user) == null)

@@ -12,7 +12,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 /**
  * Upgrade Object for range upgrade
@@ -20,7 +20,7 @@ import world.bentobox.upgrades.api.Upgrade;
  * @author Ikkino
  *
  */
-public class RangeUpgrade extends Upgrade {
+public class RangeUpgrade extends UpgradeAPI {
 
     public RangeUpgrade(UpgradesAddon addon) {
         super(addon, "RangeUpgrade", "RangeUpgrade", Material.OAK_FENCE);

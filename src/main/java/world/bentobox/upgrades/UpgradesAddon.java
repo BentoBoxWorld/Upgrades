@@ -18,7 +18,7 @@ import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.bentobox.managers.RanksManager;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.command.admin.AdminCommand;
 import world.bentobox.upgrades.config.Settings;
@@ -202,11 +202,11 @@ public class UpgradesAddon extends Addon {
 		return this.vault != null;
 	}
 	
-	public Set<Upgrade> getAvailableUpgrades() {
+	public Set<UpgradeAPI> getAvailableUpgrades() {
 		return this.upgrade;
 	}
 	
-	public void registerUpgrade(Upgrade upgrade) {
+	public void registerUpgrade(UpgradeAPI upgrade) {
 		this.upgrade.add(upgrade);
 	}
 
@@ -216,7 +216,7 @@ public class UpgradesAddon extends Addon {
 	
 	private UpgradesManager upgradesManager;
 	
-	private Set<Upgrade> upgrade;
+	private Set<UpgradeAPI> upgrade;
 	
 	private Database<UpgradesData> database;
 	

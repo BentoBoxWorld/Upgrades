@@ -10,10 +10,10 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-public class EntityGroupLimitsUpgrade extends Upgrade {
+public class EntityGroupLimitsUpgrade extends UpgradeAPI {
 
     public EntityGroupLimitsUpgrade(UpgradesAddon addon, String group) {
         super(addon, "LimitsUpgrade-" + group, group + " limits Upgrade", addon.getSettings().getEntityGroupIcon(group));

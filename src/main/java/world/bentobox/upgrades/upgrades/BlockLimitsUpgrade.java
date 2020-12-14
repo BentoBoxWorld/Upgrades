@@ -12,10 +12,10 @@ import world.bentobox.bentobox.database.objects.Island;
 
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-public class BlockLimitsUpgrade extends Upgrade {
+public class BlockLimitsUpgrade extends UpgradeAPI {
 
 	public BlockLimitsUpgrade(UpgradesAddon addon, Material block) {
 		super(addon, "LimitsUpgrade-" + block.toString(), block.toString() + " limits Upgrade", block);

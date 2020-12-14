@@ -11,10 +11,10 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-public class CommandUpgrade extends Upgrade {
+public class CommandUpgrade extends UpgradeAPI {
 	
 	public CommandUpgrade(UpgradesAddon addon, String cmdId, Material icon) {
 		super(addon, "command-" + cmdId, addon.getSettings().getCommandName(cmdId), icon);
