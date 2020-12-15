@@ -59,7 +59,7 @@ public class BlockLimitsUpgrade extends UpgradeAPI {
         String newDisplayName;
 
         if (upgrade == null) {
-            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", "BLOCK",
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", BLOCK,
                     this.block.toString());
         } else {
             newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade", BLOCK,
