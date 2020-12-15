@@ -77,13 +77,6 @@ public class UpgradeData implements DataObject {
 	@Expose
 	private boolean active = false;
 	
-	/**
-	 * List of the tiers in this upgrade
-	 * Tiers represented by their uniqueId
-	 */
-	@Expose
-	private Set<String> tiers = new HashSet<String>();
-	
 	// ------------------------------------------------------------
 	// Section: Getters
 	// ------------------------------------------------------------
@@ -136,13 +129,6 @@ public class UpgradeData implements DataObject {
 	 */
 	public boolean isActive() {
 		return active;
-	}
-
-	/**
-	 * @return the tiers
-	 */
-	public Set<String> getTiers() {
-		return tiers;
 	}
 	
 	// ------------------------------------------------------------
@@ -198,13 +184,6 @@ public class UpgradeData implements DataObject {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	/**
-	 * @param tiers the tiers to set
-	 */
-	public void setTiers(Set<String> tiers) {
-		this.tiers = tiers;
-	}
 	
 	// ------------------------------------------------------------
 	// Section: Utils Methods
@@ -215,7 +194,6 @@ public class UpgradeData implements DataObject {
 			this.description != null &&
 			this.icon != null &&
 			this.name != null &&
-			this.tiers != null &&
 			this.world != null;
 	}
 	
