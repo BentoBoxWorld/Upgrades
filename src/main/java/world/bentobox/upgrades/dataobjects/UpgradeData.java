@@ -42,7 +42,7 @@ public class UpgradeData implements DataObject {
 	 * Can contain color Codes
 	 */
 	@Expose
-	private String name;
+	private String name = "";
 	
 	/**
 	 * Description of this upgrade
@@ -50,7 +50,7 @@ public class UpgradeData implements DataObject {
 	 * Can contain color Codes
 	 */
 	@Expose
-	private String description;
+	private String description = "";
 	
 	/**
 	 * Icon representing this upgrade

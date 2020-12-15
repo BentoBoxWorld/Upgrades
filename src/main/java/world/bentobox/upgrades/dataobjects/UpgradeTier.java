@@ -37,7 +37,7 @@ public class UpgradeTier implements DataObject {
 	 * Can contain color codes
 	 */
 	@Expose
-	private String name;
+	private String name = "";
 	
 	/**
 	 * Description of this tier
@@ -45,7 +45,7 @@ public class UpgradeTier implements DataObject {
 	 * Can contain color codes
 	 */
 	@Expose
-	private String description;
+	private String description = "";
 	
 	/**
 	 * Icon representing this tier
@@ -222,7 +222,6 @@ public class UpgradeTier implements DataObject {
 			this.upgrade != null &&
 			this.name != null &&
 			this.description != null &&
-			this.icon != null &&
 			this.prices != null &&
 			this.rewards != null;
 	}
