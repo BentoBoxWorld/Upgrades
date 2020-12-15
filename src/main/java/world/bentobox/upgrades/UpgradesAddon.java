@@ -68,6 +68,8 @@ public class UpgradesAddon extends Addon {
         if (this.hooked) {
             this.upgradesManager = new UpgradesManager(this);
             this.upgradesManager.addGameModes(hookedGameModes);
+            
+            this.upgradesDataManager = new UpgradesDataManager(this);
 
             this.upgrade = new HashSet<>();
 
@@ -115,6 +117,7 @@ public class UpgradesAddon extends Addon {
     public void onDisable() {
         if (this.upgradesCache != null)
             this.upgradesCache.values().forEach(this.database::saveObjectAsync);
+        this.upgradesDataManager.disable();
     }
 
     @Override
@@ -124,6 +127,7 @@ public class UpgradesAddon extends Addon {
         if (this.hooked) {
             this.settings = new Settings(this);
         }
+        this.upgradesDataManager.reload();
         this.log("Island upgrade addon reloaded");
     }
 
@@ -139,6 +143,10 @@ public class UpgradesAddon extends Addon {
      */
     public UpgradesManager getUpgradesManager() {
         return upgradesManager;
+    }
+    
+    public UpgradesDataManager getUpgradeDataManager() {
+    	return this.upgradesDataManager;
     }
 
     public Database<UpgradesData> getDatabase() {
@@ -201,6 +209,8 @@ public class UpgradesAddon extends Addon {
     private boolean hooked;
 
     private UpgradesManager upgradesManager;
+    
+    private UpgradesDataManager upgradesDataManager;
 
     private Set<UpgradeAPI> upgrade;
 

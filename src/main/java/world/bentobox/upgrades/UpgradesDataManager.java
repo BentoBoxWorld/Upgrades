@@ -86,6 +86,11 @@ public class UpgradesDataManager {
 		this.load();
 	}
 	
+	public void disable() {
+		this.addon.log("Saving upgrade data");
+		this.saveAll();
+	}
+	
 	/**
 	 * Check if uniqueId is in upgradeData cache
 	 * 
@@ -287,7 +292,6 @@ public class UpgradesDataManager {
 	 * Run all validate of cache
 	 */
 	private void validate() {
-		this.validateUpgradeData();
 		this.validateUpgradeTier();
 	}
 	
@@ -301,21 +305,6 @@ public class UpgradesDataManager {
 				this.addon.logWarning("Upgrade tier " + tier.getUniqueId() + " has a reference to an unknow upgrade data. It will be skiped");
 				this.upgradeTierCache.remove(tier.getUniqueId());
 			}
-		});
-	}
-	
-	/**
-	 * Check that each upgrade's tier are loaded
-	 * unload the upgrade if not
-	 */
-	private void validateUpgradeData() {
-		this.upgradeDataCache.values().forEach(upgrade -> {
-			upgrade.getTiers().forEach(tier -> {
-				if (!this.upgradeTierCache.containsKey(tier)) {
-					this.addon.logWarning("Upgrade data " + upgrade.getUniqueId() + " has a reference to an unknow upgrade tier. It will be skiped");
-					this.upgradeDataCache.remove(upgrade.getUniqueId());
-				}
-			});
 		});
 	}
 	
