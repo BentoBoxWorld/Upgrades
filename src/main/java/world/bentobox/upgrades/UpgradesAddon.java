@@ -35,205 +35,206 @@ import world.bentobox.limits.Limits;
 
 public class UpgradesAddon extends Addon {
 
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		this.saveDefaultConfig();
-		this.settings = new Settings(this);
-	}
-	
-	@Override
-	public void onEnable() {
-		if (this.getState().equals(State.DISABLED)) {
-			this.logWarning("Upgrades Addon is not available or disabled!");
-			return;
-		}
-		
-		List<String> hookedGameModes = new ArrayList<>();
-		
-		getPlugin().getAddonsManager().getGameModeAddons().stream()
-			.filter(g -> !settings.getDisabledGameModes().contains(g.getDescription().getName()))
-			.forEach(g -> {
-				if (g.getPlayerCommand().isPresent()) {
-					
-					new PlayerUpgradeCommand(this, g.getPlayerCommand().get());
-					
-					UpgradesAddon.UPGRADES_RANK_RIGHT.addGameModeAddon(g);
-					
-					this.hooked = true;
-					hookedGameModes.add(g.getDescription().getName());
-				}
-				if (g.getAdminCommand().isPresent()) {
-					
-					new AdminCommand(this, g.getAdminCommand().get(), g);
-				}
-			});
-		
-		if (this.hooked) {
-			this.upgradesManager = new UpgradesManager(this);
-			this.upgradesManager.addGameModes(hookedGameModes);
-			
-			this.upgrade = new HashSet<>();
-			
-			this.database = new Database<>(this, UpgradesData.class);
-			this.upgradesCache = new HashMap<>();
-			
-			Optional<Addon> level = this.getAddonByName("Level");
-			
-			if (!level.isPresent()) {
-				this.logWarning("Level addon not found so Upgrades won't look for Island Level");
-				this.levelAddon = null;
-			} else
-				this.levelAddon = (Level) level.get();
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        this.saveDefaultConfig();
+        this.settings = new Settings(this);
+    }
 
-			Optional<Addon> limits = this.getAddonByName("Limits");
-		
-			if (!limits.isPresent()) {
-				this.logWarning("Limits addon not found so Island Upgrade won't look for IslandLevel");
-				this.limitsAddon = null;
-			} else
-				this.limitsAddon = (Limits) limits.get();
-			
-			Optional<VaultHook> vault = this.getPlugin().getVault();
-			if (!vault.isPresent()) {
-				this.logWarning("Vault plugin not found so Upgrades won't look for money");
-				this.vault = null;
-			} else
-				this.vault = vault.get();
-			
-			if (this.isLimitsProvided()) {
-				this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
-				this.getSettings().getEntityGroupLimitsUpgrade().forEach(group -> this.registerUpgrade(new EntityGroupLimitsUpgrade(this, group)));
-				this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
-			}
-			
-			this.getSettings().getCommandUpgrade().forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings().getCommandIcon(cmd))));
-			
-			if (this.getSettings().getHasRangeUpgrade())
-				this.registerUpgrade(new RangeUpgrade(this));
-			
-			this.registerListener(new IslandChangeListener(this));
-			
-			if (this.isLimitsProvided())
-				this.registerListener(new JoinPermCheckListener(this));
-			
-			getPlugin().getFlagsManager().registerFlag(UpgradesAddon.UPGRADES_RANK_RIGHT);
-			
-			this.log("Upgrades addon enabled");
-		} else {
-			this.logError("Upgrades addon could not hook into any GameMode and therefore will not do anything");
-			this.setState(State.DISABLED);
-		}
-	}
-	
-	@Override
-	public void onDisable() {
-		if (this.upgradesCache != null)
-			this.upgradesCache.values().forEach(this.database::saveObjectAsync);
-	}
-	
-	@Override
-	public void onReload() {
-		super.onReload();
-		
-		if (this.hooked)
-			this.settings = new Settings(this);
-			this.log("Island upgrade addon reloaded");
-	}
-	
-	/**
-	 * @return the settings
-	 */
-	public Settings getSettings() {
-		return settings;
-	}
+    @Override
+    public void onEnable() {
+        if (this.getState().equals(State.DISABLED)) {
+            this.logWarning("Upgrades Addon is not available or disabled!");
+            return;
+        }
 
-	/**
-	 * @return the islandUpgradesManager
-	 */
-	public UpgradesManager getUpgradesManager() {
-		return upgradesManager;
-	}
-	
-	public Database<UpgradesData> getDatabase() {
-		return this.database;
-	}
-	
-	public UpgradesData getUpgradesLevels(@NonNull String targetIsland) {
-		UpgradesData upgradesData = this.upgradesCache.get(targetIsland);
-		if (upgradesData != null)
-			return upgradesData;
-		UpgradesData data = this.database.objectExists(targetIsland) ?
-			Optional.ofNullable(this.database.loadObject(targetIsland)).orElse(new UpgradesData(targetIsland)) :
-			new UpgradesData(targetIsland);
-		this.upgradesCache.put(targetIsland, data);
-		return data;
-	}
-	
-	public void uncacheIsland(@Nullable String targetIsland, boolean save) {
-		UpgradesData data = this.upgradesCache.remove(targetIsland);
-		if (data == null)
-			return;
-		if (save)
-			this.database.saveObjectAsync(data);
-	}
-	
-	public Level getLevelAddon() {
-		return this.levelAddon;
-	}
+        List<String> hookedGameModes = new ArrayList<>();
 
-	public Limits getLimitsAddon() {
-		return this.limitsAddon;
-	}
-	
-	public VaultHook getVaultHook() {
-		return this.vault;
-	}
-	
-	public boolean isLevelProvided() {
-		return this.levelAddon != null;
-	}
+        getPlugin().getAddonsManager().getGameModeAddons().stream()
+        .filter(g -> !settings.getDisabledGameModes().contains(g.getDescription().getName()))
+        .forEach(g -> {
+            if (g.getPlayerCommand().isPresent()) {
 
-	public boolean isLimitsProvided() {
-		return this.limitsAddon != null;
-	}
-	
-	public boolean isVaultProvided() {
-		return this.vault != null;
-	}
-	
-	public Set<UpgradeAPI> getAvailableUpgrades() {
-		return this.upgrade;
-	}
-	
-	public void registerUpgrade(UpgradeAPI upgrade) {
-		this.upgrade.add(upgrade);
-	}
+                new PlayerUpgradeCommand(this, g.getPlayerCommand().get());
 
-	private Settings settings;
-	
-	private boolean hooked;
-	
-	private UpgradesManager upgradesManager;
-	
-	private Set<UpgradeAPI> upgrade;
-	
-	private Database<UpgradesData> database;
-	
-	private Map<String, UpgradesData> upgradesCache;
-	
-	private Level levelAddon;
+                UpgradesAddon.UPGRADES_RANK_RIGHT.addGameModeAddon(g);
 
-	private Limits limitsAddon;
-	
-	private VaultHook vault;
-	
-	public final static Flag UPGRADES_RANK_RIGHT =
-			new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
-				.type(Flag.Type.PROTECTION)
-				.mode(Flag.Mode.BASIC)
-				.clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
-				.defaultRank(RanksManager.MEMBER_RANK)
-				.build();
-	
+                this.hooked = true;
+                hookedGameModes.add(g.getDescription().getName());
+            }
+            if (g.getAdminCommand().isPresent()) {
+
+                new AdminCommand(this, g.getAdminCommand().get(), g);
+            }
+        });
+
+        if (this.hooked) {
+            this.upgradesManager = new UpgradesManager(this);
+            this.upgradesManager.addGameModes(hookedGameModes);
+
+            this.upgrade = new HashSet<>();
+
+            this.database = new Database<>(this, UpgradesData.class);
+            this.upgradesCache = new HashMap<>();
+
+            Optional<Addon> level = this.getAddonByName("Level");
+
+            if (!level.isPresent()) {
+                this.logWarning("Level addon not found so Upgrades won't look for Island Level");
+                this.levelAddon = null;
+            } else
+                this.levelAddon = (Level) level.get();
+
+            Optional<Addon> limits = this.getAddonByName("Limits");
+
+            if (!limits.isPresent()) {
+                this.logWarning("Limits addon not found so Island Upgrade won't look for IslandLevel");
+                this.limitsAddon = null;
+            } else
+                this.limitsAddon = (Limits) limits.get();
+
+            Optional<VaultHook> vault = this.getPlugin().getVault();
+            if (!vault.isPresent()) {
+                this.logWarning("Vault plugin not found so Upgrades won't look for money");
+                this.vault = null;
+            } else
+                this.vault = vault.get();
+
+            if (this.isLimitsProvided()) {
+                this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
+                this.getSettings().getEntityGroupLimitsUpgrade().forEach(group -> this.registerUpgrade(new EntityGroupLimitsUpgrade(this, group)));
+                this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
+            }
+
+            this.getSettings().getCommandUpgrade().forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings().getCommandIcon(cmd))));
+
+            if (this.getSettings().getHasRangeUpgrade())
+                this.registerUpgrade(new RangeUpgrade(this));
+
+            this.registerListener(new IslandChangeListener(this));
+
+            if (this.isLimitsProvided())
+                this.registerListener(new JoinPermCheckListener(this));
+
+            getPlugin().getFlagsManager().registerFlag(UpgradesAddon.UPGRADES_RANK_RIGHT);
+
+            this.log("Upgrades addon enabled");
+        } else {
+            this.logError("Upgrades addon could not hook into any GameMode and therefore will not do anything");
+            this.setState(State.DISABLED);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        if (this.upgradesCache != null)
+            this.upgradesCache.values().forEach(this.database::saveObjectAsync);
+    }
+
+    @Override
+    public void onReload() {
+        super.onReload();
+
+        if (this.hooked) {
+            this.settings = new Settings(this);
+        }
+        this.log("Island upgrade addon reloaded");
+    }
+
+    /**
+     * @return the settings
+     */
+    public Settings getSettings() {
+        return settings;
+    }
+
+    /**
+     * @return the islandUpgradesManager
+     */
+    public UpgradesManager getUpgradesManager() {
+        return upgradesManager;
+    }
+
+    public Database<UpgradesData> getDatabase() {
+        return this.database;
+    }
+
+    public UpgradesData getUpgradesLevels(@NonNull String targetIsland) {
+        UpgradesData upgradesData = this.upgradesCache.get(targetIsland);
+        if (upgradesData != null)
+            return upgradesData;
+        UpgradesData data = this.database.objectExists(targetIsland) ?
+                Optional.ofNullable(this.database.loadObject(targetIsland)).orElse(new UpgradesData(targetIsland)) :
+                    new UpgradesData(targetIsland);
+        this.upgradesCache.put(targetIsland, data);
+        return data;
+    }
+
+    public void uncacheIsland(@Nullable String targetIsland, boolean save) {
+        UpgradesData data = this.upgradesCache.remove(targetIsland);
+        if (data == null)
+            return;
+        if (save)
+            this.database.saveObjectAsync(data);
+    }
+
+    public Level getLevelAddon() {
+        return this.levelAddon;
+    }
+
+    public Limits getLimitsAddon() {
+        return this.limitsAddon;
+    }
+
+    public VaultHook getVaultHook() {
+        return this.vault;
+    }
+
+    public boolean isLevelProvided() {
+        return this.levelAddon != null;
+    }
+
+    public boolean isLimitsProvided() {
+        return this.limitsAddon != null;
+    }
+
+    public boolean isVaultProvided() {
+        return this.vault != null;
+    }
+
+    public Set<UpgradeAPI> getAvailableUpgrades() {
+        return this.upgrade;
+    }
+
+    public void registerUpgrade(UpgradeAPI upgrade) {
+        this.upgrade.add(upgrade);
+    }
+
+    private Settings settings;
+
+    private boolean hooked;
+
+    private UpgradesManager upgradesManager;
+
+    private Set<UpgradeAPI> upgrade;
+
+    private Database<UpgradesData> database;
+
+    private Map<String, UpgradesData> upgradesCache;
+
+    private Level levelAddon;
+
+    private Limits limitsAddon;
+
+    private VaultHook vault;
+
+    public final static Flag UPGRADES_RANK_RIGHT =
+            new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
+            .type(Flag.Type.PROTECTION)
+            .mode(Flag.Mode.BASIC)
+            .clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
+            .defaultRank(RanksManager.MEMBER_RANK)
+            .build();
+
 }
