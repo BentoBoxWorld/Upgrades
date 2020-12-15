@@ -17,6 +17,13 @@ import world.bentobox.upgrades.dataobjects.UpgradeTier;
 public class UpgradesDataManager {
 	
 	// ------------------------------------------------------------
+	// Section: Constant
+	// ------------------------------------------------------------
+	
+	private static final String WHAT = "[what]";
+	private static final String UPGRADEID = "[upgradeId]";
+	
+	// ------------------------------------------------------------
 	// Section: Variables
 	// ------------------------------------------------------------
 	
@@ -100,15 +107,15 @@ public class UpgradesDataManager {
 	public boolean loadUpgradeData(UpgradeData upgrade, boolean overwrite, User user) {
 		if (upgrade == null) {
 			if (user != null)
-				user.sendMessage("upgrades.error.loaderror", "[what]", "Upgrade data");
+				user.sendMessage("upgrades.error.loaderror", WHAT, "Upgrade data");
 			this.addon.logWarning("Couldn't load upgrade data from database");
 			return false;
 		}
 		if (!upgrade.isValid()) {
 			if (user != null)
 				user.sendMessage("upgrades.error.upgradeinvalid",
-						"[upgradeId]", upgrade.getUniqueId(),
-						"[what]", "data");
+						UPGRADEID, upgrade.getUniqueId(),
+						WHAT, "data");
 			this.addon.logWarning("Data for upgrade data " + upgrade.getUniqueId() + " is invalid. You should look in the database");
 			return false;
 		}
@@ -116,8 +123,8 @@ public class UpgradesDataManager {
 			if (!overwrite) {
 				if (user != null)
 					user.sendMessage("upgrades.message.skipupgradeload",
-							"[upgradeId]", upgrade.getUniqueId(),
-							"[what]", "data");
+							UPGRADEID, upgrade.getUniqueId(),
+							WHAT, "data");
 				this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
 				return false;
 			}
@@ -125,8 +132,8 @@ public class UpgradesDataManager {
 		this.upgradeDataCache.put(upgrade.getUniqueId(), upgrade);
 		if (user != null) {
 			user.sendMessage("upgrades.message.upgradeload",
-					"[upgradeId]", upgrade.getUniqueId(),
-					"[what]", "data");
+					UPGRADEID, upgrade.getUniqueId(),
+					WHAT, "data");
 		}
 		this.addon.log("Upgrade data " + upgrade.getUniqueId() + " was loaded");
 		return true;
@@ -143,15 +150,15 @@ public class UpgradesDataManager {
 	public boolean loadUpgradeTier(UpgradeTier upgrade, boolean overwrite, User user) {
 		if (upgrade == null) {
 			if (user != null)
-				user.sendMessage("upgrades.error.loaderror", "[what]", "Upgrade tier");
+				user.sendMessage("upgrades.error.loaderror", WHAT, "Upgrade tier");
 			this.addon.logWarning("Couldn't load upgrade tier from database");
 			return false;
 		}
 		if (!upgrade.isValid()) {
 			if (user != null)
 				user.sendMessage("upgrades.error.upgradeinvalid",
-						"[upgradeId]", upgrade.getUniqueId(),
-						"[what]", "tier");
+						UPGRADEID, upgrade.getUniqueId(),
+						WHAT, "tier");
 			this.addon.logWarning("Data for upgrade tier " + upgrade.getUniqueId() + " is invalid. You should look in the database");
 			return false;
 		}
@@ -159,8 +166,8 @@ public class UpgradesDataManager {
 			if (!overwrite) {
 				if (user != null)
 					user.sendMessage("upgrades.message.skipupgradeload",
-							"[upgradeId]", upgrade.getUniqueId(),
-							"[what]", "tier");
+							UPGRADEID, upgrade.getUniqueId(),
+							WHAT, "tier");
 				this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
 				return false;
 			}
@@ -168,8 +175,8 @@ public class UpgradesDataManager {
 		this.upgradeTierCache.put(upgrade.getUniqueId(), upgrade);
 		if (user != null) {
 			user.sendMessage("upgrades.message.upgradeload",
-					"[upgradeId]", upgrade.getUniqueId(),
-					"[what]", "tier");
+					UPGRADEID, upgrade.getUniqueId(),
+					WHAT, "tier");
 		}
 		this.addon.log("Upgrade tier " + upgrade.getUniqueId() + " was loaded");
 		return true;
