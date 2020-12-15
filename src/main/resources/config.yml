@@ -4,6 +4,9 @@
 # IslandUpgrades will not work in these game modes
 disabled-gamemodes: []
 
+# String used when asking input in chat to cancel input
+chat-input-escape: "cancel"
+
 # Range Upgrade Default Tiers
 # Each tier must contain:
 #      max-level: Upgrade level up to which tier apply

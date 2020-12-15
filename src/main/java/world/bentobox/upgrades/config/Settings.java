@@ -28,6 +28,8 @@ public class Settings {
         this.hasRangeUpgrade = false;
 
         this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
+        
+        this.chatInputEscape = this.addon.getConfig().getString("chat-input-escape");
 
         if (this.addon.getConfig().isSet("range-upgrade")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
@@ -356,6 +358,10 @@ public class Settings {
     public Set<String> getDisabledGameModes() {
         return disabledGameModes;
     }
+    
+    public String getChatInputEscape() {
+    	return this.chatInputEscape;
+    }
 
     public boolean getHasRangeUpgrade() {
         return this.hasRangeUpgrade;
@@ -505,6 +511,8 @@ public class Settings {
     private UpgradesAddon addon;
 
     private Set<String> disabledGameModes;
+    
+    private String chatInputEscape;
 
     private int maxRangeUpgrade = 0;
 
