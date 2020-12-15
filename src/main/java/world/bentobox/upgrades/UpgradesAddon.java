@@ -229,7 +229,7 @@ public class UpgradesAddon extends Addon {
 
     private VaultHook vault;
 
-    public final static Flag UPGRADES_RANK_RIGHT =
+    public static final Flag UPGRADES_RANK_RIGHT =
             new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
             .type(Flag.Type.PROTECTION)
             .mode(Flag.Mode.BASIC)
