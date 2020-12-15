@@ -54,19 +54,15 @@ public class UpgradesAddon extends Addon {
         getPlugin().getAddonsManager().getGameModeAddons().stream()
         .filter(g -> !settings.getDisabledGameModes().contains(g.getDescription().getName()))
         .forEach(g -> {
-            if (g.getPlayerCommand().isPresent()) {
-
-                new PlayerUpgradeCommand(this, g.getPlayerCommand().get());
-
+            // Hook player command if present
+            g.getPlayerCommand().ifPresent(pc -> {
+                new PlayerUpgradeCommand(this, pc);
                 UpgradesAddon.UPGRADES_RANK_RIGHT.addGameModeAddon(g);
-
                 this.hooked = true;
                 hookedGameModes.add(g.getDescription().getName());
-            }
-            if (g.getAdminCommand().isPresent()) {
-
-                new AdminCommand(this, g.getAdminCommand().get(), g);
-            }
+            });
+            // Hook admin command if present
+            g.getAdminCommand().ifPresent(ac -> new AdminCommand(this, ac, g));
         });
 
         if (this.hooked) {
@@ -78,28 +74,17 @@ public class UpgradesAddon extends Addon {
             this.database = new Database<>(this, UpgradesData.class);
             this.upgradesCache = new HashMap<>();
 
-            Optional<Addon> level = this.getAddonByName("Level");
-
-            if (!level.isPresent()) {
+            if ((levelAddon = (Level)this.getAddonByName("Level").orElse(null)) == null) {
                 this.logWarning("Level addon not found so Upgrades won't look for Island Level");
-                this.levelAddon = null;
-            } else
-                this.levelAddon = (Level) level.get();
+            }
 
-            Optional<Addon> limits = this.getAddonByName("Limits");
-
-            if (!limits.isPresent()) {
+            if ((limitsAddon = (Limits)this.getAddonByName("Limits").orElse(null)) == null) {
                 this.logWarning("Limits addon not found so Island Upgrade won't look for IslandLevel");
-                this.limitsAddon = null;
-            } else
-                this.limitsAddon = (Limits) limits.get();
+            }
 
-            Optional<VaultHook> vault = this.getPlugin().getVault();
-            if (!vault.isPresent()) {
+            if ((vault = this.getPlugin().getVault().orElse(null)) == null) {
                 this.logWarning("Vault plugin not found so Upgrades won't look for money");
-                this.vault = null;
-            } else
-                this.vault = vault.get();
+            }
 
             if (this.isLimitsProvided()) {
                 this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
