@@ -376,7 +376,7 @@ public class UpgradesDataManager {
 	 */
 	public List<UpgradeData> getUpgradeDataByGameMode(@NonNull String world) {
 		return this.upgradeDataCache.values().stream()
-				.filter(upgrade -> upgrade.getWorld() == world)
+				.filter(upgrade -> upgrade.getWorld().equals(world))
 				.sorted(this.upgradeDataComparator)
 				.collect(Collectors.toList());
 	}
@@ -517,6 +517,35 @@ public class UpgradesDataManager {
 		this.loadUpgradeTier(tier, true, user);
 		
 		return tier;
+	}
+	
+	// ------------------------------------------------------------
+	// Section: Delete Methods
+	// ------------------------------------------------------------
+	
+	/**
+	 * Delete one upgradeData from the cache and database
+	 * 
+	 * TODO: Delete it's tier
+	 * @param upgrade to delete
+	 */
+	public void deleteUpgradeData(UpgradeData upgrade) {
+		if (this.upgradeDataCache.containsKey(upgrade.getUniqueId())) {
+			this.databaseUpgradeData.deleteObject(upgrade);
+			this.upgradeDataCache.remove(upgrade.getUniqueId());
+		}
+	}
+	
+	/**
+	 * Delete one upgradeTier from the cache and database
+	 * 
+	 * @param tier to delete
+	 */
+	public void deleteUpgradeTier(UpgradeTier tier) {
+		if (this.upgradeTierCache.containsKey(tier.getUniqueId())) {
+			this.databaseUpgradeTier.deleteObject(tier);
+			this.upgradeTierCache.remove(tier.getUniqueId());
+		}
 	}
 
 }

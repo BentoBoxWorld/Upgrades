@@ -5,7 +5,7 @@
 disabled-gamemodes: []
 
 # String used when asking input in chat to cancel input
-chat-input-escape: "cancel"
+chat-input-escape: "END"
 
 # Range Upgrade Default Tiers
 # Each tier must contain:

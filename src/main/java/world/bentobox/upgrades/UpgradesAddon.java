@@ -25,6 +25,7 @@ import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
+import world.bentobox.upgrades.ui.utils.ChatInput;
 import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.CommandUpgrade;
 import world.bentobox.upgrades.upgrades.EntityGroupLimitsUpgrade;
@@ -70,6 +71,8 @@ public class UpgradesAddon extends Addon {
             this.upgradesManager.addGameModes(hookedGameModes);
             
             this.upgradesDataManager = new UpgradesDataManager(this);
+            
+            this.chatInput = new ChatInput(this);
 
             this.upgrade = new HashSet<>();
 
@@ -148,6 +151,10 @@ public class UpgradesAddon extends Addon {
     public UpgradesDataManager getUpgradeDataManager() {
     	return this.upgradesDataManager;
     }
+    
+    public ChatInput getChatInput() {
+    	return this.chatInput;
+    }
 
     public Database<UpgradesData> getDatabase() {
         return this.database;
@@ -212,6 +219,8 @@ public class UpgradesAddon extends Addon {
     
     private UpgradesDataManager upgradesDataManager;
 
+    private ChatInput chatInput;
+    
     private Set<UpgradeAPI> upgrade;
 
     private Database<UpgradesData> database;

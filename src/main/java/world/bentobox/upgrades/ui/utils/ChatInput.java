@@ -1,5 +1,7 @@
 package world.bentobox.upgrades.ui.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -7,6 +9,7 @@ import java.util.function.Function;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
+import org.bukkit.conversations.NumericPrompt;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 
@@ -53,7 +56,7 @@ public class ChatInput {
 	 * @param invalidText Showed to the user when it's input is invalid
 	 * @param user User to converse with
 	 */
-	public void askOneInput(Consumer<String> consumer, Function<String, Boolean> validation, String question, String invalidText, User user) {
+	public void askOneInput(Consumer<String> consumer, Function<String, Boolean> validation, String question, String invalidText, User user, boolean sanitize) {
 		// Create conversation
 		Conversation conv = new ConversationFactory(this.addon.getPlugin())
 			// Can escape conversation by using the chat-input-escape value in setting
@@ -77,18 +80,22 @@ public class ChatInput {
 				
 				@Override
 				protected boolean isInputValid(ConversationContext context, String input) {
-					// Get clean input, lowcase, no ' ' and no '-'
-					String clean = sanitizeInput(input);
+					if (sanitize) {
+						// Get clean input, lowcase, no ' ' and no '-'
+						input = sanitizeInput(input);
+					}
 					// Check if input is valid
-					return validation.apply(clean);
+					return validation.apply(input);
 				}
 				
 				@Override
 				protected Prompt acceptValidatedInput(ConversationContext context, String input) {
-					// Get clean input, lowcase, no ' ' and no '-'
-					String clean = sanitizeInput(input);
+					if (sanitize) {
+						// Get clean input, lowcase, no ' ' and no '-'
+						input = sanitizeInput(input);
+					}
 					// Call consumer with user input
-					consumer.accept(clean);
+					consumer.accept(input);
 					// End conversation
 					return Prompt.END_OF_CONVERSATION;
 				}
@@ -101,6 +108,77 @@ public class ChatInput {
 			.buildConversation(user.getPlayer());
 		
 		// Start conversation
+		conv.begin();
+	}
+	
+	public void askMultiLine(Consumer<List<String>> consumer, Function<String, Boolean> validation, String question, String invalidText, User user) {
+		List<String> list = new ArrayList<String>();
+		UpgradesAddon addon = this.addon;
+		Conversation conv = new ConversationFactory(addon.getPlugin())
+			.withEscapeSequence(addon.getSettings().getChatInputEscape())
+			.addConversationAbandonedListener(abandoned -> {
+				consumer.accept(list);
+			})
+			.withFirstPrompt(new ValidatingPrompt() {
+				
+				boolean sayMessage = true;
+				
+				@Override
+				public String getPromptText(ConversationContext context) {
+					user.closeInventory();
+					String message = sayMessage ? question : "";
+					sayMessage = false;
+					return message;
+				}
+				
+				@Override
+				protected boolean isInputValid(ConversationContext context, String input) {
+					return validation.apply(input);
+				}
+				
+				@Override
+				protected Prompt acceptValidatedInput(ConversationContext context, String input) {
+					list.add(input);
+					return this;
+				}
+			})
+			.buildConversation(user.getPlayer());
+		
+		conv.begin();
+	}
+	
+	public void askOneNumber(Consumer<Number> consumer, Function<Number, Boolean> validation, String question, String invalidText, User user) {
+		Conversation conv = new ConversationFactory(this.addon.getPlugin())
+			.withEscapeSequence(this.addon.getSettings().getChatInputEscape())
+			.addConversationAbandonedListener(abandoned -> {
+				if (!abandoned.gracefulExit())
+					consumer.accept(null);
+			}).withFirstPrompt(new NumericPrompt() {
+				
+				@Override
+				public String getPromptText(ConversationContext context) {
+					user.closeInventory();
+					return question;
+				}
+				
+				@Override
+				protected String getFailedValidationText(ConversationContext context, String invalidInput) {
+					return invalidText;
+				}
+				
+				@Override
+				protected boolean isNumberValid(ConversationContext context, Number input) {
+					return super.isNumberValid(context, input) && validation.apply(input);
+				}
+				
+				@Override
+				protected Prompt acceptValidatedInput(ConversationContext context, Number input) {
+					consumer.accept(input);
+					return Prompt.END_OF_CONVERSATION;
+				}
+			})
+			.buildConversation(user.getPlayer());
+		
 		conv.begin();
 	}
 	

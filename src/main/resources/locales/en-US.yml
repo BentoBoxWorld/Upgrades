@@ -12,9 +12,27 @@ upgrades:
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
     loaderror: "&c [what] faild to load. You should look at the consol for error"
     upgradeinvalid: "&c Upgrade [what] [upgradeId] not valid. It will be ignored"
+    unknownerror: "&c An error happened. You should look at the consol for error"
+    noiteminhand: "&c You dont have any item in your main hand"
   message:
     skipupgradeload: "&c Upgrade [what] [upgradeId] was already loaded"
     upgradeload: "&a Upgrade [what] [upgradeId] was loaded"
+  chatinput:
+    admin:
+      question:
+        getupgradeid: "Write the unique name for this upgrade"
+        getupgradedataname: |-
+          Write shown name
+          Actual is '[name]'
+        getupgradedatadesc: |-
+          Write the upgrade description. Each message will be a new line in description
+          Write '[end]' to end prompt
+        getupgradedataorder: |-
+          Write the upgrade order. Default is -1, -1 is last.
+          For upgrade on the same order, alphabetical order is used.
+      invalid:
+        getupgradeid: "&c This name is already taken. Choose another one"
+        getupgradedataorder: "&c Order need to be a number greater than -1"
   ui:
     upgradepanel: 
       islandneed: "Island Min Level: [islandlevel]"
@@ -29,12 +47,38 @@ upgrades:
       tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
       title: "Island upgrade shop"
       tryreloadlevel: "Don't forget to update your island level with the level command"
+    editupgradepanel:
+      active: "Active"
+      activedesc: "Click to turn inactive"
+      inactive: "Inactive"
+      inactivedesc: "Click to turn active"
+      description: "Actual description"
+      namedesc: "Actual name, showed to the player"
+      icon: "Upgrade icon"
+      icondesc: |-
+       Click to change
+       Will take item in hand
+      tiers: "Upgrade tiers"
+      tiersdesc: "Manage tiers (add / remove)"
+      order: "Actual order: [order]"
+      orderdesc: |-
+        Click to change order
+        upgrade of the same order will be sorted by alphabetical order
     buttons:
       return: "Return"
       exit: "Exit"
+      yesbutton: "Yes"
+      nobutton: "No"
       addupgrade: "Add upgrade"
+      deleteupgrade: "Delete upgrade"
+      editupgrade: "Edit upgrade"
+      active: "Active"
     titles:
       adminupgrade: "Admin upgrade"
+      deleteupgradedata: "Delete: [upgradedata]"
+      editlist: "List: edit"
+      deletelist: "List: delete"
+      listupgradetier: "List tier for upgrade [upgradedata]"
 protection: 
   flags: 
     UPGRADES_RANK_RIGHT: 

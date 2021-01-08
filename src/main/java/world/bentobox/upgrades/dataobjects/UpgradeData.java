@@ -1,6 +1,8 @@
 package world.bentobox.upgrades.dataobjects;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -50,7 +52,7 @@ public class UpgradeData implements DataObject {
 	 * Can contain color Codes
 	 */
 	@Expose
-	private String description = "";
+	private List<String> description = new ArrayList<String>();
 	
 	/**
 	 * Icon representing this upgrade
@@ -106,7 +108,7 @@ public class UpgradeData implements DataObject {
 	/**
 	 * @return the description
 	 */
-	public String getDescription() {
+	public List<String> getDescription() {
 		return description;
 	}
 
@@ -160,7 +162,7 @@ public class UpgradeData implements DataObject {
 	/**
 	 * @param description the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(List<String> description) {
 		this.description = description;
 	}
 

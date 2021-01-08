@@ -29,7 +29,7 @@ public class Settings {
 
         this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
         
-        this.chatInputEscape = this.addon.getConfig().getString("chat-input-escape");
+        this.chatInputEscape = this.addon.getConfig().getString("chat-input-escape", "END");
 
         if (this.addon.getConfig().isSet("range-upgrade")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
