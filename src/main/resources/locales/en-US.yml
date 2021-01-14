@@ -21,6 +21,7 @@ upgrades:
     admin:
       question:
         getupgradeid: "Write the unique name for this upgrade"
+        gettierid: "Write the unique name for this tier"
         getupgradedataname: |-
           Write shown name
           Actual is '[name]'
@@ -32,6 +33,7 @@ upgrades:
           For upgrade on the same order, alphabetical order is used.
       invalid:
         getupgradeid: "&c This name is already taken. Choose another one"
+        gettierid: "&c This name is already taken. Choose another one"
         getupgradedataorder: "&c Order need to be a number greater than -1"
   ui:
     upgradepanel: 
@@ -58,8 +60,9 @@ upgrades:
       icondesc: |-
        Click to change
        Will take item in hand
-      tiers: "Upgrade tiers"
-      tiersdesc: "Manage tiers (add / remove)"
+      tieradd: "Add tier"
+      tieredit: "Edit tier"
+      tierdelete: "Delete tier"
       order: "Actual order: [order]"
       orderdesc: |-
         Click to change order
@@ -75,7 +78,7 @@ upgrades:
       active: "Active"
     titles:
       adminupgrade: "Admin upgrade"
-      deleteupgradedata: "Delete: [upgradedata]"
+      delete: "Delete: [name]"
       editlist: "List: edit"
       deletelist: "List: delete"
       listupgradetier: "List tier for upgrade [upgradedata]"

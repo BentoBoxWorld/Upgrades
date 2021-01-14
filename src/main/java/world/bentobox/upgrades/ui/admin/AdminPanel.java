@@ -86,8 +86,8 @@ public class AdminPanel extends AbPanel {
 	private Consumer<UpgradeData> doDelete = (UpgradeData upgrade) -> {
 		new YesNoPanel(this.getAddon(),
 				this.getGamemode(), this.getUser(),
-				this.getUser().getTranslation("upgrades.ui.titles.deleteupgradedata",
-						"[upgradedata]", upgrade.getUniqueId()),
+				this.getUser().getTranslation("upgrades.ui.titles.delete",
+						"[name]", upgrade.getUniqueId()),
 				this, delete -> {
 					if (delete) {
 						this.getAddon().getUpgradeDataManager().deleteUpgradeData(upgrade);

@@ -1,6 +1,7 @@
 package world.bentobox.upgrades.ui.admin;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import org.bukkit.Material;
@@ -16,20 +17,16 @@ import world.bentobox.upgrades.ui.utils.AbPanel;
 
 public class ListUpgradeTierPanel extends AbPanel {
 	
-	protected static final String ADD = "add";
-	protected static final String DELETE = "delete";
-	
 	private UpgradeData upgrade;
 	private List<UpgradeTier> tiers;
-
-	public ListUpgradeTierPanel(UpgradesAddon addon, GameModeAddon gamemode, User user, UpgradeData upgrade, AbPanel parent) {
-		super(addon,
-			gamemode, user,
-			user.getTranslation("upgrades.ui.titles.listupgradetier",
-				"[upgradedata]", upgrade.getUniqueId()),
-			parent);
+	
+	private Consumer<UpgradeTier> consumer;
+	
+	public ListUpgradeTierPanel(UpgradesAddon addon, GameModeAddon gamemode, User user, UpgradeData upgrade, String title, AbPanel parent, Consumer<UpgradeTier> consumer) {
+		super(addon, gamemode, user, title, parent);
 		
 		this.upgrade = upgrade;
+		this.consumer = consumer;
 		
 		this.tiers = this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade);
 		this.createInterface();
@@ -37,18 +34,6 @@ public class ListUpgradeTierPanel extends AbPanel {
 	
 	private void createInterface() {
 		this.fillBorder(Material.BLACK_STAINED_GLASS_PANE);
-		
-		this.setItems(ADD, new PanelItemBuilder()
-			.name(this.getUser().getTranslation("upgrades.ui.buttons.addupgrade"))
-			.icon(Material.GREEN_STAINED_GLASS_PANE)
-			.clickHandler(this.onAdd)
-			.build(), 3);
-		
-		this.setItems(DELETE, new PanelItemBuilder()
-			.name(this.getUser().getTranslation("upgrades.ui.buttons.deleteupgrade"))
-			.icon(Material.RED_STAINED_GLASS_PANE)
-			.clickHandler(this.onDelete)
-			.build(), 5);
 		
 		IntStream.range(0,  this.tiers.size())
 			.forEach(idx -> {
@@ -64,19 +49,9 @@ public class ListUpgradeTierPanel extends AbPanel {
 	
 	private ClickHandler onClickEdit(UpgradeTier tier) {
 		return (panel, client, click, slot) -> {
-			this.getAddon().log("Tier select: " + tier.getUniqueId());
+			this.consumer.accept(tier);
 			return true;
 		};
 	}
 	
-	private ClickHandler onAdd = (panel, client, click, slot) -> {
-		this.getAddon().log("Add new tier");
-		return true;
-	};
-	
-	private ClickHandler onDelete = (panel, client, click, slot) -> {
-		this.getAddon().log("Delete tier");
-		return true;
-	};
-
 }

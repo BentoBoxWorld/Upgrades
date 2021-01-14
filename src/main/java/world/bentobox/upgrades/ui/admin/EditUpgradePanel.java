@@ -15,6 +15,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradeData;
+import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 public class EditUpgradePanel extends AbPanel {
@@ -24,7 +25,9 @@ public class EditUpgradePanel extends AbPanel {
 	protected static final String ICON = "icon";
 	protected static final String NAME = "name";
 	protected static final String ORDER = "order";
-	protected static final String TIERS = "tiers";
+	protected static final String TIERADD = "tieradd";
+	protected static final String TIEREDIT = "tieredit";
+	protected static final String TIERDELETE = "tierdelete";
 	
 	protected static final Set<Material> BADICON = new HashSet<Material>(Arrays.asList(
 			Material.AIR,
@@ -70,9 +73,9 @@ public class EditUpgradePanel extends AbPanel {
 		this.setItems(DESCRIPTION, new PanelItemBuilder()
 				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.description"))
 				.description(this.upgrade.getDescription())
-				.icon(Material.KNOWLEDGE_BOOK)
+				.icon(Material.WRITTEN_BOOK)
 				.clickHandler(this.onSetDescription)
-				.build(), 14);
+				.build(), 21);
 		
 		this.setItems(ICON, new PanelItemBuilder()
 				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.icon"))
@@ -81,11 +84,22 @@ public class EditUpgradePanel extends AbPanel {
 				.clickHandler(this.onSetIcon)
 				.build(), 30);
 		
-		this.setItems(TIERS, new PanelItemBuilder()
-				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tiers"))
-				.description(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tiersdesc"))
-				.icon(Material.BOOKSHELF)
-				.clickHandler(this.onTiers)
+		this.setItems(TIERADD, new PanelItemBuilder()
+				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tieradd"))
+				.icon(Material.ANVIL)
+				.clickHandler(this.onTierAdd)
+				.build(), 14);
+		
+		this.setItems(TIEREDIT, new PanelItemBuilder()
+				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tieredit"))
+				.icon(Material.WRITABLE_BOOK)
+				.clickHandler(this.onTierEdit)
+				.build(), 23);
+		
+		this.setItems(TIERDELETE, new PanelItemBuilder()
+				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tierdelete"))
+				.icon(Material.LAVA_BUCKET)
+				.clickHandler(this.onTierDelete)
 				.build(), 32);
 		
 		this.setItems(ORDER, new PanelItemBuilder()
@@ -153,12 +167,71 @@ public class EditUpgradePanel extends AbPanel {
 		return true;
 	};
 	
-	private ClickHandler onTiers = (panel, client, click, slot) -> {
-		new ListUpgradeTierPanel(this.getAddon(),
+	private ClickHandler onTierAdd = (panel, client, click, slot) -> {
+		this.getAddon().getChatInput().askOneInput(this.doTierAdd,
+			input -> {
+				String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
+				return !this.getAddon().getUpgradeDataManager().hasUpgradeTier(uniqueId);
+			},
+			client.getTranslation("upgrades.chatinput.admin.question.gettierid"),
+			client.getTranslation("upgrades.chatinput.admin.invalid.gettierid"),
+			client, true);
+		return true;
+	};
+	
+	private Consumer<String> doTierAdd = input -> {
+		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
+		
+		UpgradeTier newTier = this.getAddon().getUpgradeDataManager()
+				.createUpgradeTier(uniqueId, this.upgrade, 0, 1, this.getUser());
+		
+		if (newTier == null) {
+			this.getUser().sendMessage("upgrades.error.unknownerror");
+			this.getAddon().logError("Couldn't create the upgradeTier with id " + uniqueId);
+			return;
+		}
+		
+		new EditTierPanel(this.getAddon(),
 				this.getGamemode(), this.getUser(),
-				this.upgrade, this)
+				newTier, this)
+			.getBuild().build();
+	};
+	
+	private ClickHandler onTierEdit = (panel, client, click, slot) -> {
+		new ListUpgradeTierPanel(this.getAddon(),
+				this.getGamemode(), client, this.upgrade,
+				client.getTranslation("upgrades.ui.titles.editlist"),
+				this,
+				tier -> {
+					new EditTierPanel(this.getAddon(),
+							this.getGamemode(), client,
+							tier, this)
+						.getBuild().build();
+				})
 			.getBuild().build();
 		return true;
+	};
+	
+	private ClickHandler onTierDelete = (panel, client, click, slot) -> {
+		new ListUpgradeTierPanel(this.getAddon(),
+				this.getGamemode(), client, this.upgrade,
+				client.getTranslation("upgrades.ui.titles.deletelist"),
+				this, this.doTierDelete)
+			.getBuild().build();
+		return true;
+	};
+	
+	private Consumer<UpgradeTier> doTierDelete = tier -> {
+		new YesNoPanel(this.getAddon(),
+				this.getGamemode(), this.getUser(),
+				this.getUser().getTranslation("upgrades.ui.titles.delete",
+						"[name]", tier.getUniqueId()),
+				this, delete -> {
+					if (delete) {
+						this.getAddon().getUpgradeDataManager().deleteUpgradeTier(tier);
+					}
+					this.getBuild().build();
+				}).getBuild().build();
 	};
 	
 	private ClickHandler onSetOrder = (panel, client, click, slot) -> {
