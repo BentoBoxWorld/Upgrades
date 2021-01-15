@@ -1,9 +1,6 @@
 package world.bentobox.upgrades.ui.admin;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.bukkit.Material;
@@ -28,12 +25,6 @@ public class EditUpgradePanel extends AbPanel {
 	protected static final String TIERADD = "tieradd";
 	protected static final String TIEREDIT = "tieredit";
 	protected static final String TIERDELETE = "tierdelete";
-	
-	protected static final Set<Material> BADICON = new HashSet<Material>(Arrays.asList(
-			Material.AIR,
-			Material.CAVE_AIR,
-			Material.VOID_AIR
-		));
 	
 	private UpgradeData upgrade;
 

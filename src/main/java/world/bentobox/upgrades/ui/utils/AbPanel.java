@@ -1,10 +1,13 @@
 package world.bentobox.upgrades.ui.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Material;
 
@@ -19,6 +22,12 @@ public class AbPanel {
 	
 	protected static final String RETURN = "return";
 	protected static final String EXIT = "exit";
+	
+	protected static final Set<Material> BADICON = new HashSet<Material>(Arrays.asList(
+			Material.AIR,
+			Material.CAVE_AIR,
+			Material.VOID_AIR
+		));
 	
 	public AbPanel(UpgradesAddon addon, GameModeAddon gamemode, User user, String title, AbPanel parent) {
 		this.addon = addon;
