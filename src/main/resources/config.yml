@@ -15,7 +15,7 @@ disabled-gamemodes: []
 #      permission-level: Is the level of permission needed to upgrade
 #         permission: "[GAMEMODE].upgrades.[UPGRADE].[LEVEL]"
 #             Exemple for bskyblock with range-upgrade with a permission level of 2
-#                 "bskyblock.upgrades.range-upgrade.2"
+#                 "bskyblock.upgrades.rangeupgrade.2"
 #
 # Note: for upgrade-range, island-min-level and vault-cost:
 #      Mathematical expression can be used (+,-,*,/,^,(,))
