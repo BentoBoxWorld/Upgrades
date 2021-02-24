@@ -415,7 +415,7 @@ public class UpgradesDataManager {
 	 */
 	public List<UpgradeTier> getUpgradeTierByUpgradeData(@NonNull String upgradeDataId) {
 		return this.upgradeTierCache.values().stream()
-				.filter(upgrade -> upgrade.getUpgrade() == upgradeDataId)
+				.filter(upgrade -> upgrade.getUpgrade().equals(upgradeDataId))
 				.sorted(this.upgradeTierComparator)
 				.collect(Collectors.toList());
 	}

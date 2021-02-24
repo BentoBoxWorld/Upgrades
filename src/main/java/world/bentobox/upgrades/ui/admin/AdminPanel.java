@@ -13,6 +13,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradeData;
 import world.bentobox.upgrades.ui.utils.AbPanel;
+import world.bentobox.upgrades.ui.admin.YesNoPanel;
 
 public class AdminPanel extends AbPanel {
 	

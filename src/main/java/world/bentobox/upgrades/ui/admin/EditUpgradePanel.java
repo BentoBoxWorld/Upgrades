@@ -151,7 +151,6 @@ public class EditUpgradePanel extends AbPanel {
 			client.closeInventory();
 			return true;
 		}
-		this.getAddon().log("Try to change icon to " + inHand.getType().toString());
 		upgrade.setIcon(new ItemStack(inHand.getType()));
 		this.setButton();
 		this.getBuild().build();
@@ -172,9 +171,11 @@ public class EditUpgradePanel extends AbPanel {
 	
 	private Consumer<String> doTierAdd = input -> {
 		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
+		List<UpgradeTier> tiers = this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade);
+		int lastpos = tiers.size() > 0 ? tiers.get(tiers.size() - 1).getEndLevel() + 1 : 0;
 		
 		UpgradeTier newTier = this.getAddon().getUpgradeDataManager()
-				.createUpgradeTier(uniqueId, this.upgrade, 0, 1, this.getUser());
+				.createUpgradeTier(uniqueId, this.upgrade, lastpos, lastpos, this.getUser());
 		
 		if (newTier == null) {
 			this.getUser().sendMessage("upgrades.error.unknownerror");
@@ -183,8 +184,9 @@ public class EditUpgradePanel extends AbPanel {
 		}
 		
 		new EditTierPanel(this.getAddon(),
-				this.getGamemode(), this.getUser(),
-				newTier, this)
+				this.getGamemode(), this.getUser(), newTier,
+				this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade),
+				this)
 			.getBuild().build();
 	};
 	
@@ -195,8 +197,9 @@ public class EditUpgradePanel extends AbPanel {
 				this,
 				tier -> {
 					new EditTierPanel(this.getAddon(),
-							this.getGamemode(), client,
-							tier, this)
+							this.getGamemode(), client, tier,
+							this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade),
+							this)
 						.getBuild().build();
 				})
 			.getBuild().build();

@@ -31,6 +31,12 @@ upgrades:
         getupgradedataorder: |-
           Write the upgrade order. Default is -1, -1 is last.
           For upgrade on the same order, alphabetical order is used.
+        getupgradetiername: |-
+          Write shown name
+          Actual is '[name]'
+        getupgradetierdesc: |-
+          Write the tier description. Each message will be a new line in description
+          Write '[end]' to end prompt
       invalid:
         getupgradeid: "&c This name is already taken. Choose another one"
         gettierid: "&c This name is already taken. Choose another one"
@@ -66,7 +72,29 @@ upgrades:
       order: "Actual order: [order]"
       orderdesc: |-
         Click to change order
-        upgrade of the same order will be sorted by alphabetical order
+        upgrade of the same order will be sorted by alphabetical order  
+    edittierpanel:
+      namedesc: "Actual name, showed to the player"
+      description: "Actual description"
+      icon: "Tier icon"
+      icondesc: |-
+        Click to change
+        Will take item in hand
+      nblevel: "Nb of time you can buy this tier"
+      nbleveldesc: |-
+        Actual [actual]
+        Left click to lower the nb
+        Right click to increase the nb
+      order: "Change the order of tiers"
+      orderdesc: |-
+        Actual [actual]/[max]
+        Left click to lower the order
+        Right click to increase the order
+      prices: "Prices"
+      rewards: "Rewards"
+    listpricepanel:
+       create: "Add new price"
+       selectpricedesc: "Left click: update / right click: delete"
     buttons:
       return: "Return"
       exit: "Exit"

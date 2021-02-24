@@ -45,7 +45,7 @@ public class UpgradeTier implements DataObject {
 	 * Can contain color codes
 	 */
 	@Expose
-	private String description = "";
+	private List<String> description = new ArrayList<String>();
 	
 	/**
 	 * Icon representing this tier
@@ -107,7 +107,7 @@ public class UpgradeTier implements DataObject {
 	/**
 	 * @return the description
 	 */
-	public String getDescription() {
+	public List<String> getDescription() {
 		return description;
 	}
 
@@ -174,7 +174,7 @@ public class UpgradeTier implements DataObject {
 	/**
 	 * @param description the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(List<String> description) {
 		this.description = description;
 	}
 
