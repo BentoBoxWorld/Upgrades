@@ -11,6 +11,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 
 import world.bentobox.limits.listeners.BlockLimitsListener;
+import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
@@ -129,12 +130,18 @@ public class BlockLimitsUpgrade extends Upgrade {
 			return false;
 
 		BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
+		IslandBlockCount isb = bLListener.getIsland(island.getUniqueId());
 		Map<Material, Integer> materialLimits = bLListener.getMaterialLimits(island.getWorld(), island.getUniqueId());
 
 		if (!materialLimits.containsKey(this.block) || materialLimits.get(this.block) == -1) {
 			this.getUpgradesAddon().logWarning("User tried to upgrade " + this.block.toString()
 					+ " limits but it has no limits. This is probably a configuration problem.");
 			user.sendMessage("upgrades.error.increasenolimits");
+			return false;
+		}
+		
+		if (isb == null) {
+			user.sendMessage("upgrades.error.placeblock");
 			return false;
 		}
 
@@ -144,7 +151,7 @@ public class BlockLimitsUpgrade extends Upgrade {
 		int oldCount = materialLimits.get(this.block);
 		int newCount = (int) (oldCount + this.getUpgradeValues(user).getUpgradeValue());
 
-		bLListener.getIsland(island.getUniqueId()).setBlockLimit(this.block, newCount);
+		isb.setBlockLimit(this.block, newCount);
 
 		user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", "[block]", this.block.toString(), "[level]",
 				Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

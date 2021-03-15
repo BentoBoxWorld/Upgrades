@@ -9,6 +9,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.listeners.BlockLimitsListener;
+import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
@@ -128,6 +129,7 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
             return false;
 
         BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
+        IslandBlockCount isb = bLListener.getIsland(island.getUniqueId());
         Map<String, Integer> entityGroupLimits = islandAddon.getUpgradesManager().getEntityGroupLimits(island);
 
         if (!entityGroupLimits.containsKey(this.group) || entityGroupLimits.get(this.group) == -1) {
@@ -135,13 +137,19 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
             user.sendMessage("upgrades.error.increasenolimits");
             return false;
         }
+        
+        if (isb == null) {
+			user.sendMessage("upgrades.error.placeblock");
+			return false;
+		}
+
 
         if (!super.doUpgrade(user, island))
             return false;
 
         int newCount = (int) (entityGroupLimits.get(this.group) + this.getUpgradeValues(user).getUpgradeValue());
-
-        bLListener.getIsland(island.getUniqueId()).setEntityGroupLimit(this.group, newCount);
+        
+        isb.setEntityGroupLimit(this.group, newCount);
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
                          "[block]", this.group, "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

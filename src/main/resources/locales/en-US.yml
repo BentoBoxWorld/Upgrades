@@ -7,6 +7,7 @@ upgrades:
     increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
     notonisland: "&c You need to be on your island to do that"
     rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
+    placeblock: "&c Before buying this upgrade, you need to place/break at least one block"
   ui: 
     upgradepanel: 
       islandneed: "Island Min Level: [islandlevel]"
