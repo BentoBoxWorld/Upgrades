@@ -852,7 +852,7 @@ public class Settings {
                     eat(')');
                 } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
-                    final Integer innerPos = new Integer(this.pos);
+                    final Integer innerPos =  Integer.valueOf(this.pos);
                     x = (() -> Double.parseDouble(str.substring(startPos, innerPos)));
                 } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') { // functions
                     while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') nextChar();

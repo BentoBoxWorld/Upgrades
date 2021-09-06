@@ -18,11 +18,14 @@ import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.bentobox.managers.RanksManager;
+import world.bentobox.level.Level;
+import world.bentobox.limits.Limits;
 import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.command.PlayerUpgradeCommand;
 import world.bentobox.upgrades.command.admin.AdminCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
+import world.bentobox.upgrades.dataobjects.prices.IslandLevelPrice;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
 import world.bentobox.upgrades.ui.utils.ChatInput;
@@ -31,8 +34,6 @@ import world.bentobox.upgrades.upgrades.CommandUpgrade;
 import world.bentobox.upgrades.upgrades.EntityGroupLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
-import world.bentobox.level.Level;
-import world.bentobox.limits.Limits;
 
 public class UpgradesAddon extends Addon {
 
@@ -95,6 +96,8 @@ public class UpgradesAddon extends Addon {
                 this.getSettings().getEntityLimitsUpgrade().forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
                 this.getSettings().getEntityGroupLimitsUpgrade().forEach(group -> this.registerUpgrade(new EntityGroupLimitsUpgrade(this, group)));
                 this.getSettings().getMaterialsLimitsUpgrade().forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
+                
+				this.upgradesManager.addPrice(new IslandLevelPrice());
             }
 
             this.getSettings().getCommandUpgrade().forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings().getCommandIcon(cmd))));

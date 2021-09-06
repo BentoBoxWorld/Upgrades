@@ -345,7 +345,7 @@ public class UpgradesDataManager {
 	
 	/**
 	 * Save given upgradeTier asyn
-	 * @param upgrade tier to save
+	 * @param tier upgrade tier to save
 	 * @return
 	 */
 	public CompletableFuture<Boolean> saveUpgradeTier(UpgradeTier tier) {

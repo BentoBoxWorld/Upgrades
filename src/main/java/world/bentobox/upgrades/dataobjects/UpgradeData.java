@@ -1,9 +1,7 @@
 package world.bentobox.upgrades.dataobjects;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

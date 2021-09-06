@@ -18,12 +18,14 @@ import org.bukkit.entity.EntityType;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.prices.Price;
 
 public class UpgradesManager {
 
     public UpgradesManager(UpgradesAddon addon) {
         this.addon = addon;
         this.hookedGameModes = new HashSet<>();
+		this.activatedPrices = new HashMap<>();
     }
 
     protected void addGameModes(List<String> gameModes) {
@@ -34,6 +36,18 @@ public class UpgradesManager {
         return this.addon.getPlugin().getIWM().getAddon(world)
                 .map(a -> this.hookedGameModes.contains(a.getDescription().getName())).orElse(false);
     }
+    
+	public void addPrice(Price price) {
+		this.activatedPrices.put(price.getClass(), price);
+    }
+    
+	public List<Price> getPrices() {
+		return new ArrayList<>(this.activatedPrices.values());
+    }
+
+	public Price searchPrice(Class<? extends Price> price) {
+		return this.activatedPrices.get(price);
+	}
 
     public int getIslandLevel(Island island) {
         if (!this.addon.isLevelProvided())
@@ -548,5 +562,7 @@ public class UpgradesManager {
     private UpgradesAddon addon;
 
     private Set<String> hookedGameModes;
+    
+	private Map<Class<? extends Price>, Price> activatedPrices;
 
 }

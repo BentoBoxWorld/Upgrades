@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
-import world.bentobox.upgrades.dataobjects.prices.Price;
+import world.bentobox.upgrades.dataobjects.prices.PriceDB;
 import world.bentobox.upgrades.dataobjects.rewards.Reward;
 
 @Table(name = "UpgradeTier")
@@ -71,7 +71,7 @@ public class UpgradeTier implements DataObject {
 	 * List of prices needed for each level of this tier
 	 */
 	@Expose
-	private List<Price> prices = new ArrayList<Price>();
+	private List<PriceDB> prices = new ArrayList<PriceDB>();
 	
 	/**
 	 * List of rewards given at each level of this tier
@@ -135,7 +135,7 @@ public class UpgradeTier implements DataObject {
 	/**
 	 * @return the prices
 	 */
-	public List<Price> getPrices() {
+	public List<PriceDB> getPrices() {
 		return prices;
 	}
 
@@ -202,7 +202,7 @@ public class UpgradeTier implements DataObject {
 	/**
 	 * @param prices the prices to set
 	 */
-	public void setPrices(List<Price> prices) {
+	public void setPrices(List<PriceDB> prices) {
 		this.prices = prices;
 	}
 

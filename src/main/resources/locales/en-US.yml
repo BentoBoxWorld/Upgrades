@@ -1,11 +1,11 @@
-upgrades: 
-  commands: 
+upgrades:
+  commands:
     main:
       parameters: ""
       description: "Open the upgrade shop interface"
     admin:
       description: "Open the admin interface for upgrade"
-  error: 
+  error:
     costwithdraw: "&c Couldn't withdraw money. You should talk about this to an administrator"
     increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
     notonisland: "&c You need to be on your island to do that"
@@ -42,7 +42,7 @@ upgrades:
         gettierid: "&c This name is already taken. Choose another one"
         getupgradedataorder: "&c Order need to be a number greater than -1"
   ui:
-    upgradepanel: 
+    upgradepanel:
       islandneed: "Island Min Level: [islandlevel]"
       limitsupgrade: "[block] limits upgrade of [level]"
       limitsupgradedone: "&a Your island [block] limits was upgraded by [level]"
@@ -64,8 +64,8 @@ upgrades:
       namedesc: "Actual name, showed to the player"
       icon: "Upgrade icon"
       icondesc: |-
-       Click to change
-       Will take item in hand
+        Click to change
+        Will take item in hand
       tieradd: "Add tier"
       tieredit: "Edit tier"
       tierdelete: "Delete tier"
@@ -92,9 +92,15 @@ upgrades:
         Right click to increase the order
       prices: "Prices"
       rewards: "Rewards"
-    listpricepanel:
-       create: "Add new price"
-       selectpricedesc: "Left click: update / right click: delete"
+    listadmintierpricepanel:
+      title: "List of prices"
+      create: "Add new price"
+      leftdesc: "&cLeft click: update"
+      rightdesc: "&cRight click: delete"
+    listadminpricepanel:
+      title: "List of available prices"
+    islandlevelpricepanel:
+      title: "Island level price"
     buttons:
       return: "Return"
       exit: "Exit"
@@ -104,14 +110,30 @@ upgrades:
       deleteupgrade: "Delete upgrade"
       editupgrade: "Edit upgrade"
       active: "Active"
+      validconf: "Valid configuration"
+      invalidconf: "Invalid configuration"
     titles:
       adminupgrade: "Admin upgrade"
       delete: "Delete: [name]"
       editlist: "List: edit"
       deletelist: "List: delete"
       listupgradetier: "List tier for upgrade [upgradedata]"
-protection: 
-  flags: 
-    UPGRADES_RANK_RIGHT: 
+      listupgradeprices: "List of price for this tier"
+  prices:
+    islandlevel:
+      name: "Island level"
+      description: |-
+        Required island level
+        Don't consume anything
+      admindescription: |-
+        Add a minimum required level
+        This price don't use anything
+      paneltitle: "Island level price"
+      rulequestion: |-
+        Enter the new rule for this island level price
+        Actual: [actual]
+protection:
+  flags:
+    UPGRADES_RANK_RIGHT:
       description: "Switch who can upgrade"
       name: "Upgrade Rank"
