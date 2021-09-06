@@ -13,17 +13,14 @@ import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class IslandLevelPrice extends Price {
 
-    // ------------------------------------------------------------
-    // Section: Variables
-    // ------------------------------------------------------------
-
     public IslandLevelPrice() {
-        super("island_level", Material.EXPERIENCE_BOTTLE);
+        super("island_level_price", Material.EXPERIENCE_BOTTLE);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class IslandLevelPrice extends Price {
         IslandLevelPriceDB dbObject;
 
         if (saved == null) {
-            dbObject = new IslandLevelPriceDB("0");
+            dbObject = new IslandLevelPriceDB();
             List<PriceDB> prices = tier.getPrices();
 
             prices.add(dbObject);

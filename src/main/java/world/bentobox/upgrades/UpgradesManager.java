@@ -19,13 +19,15 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.prices.Price;
+import world.bentobox.upgrades.dataobjects.rewards.Reward;
 
 public class UpgradesManager {
 
     public UpgradesManager(UpgradesAddon addon) {
         this.addon = addon;
         this.hookedGameModes = new HashSet<>();
-		this.activatedPrices = new HashMap<>();
+        this.activatedPrices = new HashMap<>();
+        this.activatedRewards = new HashMap<>();
     }
 
     protected void addGameModes(List<String> gameModes) {
@@ -33,21 +35,37 @@ public class UpgradesManager {
     }
 
     public boolean canOperateInWorld(World world) {
-        return this.addon.getPlugin().getIWM().getAddon(world)
-                .map(a -> this.hookedGameModes.contains(a.getDescription().getName())).orElse(false);
-    }
-    
-	public void addPrice(Price price) {
-		this.activatedPrices.put(price.getClass(), price);
-    }
-    
-	public List<Price> getPrices() {
-		return new ArrayList<>(this.activatedPrices.values());
+        return this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> this.hookedGameModes.contains(a.getDescription()
+                        .getName()))
+                .orElse(false);
     }
 
-	public Price searchPrice(Class<? extends Price> price) {
-		return this.activatedPrices.get(price);
-	}
+    public void addPrice(Price price) {
+        this.activatedPrices.put(price.getClass(), price);
+    }
+
+    public List<Price> getPrices() {
+        return new ArrayList<>(this.activatedPrices.values());
+    }
+
+    public Price searchPrice(Class<? extends Price> price) {
+        return this.activatedPrices.get(price);
+    }
+
+    public void addReward(Reward reward) {
+        this.activatedRewards.put(reward.getClass(), reward);
+    }
+
+    public List<Reward> getRewards() {
+        return new ArrayList<>(this.activatedRewards.values());
+    }
+
+    public Reward searchReward(Class<? extends Reward> reward) {
+        return this.activatedRewards.get(reward);
+    }
 
     public int getIslandLevel(Island island) {
         if (!this.addon.isLevelProvided())
@@ -58,10 +76,12 @@ public class UpgradesManager {
             return 0;
         }
 
-        int islandLevel = (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
+        int islandLevel = (int) this.addon.getLevelAddon()
+                .getIslandLevel(island.getWorld(), island.getOwner());
 
         if (islandLevel < 0) {
-            this.addon.logWarning("Island " + island.getUniqueId() + " has an invalid level: " + islandLevel);
+            this.addon.logWarning(
+                    "Island " + island.getUniqueId() + " has an invalid level: " + islandLevel);
             islandLevel = 0;
         }
 
@@ -69,11 +89,18 @@ public class UpgradesManager {
     }
 
     public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
         if (name == null) return Collections.emptyList();
 
-        Map<String, Settings.UpgradeTier> defaultTiers = this.addon.getSettings().getDefaultRangeUpgradeTierMap();
-        Map<String, Settings.UpgradeTier> customAddonTiers = this.addon.getSettings().getAddonRangeUpgradeTierMap(name);
+        Map<String, Settings.UpgradeTier> defaultTiers = this.addon.getSettings()
+                .getDefaultRangeUpgradeTierMap();
+        Map<String, Settings.UpgradeTier> customAddonTiers = this.addon.getSettings()
+                .getAddonRangeUpgradeTierMap(name);
 
         List<Settings.UpgradeTier> tierList;
 
@@ -84,7 +111,8 @@ public class UpgradesManager {
             uniqueIDSet.addAll(defaultTiers.keySet());
             tierList = new ArrayList<>(uniqueIDSet.size());
 
-            uniqueIDSet.forEach(id -> tierList.add(customAddonTiers.getOrDefault(id, defaultTiers.get(id))));
+            uniqueIDSet.forEach(
+                    id -> tierList.add(customAddonTiers.getOrDefault(id, defaultTiers.get(id))));
         }
 
         if (tierList.isEmpty())
@@ -96,13 +124,20 @@ public class UpgradesManager {
     }
 
     public Map<Material, List<Settings.UpgradeTier>> getAllBlockLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
         if (name == null) {
             return Collections.emptyMap();
         }
 
-        Map<Material, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultBlockLimitsUpgradeTierMap();
-        Map<Material, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonBlockLimitsUpgradeTierMap(name);
+        Map<Material, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
+                .getDefaultBlockLimitsUpgradeTierMap();
+        Map<Material, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings()
+                .getAddonBlockLimitsUpgradeTierMap(name);
 
         Map<Material, List<Settings.UpgradeTier>> tierList = new EnumMap<>(Material.class);
 
@@ -112,33 +147,44 @@ public class UpgradesManager {
             customAddonTiers.forEach((mat, tiers) -> {
                 Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
                 if (defaultTiers.containsKey(mat))
-                    uniqueIDSet.addAll(defaultTiers.get(mat).keySet());
+                    uniqueIDSet.addAll(defaultTiers.get(mat)
+                            .keySet());
                 List<Settings.UpgradeTier> matTier = new ArrayList<>(uniqueIDSet.size());
 
-                uniqueIDSet.forEach(id -> matTier.add(tiers.getOrDefault(id, defaultTiers.get(mat).get(id))));
+                uniqueIDSet.forEach(id -> matTier.add(tiers.getOrDefault(id, defaultTiers.get(mat)
+                        .get(id))));
                 tierList.put(mat, matTier);
             });
 
-            defaultTiers.forEach((mat, tiers) -> tierList.putIfAbsent(mat, new ArrayList<>(tiers.values())));
+            defaultTiers.forEach(
+                    (mat, tiers) -> tierList.putIfAbsent(mat, new ArrayList<>(tiers.values())));
         }
 
         if (tierList.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        tierList.forEach((mat, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+        tierList.forEach(
+                (mat, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
 
         return tierList;
     }
 
     public Map<EntityType, List<Settings.UpgradeTier>> getAllEntityLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
         if (name == null) {
             return Collections.emptyMap();
         }
 
-        Map<EntityType, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultEntityLimitsUpgradeTierMap();
-        Map<EntityType, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonEntityLimitsUpgradeTierMap(name);
+        Map<EntityType, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
+                .getDefaultEntityLimitsUpgradeTierMap();
+        Map<EntityType, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings()
+                .getAddonEntityLimitsUpgradeTierMap(name);
 
         Map<EntityType, List<Settings.UpgradeTier>> tierList = new EnumMap<>(EntityType.class);
 
@@ -148,33 +194,44 @@ public class UpgradesManager {
             customAddonTiers.forEach((ent, tiers) -> {
                 Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
                 if (defaultTiers.containsKey(ent))
-                    uniqueIDSet.addAll(defaultTiers.get(ent).keySet());
+                    uniqueIDSet.addAll(defaultTiers.get(ent)
+                            .keySet());
                 List<Settings.UpgradeTier> entTier = new ArrayList<>(uniqueIDSet.size());
 
-                uniqueIDSet.forEach(id -> entTier.add(tiers.getOrDefault(id, defaultTiers.get(ent).get(id))));
+                uniqueIDSet.forEach(id -> entTier.add(tiers.getOrDefault(id, defaultTiers.get(ent)
+                        .get(id))));
                 tierList.put(ent, entTier);
             });
 
-            defaultTiers.forEach((ent, tiers) -> tierList.putIfAbsent(ent, new ArrayList<>(tiers.values())));
+            defaultTiers.forEach(
+                    (ent, tiers) -> tierList.putIfAbsent(ent, new ArrayList<>(tiers.values())));
         }
 
         if (tierList.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        tierList.forEach((ent, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+        tierList.forEach(
+                (ent, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
 
         return tierList;
     }
 
     public Map<String, List<Settings.UpgradeTier>> getAllEntityGroupLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
         if (name == null) {
             return Collections.emptyMap();
         }
 
-        Map<String, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultEntityGroupLimitsUpgradeTierMap();
-        Map<String, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonEntityGroupLimitsUpgradeTierMap(name);
+        Map<String, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
+                .getDefaultEntityGroupLimitsUpgradeTierMap();
+        Map<String, Map<String, Settings.UpgradeTier>> customAddonTiers = this.addon.getSettings()
+                .getAddonEntityGroupLimitsUpgradeTierMap(name);
 
         Map<String, List<Settings.UpgradeTier>> tierList = new HashMap<>();
 
@@ -184,33 +241,44 @@ public class UpgradesManager {
             customAddonTiers.forEach((ent, tiers) -> {
                 Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
                 if (defaultTiers.containsKey(ent))
-                    uniqueIDSet.addAll(defaultTiers.get(ent).keySet());
+                    uniqueIDSet.addAll(defaultTiers.get(ent)
+                            .keySet());
                 List<Settings.UpgradeTier> entTier = new ArrayList<>(uniqueIDSet.size());
 
-                uniqueIDSet.forEach(id -> entTier.add(tiers.getOrDefault(id, defaultTiers.get(ent).get(id))));
+                uniqueIDSet.forEach(id -> entTier.add(tiers.getOrDefault(id, defaultTiers.get(ent)
+                        .get(id))));
                 tierList.put(ent, entTier);
             });
 
-            defaultTiers.forEach((ent, tiers) -> tierList.putIfAbsent(ent, new ArrayList<>(tiers.values())));
+            defaultTiers.forEach(
+                    (ent, tiers) -> tierList.putIfAbsent(ent, new ArrayList<>(tiers.values())));
         }
 
         if (tierList.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        tierList.forEach((ent, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+        tierList.forEach(
+                (ent, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
 
         return tierList;
     }
 
     public Map<String, List<Settings.CommandUpgradeTier>> getAllCommandUpgradeTiers(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
         if (name == null) {
             return Collections.emptyMap();
         }
 
-        Map<String, Map<String, Settings.CommandUpgradeTier>> defaultTiers = this.addon.getSettings().getDefaultCommandUpgradeTierMap();
-        Map<String, Map<String, Settings.CommandUpgradeTier>> customAddonTiers = this.addon.getSettings().getAddonCommandUpgradeTierMap(name);
+        Map<String, Map<String, Settings.CommandUpgradeTier>> defaultTiers = this.addon.getSettings()
+                .getDefaultCommandUpgradeTierMap();
+        Map<String, Map<String, Settings.CommandUpgradeTier>> customAddonTiers = this.addon.getSettings()
+                .getAddonCommandUpgradeTierMap(name);
 
         Map<String, List<Settings.CommandUpgradeTier>> tierList = new HashMap<>();
 
@@ -220,21 +288,25 @@ public class UpgradesManager {
             customAddonTiers.forEach((cmd, tiers) -> {
                 Set<String> uniqueIDSet = new HashSet<>(tiers.keySet());
                 if (defaultTiers.containsKey(cmd))
-                    uniqueIDSet.addAll(defaultTiers.get(cmd).keySet());
+                    uniqueIDSet.addAll(defaultTiers.get(cmd)
+                            .keySet());
                 List<Settings.CommandUpgradeTier> cmdTier = new ArrayList<>(uniqueIDSet.size());
 
-                uniqueIDSet.forEach(id -> cmdTier.add(tiers.getOrDefault(id, defaultTiers.get(cmd).get(id))));
+                uniqueIDSet.forEach(id -> cmdTier.add(tiers.getOrDefault(id, defaultTiers.get(cmd)
+                        .get(id))));
                 tierList.put(cmd, cmdTier);
             });
 
-            defaultTiers.forEach((cmd, tiers) -> tierList.putIfAbsent(cmd, new ArrayList<>(tiers.values())));
+            defaultTiers.forEach(
+                    (cmd, tiers) -> tierList.putIfAbsent(cmd, new ArrayList<>(tiers.values())));
         }
 
         if (tierList.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        tierList.forEach((cmd, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
+        tierList.forEach(
+                (cmd, tiers) -> tiers.sort(Comparator.comparingInt(Settings.UpgradeTier::getMaxLevel)));
 
         return tierList;
     }
@@ -251,7 +323,8 @@ public class UpgradesManager {
             return rangeUpgradeTier;
 
         for (int i = 0; i < tierList.size(); i++) {
-            if (rangeLevel <= tierList.get(i).getMaxLevel())
+            if (rangeLevel <= tierList.get(i)
+                    .getMaxLevel())
                 return tierList.get(i);
         }
 
@@ -259,7 +332,8 @@ public class UpgradesManager {
     }
 
     public Settings.UpgradeTier getBlockLimitsUpgradeTier(Material mat, int limitsLevel, World world) {
-        Map<Material, List<Settings.UpgradeTier>> matTierList = this.getAllBlockLimitsUpgradeTiers(world);
+        Map<Material, List<Settings.UpgradeTier>> matTierList =
+                this.getAllBlockLimitsUpgradeTiers(world);
 
         if (matTierList.isEmpty()) {
             return null;
@@ -272,14 +346,17 @@ public class UpgradesManager {
         List<Settings.UpgradeTier> tierList = matTierList.get(mat);
 
         for (int i = 0; i < tierList.size(); i++) {
-            if (limitsLevel <= tierList.get(i).getMaxLevel())
+            if (limitsLevel <= tierList.get(i)
+                    .getMaxLevel())
                 return tierList.get(i);
         }
         return null;
     }
 
-    public Settings.UpgradeTier getEntityLimitsUpgradeTier(EntityType ent, int limitsLevel, World world) {
-        Map<EntityType, List<Settings.UpgradeTier>> entTierList = this.getAllEntityLimitsUpgradeTiers(world);
+    public Settings.UpgradeTier getEntityLimitsUpgradeTier(EntityType ent, int limitsLevel,
+                                                           World world) {
+        Map<EntityType, List<Settings.UpgradeTier>> entTierList =
+                this.getAllEntityLimitsUpgradeTiers(world);
 
         if (entTierList.isEmpty()) {
             return null;
@@ -292,15 +369,18 @@ public class UpgradesManager {
         List<Settings.UpgradeTier> tierList = entTierList.get(ent);
 
         for (int i = 0; i < tierList.size(); i++) {
-            if (limitsLevel <= tierList.get(i).getMaxLevel())
+            if (limitsLevel <= tierList.get(i)
+                    .getMaxLevel())
                 return tierList.get(i);
         }
 
         return null;
     }
 
-    public Settings.UpgradeTier getEntityGroupLimitsUpgradeTier(String group, int limitsLevel, World world) {
-        Map<String, List<Settings.UpgradeTier>> entTierList = this.getAllEntityGroupLimitsUpgradeTiers(world);
+    public Settings.UpgradeTier getEntityGroupLimitsUpgradeTier(String group, int limitsLevel,
+                                                                World world) {
+        Map<String, List<Settings.UpgradeTier>> entTierList =
+                this.getAllEntityGroupLimitsUpgradeTiers(world);
 
         if (entTierList.isEmpty()) {
             return null;
@@ -313,7 +393,8 @@ public class UpgradesManager {
         List<Settings.UpgradeTier> tierList = entTierList.get(group);
 
         for (int i = 0; i < tierList.size(); i++) {
-            if (limitsLevel <= tierList.get(i).getMaxLevel())
+            if (limitsLevel <= tierList.get(i)
+                    .getMaxLevel())
                 return tierList.get(i);
         }
 
@@ -321,7 +402,8 @@ public class UpgradesManager {
     }
 
     public Settings.CommandUpgradeTier getCommandUpgradeTier(String cmd, int cmdLevel, World world) {
-        Map<String, List<Settings.CommandUpgradeTier>> cmdTierList = this.getAllCommandUpgradeTiers(world);
+        Map<String, List<Settings.CommandUpgradeTier>> cmdTierList =
+                this.getAllCommandUpgradeTiers(world);
 
         if (cmdTierList.isEmpty()) {
             return null;
@@ -334,14 +416,16 @@ public class UpgradesManager {
         List<Settings.CommandUpgradeTier> tierList = cmdTierList.get(cmd);
 
         for (int i = 0; i < tierList.size(); i++) {
-            if (cmdLevel <= tierList.get(i).getMaxLevel())
+            if (cmdLevel <= tierList.get(i)
+                    .getMaxLevel())
                 return tierList.get(i);
         }
 
         return null;
     }
 
-    public Map<String, Integer> getRangeUpgradeInfos(int rangeLevel, int islandLevel, int numberPeople, World world) {
+    public Map<String, Integer> getRangeUpgradeInfos(int rangeLevel, int islandLevel, int numberPeople,
+                                                     World world) {
         Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
 
         if (rangeUpgradeTier == null)
@@ -349,9 +433,12 @@ public class UpgradesManager {
 
         Map<String, Integer> info = new HashMap<>();
 
-        info.put("islandMinLevel", (int) rangeUpgradeTier.calculateIslandMinLevel(rangeLevel, islandLevel, numberPeople));
-        info.put("vaultCost", (int) rangeUpgradeTier.calculateVaultCost(rangeLevel, islandLevel, numberPeople));
-        info.put("upgrade", (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
+        info.put("islandMinLevel",
+                (int) rangeUpgradeTier.calculateIslandMinLevel(rangeLevel, islandLevel, numberPeople));
+        info.put("vaultCost",
+                (int) rangeUpgradeTier.calculateVaultCost(rangeLevel, islandLevel, numberPeople));
+        info.put("upgrade",
+                (int) rangeUpgradeTier.calculateUpgrade(rangeLevel, islandLevel, numberPeople));
 
         return info;
     }
@@ -373,11 +460,19 @@ public class UpgradesManager {
     }
 
     public int getRangeUpgradeMax(World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-        return this.addon.getSettings().getMaxRangeUpgrade(name);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
+        return this.addon.getSettings()
+                .getMaxRangeUpgrade(name);
     }
 
-    public Map<String, Integer> getBlockLimitsUpgradeInfos(Material mat, int limitsLevel, int islandLevel, int numberPeople, World world) {
+    public Map<String, Integer> getBlockLimitsUpgradeInfos(Material mat, int limitsLevel,
+                                                           int islandLevel, int numberPeople,
+                                                           World world) {
         Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
         if (limitsUpgradeTier == null) {
             return null;
@@ -385,9 +480,12 @@ public class UpgradesManager {
 
         Map<String, Integer> info = new HashMap<>();
 
-        info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
-        info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
-        info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
+        info.put("islandMinLevel",
+                (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+        info.put("vaultCost",
+                (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
+        info.put("upgrade",
+                (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 
         return info;
     }
@@ -409,42 +507,61 @@ public class UpgradesManager {
     }
 
     public int getBlockLimitsUpgradeMax(Material mat, World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-        return this.addon.getSettings().getMaxBlockLimitsUpgrade(mat, name);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
+        return this.addon.getSettings()
+                .getMaxBlockLimitsUpgrade(mat, name);
     }
 
-    public Map<String, Integer> getEntityLimitsUpgradeInfos(EntityType ent, int limitsLevel, int islandLevel, int numberPeople, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+    public Map<String, Integer> getEntityLimitsUpgradeInfos(EntityType ent, int limitsLevel,
+                                                            int islandLevel, int numberPeople,
+                                                            World world) {
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
         if (limitsUpgradeTier == null) {
             return null;
         }
 
         Map<String, Integer> info = new HashMap<>();
 
-        info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
-        info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
-        info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
+        info.put("islandMinLevel",
+                (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+        info.put("vaultCost",
+                (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
+        info.put("upgrade",
+                (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 
         return info;
     }
 
-    public Map<String, Integer> getEntityGroupLimitsUpgradeInfos(String group, int limitsLevel, int islandLevel, int numberPeople, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
+    public Map<String, Integer> getEntityGroupLimitsUpgradeInfos(String group, int limitsLevel,
+                                                                 int islandLevel, int numberPeople,
+                                                                 World world) {
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
         if (limitsUpgradeTier == null) {
             return null;
         }
 
         Map<String, Integer> info = new HashMap<>();
 
-        info.put("islandMinLevel", (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
-        info.put("vaultCost", (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
-        info.put("upgrade", (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
+        info.put("islandMinLevel",
+                (int) limitsUpgradeTier.calculateIslandMinLevel(limitsLevel, islandLevel, numberPeople));
+        info.put("vaultCost",
+                (int) limitsUpgradeTier.calculateVaultCost(limitsLevel, islandLevel, numberPeople));
+        info.put("upgrade",
+                (int) limitsUpgradeTier.calculateUpgrade(limitsLevel, islandLevel, numberPeople));
 
         return info;
     }
 
     public int getEntityLimitsPermissionLevel(EntityType ent, int limitsLevel, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
 
         if (limitsUpgradeTier == null)
             return 0;
@@ -452,7 +569,8 @@ public class UpgradesManager {
     }
 
     public int getEntityGroupLimitsPermissionLevel(String group, int limitsLevel, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
 
         if (limitsUpgradeTier == null)
             return 0;
@@ -460,7 +578,8 @@ public class UpgradesManager {
     }
 
     public String getEntityLimitsUpgradeTierName(EntityType ent, int limitsLevel, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
 
         if (limitsUpgradeTier == null)
             return null;
@@ -468,7 +587,8 @@ public class UpgradesManager {
     }
 
     public String getEntityGroupLimitsUpgradeTierName(String group, int limitsLevel, World world) {
-        Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
+        Settings.UpgradeTier limitsUpgradeTier =
+                this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
 
         if (limitsUpgradeTier == null)
             return null;
@@ -476,16 +596,29 @@ public class UpgradesManager {
     }
 
     public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-        return this.addon.getSettings().getMaxEntityLimitsUpgrade(ent, name);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
+        return this.addon.getSettings()
+                .getMaxEntityLimitsUpgrade(ent, name);
     }
 
     public int getEntityGroupLimitsUpgradeMax(String group, World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-        return this.addon.getSettings().getMaxEntityGroupLimitsUpgrade(group, name);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
+        return this.addon.getSettings()
+                .getMaxEntityGroupLimitsUpgrade(group, name);
     }
 
-    public Map<String, Integer> getCommandUpgradeInfos(String cmd, int cmdLevel, int islandLevel, int numberPeople, World world) {
+    public Map<String, Integer> getCommandUpgradeInfos(String cmd, int cmdLevel, int islandLevel,
+                                                       int numberPeople, World world) {
         Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
         if (cmdUpgradeTier == null) {
             return null;
@@ -493,8 +626,10 @@ public class UpgradesManager {
 
         Map<String, Integer> info = new HashMap<>();
 
-        info.put("islandMinLevel", (int) cmdUpgradeTier.calculateIslandMinLevel(cmdLevel, islandLevel, numberPeople));
-        info.put("vaultCost", (int) cmdUpgradeTier.calculateVaultCost(cmdLevel, islandLevel, numberPeople));
+        info.put("islandMinLevel",
+                (int) cmdUpgradeTier.calculateIslandMinLevel(cmdLevel, islandLevel, numberPeople));
+        info.put("vaultCost",
+                (int) cmdUpgradeTier.calculateVaultCost(cmdLevel, islandLevel, numberPeople));
         info.put("upgrade", (int) cmdUpgradeTier.calculateUpgrade(cmdLevel, islandLevel, numberPeople));
 
         return info;
@@ -517,12 +652,19 @@ public class UpgradesManager {
     }
 
     public int getCommandUpgradeMax(String cmd, World world) {
-        String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName()).orElse(null);
-        return this.addon.getSettings().getMaxCommandUpgrade(cmd, name);
+        String name = this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName())
+                .orElse(null);
+        return this.addon.getSettings()
+                .getMaxCommandUpgrade(cmd, name);
     }
 
     public List<String> getCommandList(String cmd, int cmdLevel, Island island, String playerName) {
-        Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, island.getWorld());
+        Settings.CommandUpgradeTier cmdUpgradeTier =
+                this.getCommandUpgradeTier(cmd, cmdLevel, island.getWorld());
 
         if (cmdUpgradeTier == null)
             return Collections.emptyList();
@@ -541,9 +683,14 @@ public class UpgradesManager {
         if (!this.addon.isLimitsProvided())
             return Collections.emptyMap();
 
-        Map<EntityType, Integer> entityLimits = new HashMap<>(this.addon.getLimitsAddon().getSettings().getLimits());
-        IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityLimits().forEach(entityLimits::put);
+        Map<EntityType, Integer> entityLimits = new HashMap<>(this.addon.getLimitsAddon()
+                .getSettings()
+                .getLimits());
+        IslandBlockCount ibc = this.addon.getLimitsAddon()
+                .getBlockLimitListener()
+                .getIsland(island.getUniqueId());
+        if (ibc != null) ibc.getEntityLimits()
+                .forEach(entityLimits::put);
         return entityLimits;
     }
 
@@ -551,18 +698,28 @@ public class UpgradesManager {
         if (!this.addon.isLimitsProvided())
             return Collections.emptyMap();
 
-        Map<String, Integer> entityGroupLimits = new HashMap<>(this.addon.getLimitsAddon().getSettings().getGroupLimits().values()
-                .stream().flatMap(e -> e.stream()).distinct()
+        Map<String, Integer> entityGroupLimits = new HashMap<>(this.addon.getLimitsAddon()
+                .getSettings()
+                .getGroupLimits()
+                .values()
+                .stream()
+                .flatMap(e -> e.stream())
+                .distinct()
                 .collect(Collectors.toMap(e -> e.getName(), e -> e.getLimit())));
-        IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityGroupLimits().forEach(entityGroupLimits::put);
+        IslandBlockCount ibc = this.addon.getLimitsAddon()
+                .getBlockLimitListener()
+                .getIsland(island.getUniqueId());
+        if (ibc != null) ibc.getEntityGroupLimits()
+                .forEach(entityGroupLimits::put);
         return entityGroupLimits;
     }
 
     private UpgradesAddon addon;
 
     private Set<String> hookedGameModes;
-    
-	private Map<Class<? extends Price>, Price> activatedPrices;
+
+    private Map<Class<? extends Price>, Price> activatedPrices;
+
+    private Map<Class<? extends Reward>, Reward> activatedRewards;
 
 }

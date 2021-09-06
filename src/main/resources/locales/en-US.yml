@@ -99,6 +99,13 @@ upgrades:
       rightdesc: "&cRight click: delete"
     listadminpricepanel:
       title: "List of available prices"
+    listadmintierrewardpanel:
+      title: "List of rewards"
+      create: "Add new reward"
+      leftdesc: "&cLeft click: update"
+      rightdesc: "&cRight click: delete"
+    listadminrewardpanel:
+      title: "List of available rewards"
     islandlevelpricepanel:
       title: "Island level price"
     buttons:
@@ -131,6 +138,18 @@ upgrades:
       paneltitle: "Island level price"
       rulequestion: |-
         Enter the new rule for this island level price
+        Actual: [actual]
+  rewards:
+    rangeupgrade:
+      name: "Range upgrade"
+      description: |-
+        Increase the border size
+      admindescription: |-
+        Increase the island border size
+        Careful to not go over the island limit
+      paneltitle: "Range upgrade reward"
+      rulequestion: |-
+        Enter the new rule for this range upgrade reward
         Actual: [actual]
 protection:
   flags:

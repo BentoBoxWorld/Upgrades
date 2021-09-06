@@ -17,6 +17,8 @@ import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.dataobjects.prices.Price;
 import world.bentobox.upgrades.dataobjects.prices.PriceDB;
+import world.bentobox.upgrades.dataobjects.rewards.Reward;
+import world.bentobox.upgrades.dataobjects.rewards.RewardDB;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 public final class EditTierPanel extends AbPanel {
@@ -120,7 +122,7 @@ public final class EditTierPanel extends AbPanel {
                                 this.getUser()
                                         .getTranslation("upgrades.ui.edittierpanel.rewards"))
                         .icon(Material.DIAMOND_BLOCK)
-                        .clickHandler(null)
+                        .clickHandler(this.onSetRewards)
                         .build(),
                 32);
 
@@ -246,6 +248,23 @@ public final class EditTierPanel extends AbPanel {
     };
 
     private final ClickHandler onSetRewards = (panel, client, click, slot) -> {
+        String title = client.getTranslation("upgrades.ui.listadmintierrewardpanel.title");
+        String create = client.getTranslation("upgrades.ui.listadmintierrewardpanel.create");
+        String leftDesc = client.getTranslation("upgrades.ui.listadmintierrewardpanel.leftdesc");
+        String rightDesc = client.getTranslation("upgrades.ui.listadmintierrewardpanel.rightdesc");
+        List<Reward> rewards = this.tier.getRewards()
+                .stream()
+                .map((RewardDB reward) ->
+                        this.getAddon()
+                                .getUpgradesManager()
+                                .searchReward(reward.getRewardType())
+                )
+                .collect(Collectors.toList());
+
+        new AdminList<>(this.getAddon(), this.getGamemode(), client, title, this, rewards,
+                this.onSelectReward, this.onDeleteReward,
+                this.onCreateReward, create, leftDesc, rightDesc).getBuild()
+                .build();
         return true;
     };
 
@@ -257,6 +276,19 @@ public final class EditTierPanel extends AbPanel {
                 .orElse(null);
 
         price.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
+                        selected)
+                .getBuild()
+                .build();
+    };
+
+    private final Consumer<Reward> onSelectReward = (reward) -> {
+        RewardDB selected = this.tier.getRewards()
+                .stream()
+                .filter((r) -> r.getRewardType() == reward.getClass())
+                .findFirst()
+                .orElse(null);
+
+        reward.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
                         selected)
                 .getBuild()
                 .build();
@@ -278,6 +310,21 @@ public final class EditTierPanel extends AbPanel {
                         .build();
             });
 
+    private final Consumer<Reward> onDeleteReward = (reward) ->
+            new YesNoPanel(this.getAddon(), this.getGamemode(), this.getUser(), this.getUser()
+                    .getTranslation("upgrades.ui.titles.delete"), this, delete -> {
+                if (delete) {
+                    List<RewardDB> rewards = this.tier.getRewards();
+                    rewards = rewards.stream()
+                            .filter(r -> r.getRewardType() == reward.getClass())
+                            .collect(
+                                    Collectors.toList());
+                    this.tier.setRewards(rewards);
+                }
+                this.getBuild()
+                        .build();
+            });
+
     private final Runnable onCreatePrice = () -> {
         String title = this.getUser()
                 .getTranslation("upgrades.ui.listadminpricepanel.title");
@@ -291,8 +338,26 @@ public final class EditTierPanel extends AbPanel {
                 .build();
     };
 
+    private final Runnable onCreateReward = () -> {
+        String title = this.getUser()
+                .getTranslation("upgrades.ui.listadminrewardpanel.title");
+        List<Reward> rewards = this.getAddon()
+                .getUpgradesManager()
+                .getRewards();
+
+        new AdminList<>(this.getAddon(), this.getGamemode(), this.getUser(), title, this, rewards,
+                this.onSelectNewReward, null, null, null, null, null).getBuild()
+                .build();
+    };
+
     private final Consumer<Price> onSelectNewPrice = (price) ->
             price.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
+                            null)
+                    .getBuild()
+                    .build();
+
+    private final Consumer<Reward> onSelectNewReward = (reward) ->
+            reward.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
                             null)
                     .getBuild()
                     .build();

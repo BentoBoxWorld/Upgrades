@@ -10,15 +10,7 @@ public class IslandLevelPriceDB extends PriceDB {
      * calculate the level needed
      */
     @Expose
-    private String levelNeededEquation;
-
-    public IslandLevelPriceDB(String levelNeededEquation) {
-        this.levelNeededEquation = levelNeededEquation;
-    }
-
-    public IslandLevelPriceDB() {
-        this.levelNeededEquation = "";
-    }
+    private String levelNeededEquation = "0";
 
     // ------------------------------------------------------------
     // Section: Getters
@@ -54,12 +46,6 @@ public class IslandLevelPriceDB extends PriceDB {
     @Override
     public boolean isValid() {
         return levelNeededEquation != null && !levelNeededEquation.isEmpty();
-    }
-
-    @Override
-    public boolean Activate() {
-        // TODO Auto-generated method stub
-        return true;
     }
 
 }
