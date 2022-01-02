@@ -38,30 +38,30 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
         UpgradeValues upgrade;
 
         if (upgradeInfos == null) {
-	        upgrade = null;
-    	} else {
-    		// Get new description
-	        String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
-	        		"[name]", upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()),
-	        		"[current]", Integer.toString(upgradeLevel),
-	        		"[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld())));
-	        
-	        // Set new description
-	        this.setOwnDescription(user, description);
+            upgrade = null;
+        } else {
+            // Get new description
+            String description =  user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
+                    "[name]", upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeTierName(this.group, upgradeLevel, island.getWorld()),
+                    "[current]", Integer.toString(upgradeLevel),
+                    "[max]", Integer.toString(upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeMax(this.group, island.getWorld())));
+
+            // Set new description
+            this.setOwnDescription(user, description);
 
             upgrade = new UpgradeValues(upgradeInfos.get("islandMinLevel"), upgradeInfos.get("vaultCost"), upgradeInfos.get("upgrade"));
-    	}
-        
+        }
+
         this.setUpgradeValues(user, upgrade);
 
         String newDisplayName;
 
         if (upgrade == null) {
             newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade",
-                                                 "[block]", this.group);
+                    "[block]", this.group);
         } else {
             newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade",
-                                                 "[block]", this.group, "[level]", Integer.toString(upgrade.getUpgradeValue()));
+                    "[block]", this.group, "[level]", Integer.toString(upgrade.getUpgradeValue()));
         }
 
         this.setDisplayName(newDisplayName);
@@ -90,7 +90,7 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
         // For each permission of the player
         for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
 
-            // If permission is the one we search 
+            // If permission is the one we search
             if (!perms.getValue() || !perms.getPermission().startsWith(permissionStart))
                 continue;
 
@@ -130,29 +130,16 @@ public class EntityGroupLimitsUpgrade extends Upgrade {
 
         BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
         IslandBlockCount isb = bLListener.getIsland(island.getUniqueId());
-        Map<String, Integer> entityGroupLimits = islandAddon.getUpgradesManager().getEntityGroupLimits(island);
-
-        if (!entityGroupLimits.containsKey(this.group) || entityGroupLimits.get(this.group) == -1) {
-            this.getUpgradesAddon().logWarning("User tried to upgrade " + this.group + " limits but it has no limits. This is probably a configuration problem.");
-            user.sendMessage("upgrades.error.increasenolimits");
-            return false;
-        }
-        
-        if (isb == null) {
-			user.sendMessage("upgrades.error.placeblock");
-			return false;
-		}
-
-
         if (!super.doUpgrade(user, island))
             return false;
 
-        int newCount = (int) (entityGroupLimits.get(this.group) + this.getUpgradeValues(user).getUpgradeValue());
-        
-        isb.setEntityGroupLimit(this.group, newCount);
+        int oldCount = isb.getEntityGroupLimitsOffset().getOrDefault(this.group,  0);
+        int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
+
+        isb.setEntityGroupLimitsOffset(this.group, newCount);
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
-                         "[block]", this.group, "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
+                "[block]", this.group, "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
 
         return true;
     }
