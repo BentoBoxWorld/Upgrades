@@ -130,7 +130,7 @@ public class BlockLimitsUpgrade extends Upgrade {
             return false;
 
         BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
-        IslandBlockCount isb = bLListener.getIsland(island.getUniqueId());
+        IslandBlockCount isb = bLListener.getIsland(island);
 
         if (!super.doUpgrade(user, island))
             return false;

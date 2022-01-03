@@ -50,7 +50,7 @@
         <spigot.version>1.16.5-R0.1-SNAPSHOT</spigot.version>
         <bentobox.version>1.16.6-SNAPSHOT</bentobox.version>
         <level.version>2.9.0</level.version>
-        <limits.version>1.19.0</limits.version>
+        <limits.version>1.19.1-SNAPSHOT</limits.version>
         <vault.version>1.7</vault.version>
 
         <revision>${build.version}-SNAPSHOT</revision>
