@@ -15,8 +15,17 @@ upgrades:
       jeden blok"
   ui:
     upgradepanel:
+      islandneed: 'Minimalny poziom wyspy: [islandlevel]'
+      limitsupgrade: Limit dla [block] to [level]
+      limitsupgradedone: "&a Limit [block] na Twojej wyspy zostały zwiększone na [level]"
       maxlevel: Maksymalny poziom osiągnięty
+      moneycost: 'Koszt pieniężny: [cost]'
+      nolimitsupgrade: "&7[block] limit ulepszeń"
       norangeupgrade: "&7 Ulepszenie zasięgu"
+      rangeupgrade: Ulepszenie zasięgu o [rangelevel]
+      rangeupgradedone: "&a Zasięg Twojej wyspy został powiększony o [rangelevel]
+        bloków"
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
       title: Sklep z ulepszeniami wyspy
       tryreloadlevel: Nie zapomnij zaktualizować poziomu wyspy za pomocą polecenia
         poziomu
@@ -24,3 +33,4 @@ protection:
   flags:
     UPGRADES_RANK_RIGHT:
       description: Zmień, kto może uaktualnić
+      name: Ulepszenie
