@@ -1,0 +1,26 @@
+---
+upgrades:
+  commands:
+    main:
+      description: Otwórz interfejs sklepu z aktualizacjami
+  error:
+    costwithdraw: "&c Nie można wypłacić pieniędzy. Powinieneś porozmawiać o tym z
+      administratorem"
+    increasenolimits: "&c Nie możesz zwiększyć granic czegoś, co nie jest ograniczone.
+      Powinieneś porozmawiać o tym z administratorem"
+    notonisland: "&c Aby to zrobić, musisz być na swojej wyspie"
+    rangeovermax: "&c Próbowałeś zwiększyć zasięg swojej wyspy powyżej maksimum? Powinieneś
+      porozmawiać o tym z administratorem"
+    placeblock: "&c Przed zakupem tej aktualizacji musisz umieścić/złamać co najmniej
+      jeden blok"
+  ui:
+    upgradepanel:
+      maxlevel: Maksymalny poziom osiągnięty
+      norangeupgrade: "&7 Ulepszenie zasięgu"
+      title: Sklep z ulepszeniami wyspy
+      tryreloadlevel: Nie zapomnij zaktualizować poziomu wyspy za pomocą polecenia
+        poziomu
+protection:
+  flags:
+    UPGRADES_RANK_RIGHT:
+      description: Zmień, kto może uaktualnić
