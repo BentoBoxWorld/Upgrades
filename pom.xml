@@ -48,7 +48,7 @@
         <powermock.version>2.0.9</powermock.version>
 
         <spigot.version>1.16.5-R0.1-SNAPSHOT</spigot.version>
-        <bentobox.version>1.16.6-SNAPSHOT</bentobox.version>
+        <bentobox.version>1.20.0-SNAPSHOT</bentobox.version>
         <level.version>2.9.0</level.version>
         <limits.version>1.19.1-SNAPSHOT</limits.version>
         <vault.version>1.7</vault.version>
@@ -62,7 +62,6 @@
         <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
         <!-- SonarCloud Analysis -->
-        <sonar.projectKey>BentoBoxWorld_Upgrades</sonar.projectKey>
         <sonar.organization>bentobox-world</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
