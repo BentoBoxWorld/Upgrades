@@ -1,17 +1,29 @@
-islandupgrades:
-  commands:
-    main:
+upgrades: 
+  commands: 
+    main: 
       description: "Open the upgrade shop interface"
-  ui:
-    upgradepanel:
-      title: "Island upgrade shop"
-      rangeupgrade: "Range upgrade of [rangelevel]"
-      norangeupgrade: "§7Range upgrade"
-      rangeupgradedone: "§aYour island range was upgraded of [rangelevel] blocks"
-      maxlevel: "Max level reached"
+  error: 
+    costwithdraw: "&c Couldn't withdraw money. You should talk about this to an administrator"
+    increasenolimits: "&c You can't increase the limits of something not limited. You should talk about this to an administrator"
+    notonisland: "&c You need to be on your island to do that"
+    rangeovermax: "&c You tried to upgrade you island range over the max? You should talk about this to an administrator"
+    placeblock: "&c Before buying this upgrade, you need to place/break at least one block"
+  ui: 
+    upgradepanel: 
       islandneed: "Island Min Level: [islandlevel]"
+      limitsupgrade: "[block] limits upgrade of [level]"
+      limitsupgradedone: "&a Your island [block] limits was upgraded by [level]"
+      maxlevel: "Max level reached"
       moneycost: "Money cost: [cost]"
+      nolimitsupgrade: "&7[block] limits upgrade"
+      norangeupgrade: "&7 Range upgrade"
+      rangeupgrade: "Range upgrade of [rangelevel]"
+      rangeupgradedone: "&a Your island range was upgraded by [rangelevel] blocks"
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
+      title: "Island upgrade shop"
       tryreloadlevel: "Don't forget to update your island level with the level command"
-  error:
-    rangeovermax: "§cYou tried to upgrade you island range over the max? You should talk about this to an administrator"
-    costwithdraw: "§cCouldn't withdraw money. You should talk about this to an administrator"
+protection: 
+  flags: 
+    UPGRADES_RANK_RIGHT: 
+      description: "Switch who can upgrade"
+      name: "Upgrade Rank"

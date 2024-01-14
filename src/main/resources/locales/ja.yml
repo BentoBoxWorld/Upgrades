@@ -1,0 +1,23 @@
+upgrades:
+  commands:
+    main:
+      description: アップグレードショップのインターフェースを開く
+  ui:
+    upgradepanel:
+      title: アイランドアップグレードショップ
+      rangeupgrade: "[rangelevel]の範囲アップグレード"
+      norangeupgrade: "＆7範囲アップグレード"
+      rangeupgradedone: "＆a島の範囲が[rangelevel]ブロックにアップグレードされました"
+      limitsupgrade: "[block]は[level]のアップグレードを制限します"
+      nolimitsupgrade: "＆7 [block]制限アップグレード"
+      limitsupgradedone: "＆aあなたの島の[block]制限が[level]にアップグレードされました"
+      maxlevel: 最大レベルに達しました
+      islandneed: 島の最小レベル：[islandlevel]
+      moneycost: 費用：[cost]
+      tryreloadlevel: levelコマンドで島のレベルを更新することを忘れないでください
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
+  error:
+    notonisland: "＆cあなたはそれをするためにあなたの島にいる必要があります"
+    rangeovermax: "＆c島の範囲を最大値以上にアップグレードしようとしましたか？これについて管理者に相談する必要があります"
+    increasenolimits: "＆c制限されていないものの制限を増やすことはできません。これについて管理者に相談する必要があります"
+    costwithdraw: "＆c出金できませんでした。これについて管理者に相談する必要があります"

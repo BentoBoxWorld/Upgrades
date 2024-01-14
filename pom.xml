@@ -1,75 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	
-	<groupId>world.bentobox</groupId>
-	<artifactId>IslandUpgrades</artifactId>
-	<version>${revision}</version>
-	
-	<name>IslandUpgrades</name>
-	<description>BentoBox Addon for buying upgrade for island with vault money</description>
-  
-  	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        
-        <spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
-        <bentobox.version>1.13.1</bentobox.version>
-        <level.version>2.0.0</level.version>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>world.bentobox</groupId>
+    <artifactId>upgrades</artifactId>
+    <version>${revision}</version>
+
+    <name>Upgrades</name>
+    <description>BentoBox Addon for buying upgrade for island with vault money</description>
+    <url>https://github.com/BentoBoxWorld/Upgrades</url>
+    <inceptionYear>2020</inceptionYear>
+
+    <scm>
+        <connection>scm:git:https://github.com/BentoBoxWorld/Upgrades.git</connection>
+        <developerConnection>scm:git:git@github.com:BentoBoxWorld/Upgrades.git</developerConnection>
+        <url>https://github.com/BentoBoxWorld/Upgrades</url>
+    </scm>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.codemc.org/job/BentoBoxWorld/job/Upgrades</url>
+    </ciManagement>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/BentoBoxWorld/Upgrades/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.org/repository/maven-snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.org/repository/maven-releases</url>
+        </repository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>16</java.version>
+        <!-- Non-minecraft related dependencies -->
+        <powermock.version>2.0.9</powermock.version>
+
+        <spigot.version>1.16.5-R0.1-SNAPSHOT</spigot.version>
+        <bentobox.version>1.20.0-SNAPSHOT</bentobox.version>
+        <level.version>2.9.0</level.version>
+        <limits.version>1.19.1-SNAPSHOT</limits.version>
         <vault.version>1.7</vault.version>
-        
+
         <revision>${build.version}-SNAPSHOT</revision>
-        
-        <build.version>0.1.0</build.version>
+
+        <!-- This allows to change between versions. -->
+        <build.version>0.3.0</build.version>
+        <!-- Revision variable removes warning about dynamic version -->
+        <revision>${build.version}-SNAPSHOT</revision>
+        <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
-	</properties>
-	
-	<repositories>
-		<repository>
+        <!-- SonarCloud Analysis -->
+        <sonar.organization>bentobox-world</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+
+    <profiles>
+        <profile>
+            <!-- ci profile is activated if exist environment variable BUILD_NUMBER. -->
+            <!-- It replaces ${build.number} that is currently '-LOCAL' with 
+                correct build number from JENKINS machine. -->
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <build.number>-b${env.BUILD_NUMBER}</build.number>
+            </properties>
+        </profile>
+        <profile>
+            <!-- Master profile is activated if exist environment variable 
+                GIT_BRANCH and its value is origin/master. -->
+            <!-- It will replace 'revision' with '${build.version}' so it 
+                removes '-SNAPSHOT' string at the end. -->
+            <!-- Also, as this is release build, build number can be set 
+                to empty string. -->
+            <!-- This profile will be used only if exist environment variable 
+                GIT_BRANCH with value origin/master. -->
+            <id>master</id>
+            <activation>
+                <property>
+                    <name>env.GIT_BRANCH</name>
+                    <value>origin/master</value>
+                </property>
+            </activation>
+            <properties>
+                <!-- Override only if necessary -->
+                <revision>${build.version}</revision>
+                <!-- Empties build number variable. -->
+                <build.number></build.number>
+            </properties>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
         </repository>
-		<repository>
-			<id>codemc-repo</id>
-			<url>https://repo.codemc.org/repository/maven-public/</url>
-		</repository>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	
-	<dependencies>
-		<dependency>
+                <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/maven-snapshots/</url>
+        </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Spigot API -->
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
-		<dependency>
-			<groupId>world.bentobox</groupId>
-			<artifactId>bentobox</artifactId>
-			<version>${bentobox.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>world.bentobox</groupId>
+        <!-- Mockito (Unit testing) -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.11.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bentobox</artifactId>
+            <version>${bentobox.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
             <artifactId>level</artifactId>
             <version>${level.version}</version>
             <scope>provided</scope>
-		</dependency>
-		<dependency>
-	        <groupId>com.github.MilkBowl</groupId>
-	        <artifactId>VaultAPI</artifactId>
-	        <version>${vault.version}</version>
-	        <scope>provided</scope>
-	    </dependency>
-	</dependencies>
-	
-	<build>
+        </dependency>
+        <dependency>
+            <groupId>world.bentobox</groupId>
+            <artifactId>limits</artifactId>
+            <version>${limits.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vault.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- By default ${revision} is ${build.version}-SNAPSHOT -->
+        <!-- If GIT_BRANCH variable is set to origin/master, then it will 
+            be only ${build.version}. -->
+
+        <!-- By default ${build.number} is -LOCAL. -->
+        <!-- If the BUILD_NUMBER variable is set, then it will be -b[number]. -->
+        <!-- If GIT_BRANCH variable is set to origin/master, then it will 
+            be the empty string. -->
+        <finalName>${project.name}-${revision}${build.number}</finalName>
+
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>
@@ -80,9 +200,6 @@
                 <directory>src/main/resources/locales</directory>
                 <targetPath>./locales</targetPath>
                 <filtering>false</filtering>
-                <includes>
-                    <include>*.yml</include>
-                </includes>
             </resource>
         </resources>
         <plugins>
@@ -101,66 +218,39 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <argLine>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.math=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.util.stream=ALL-UNNAMED
+                        --add-opens java.base/java.text=ALL-UNNAMED
+                        --add-opens java.base/java.util.regex=ALL-UNNAMED
+                        --add-opens java.base/java.nio.channels.spi=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens java.base/java.net=ALL-UNNAMED
+                        --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.fs=ALL-UNNAMED
+                        --add-opens java.base/sun.nio.cs=ALL-UNNAMED
+                        --add-opens java.base/java.nio.file=ALL-UNNAMED
+                        --add-opens java.base/java.nio.charset=ALL-UNNAMED
+                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens java.logging/java.util.logging=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
-                <configuration>
-                    <show>public</show>
-                    <failOnError>false</failOnError>
-                    <additionalJOption>-Xdoclint:none</additionalJOption>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
-                <configuration>
-                    <minimizeJar>true</minimizeJar>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -201,5 +291,5 @@
             </plugin>
         </plugins>
     </build>
-  
+
 </project>

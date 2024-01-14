@@ -1,0 +1,29 @@
+upgrades: 
+  commands: 
+    main: 
+      description: "打开升级商店界面"
+  error: 
+    costwithdraw: "&c 无法付款. 请将此问题告诉管理员"
+    increasenolimits: "&c 您不能给一个不受限制的内容加上限制. 请将此问题告诉管理员"
+    notonisland: "&c 必须要在自己的岛屿上才能这么做"
+    rangeovermax: "&c 尝试将岛屿边界扩大到最大值以上? 请将此问题告诉管理员"
+    placeblock: "&c 在购买此升级之前, 您至少需要放置/破坏一个方块"
+  ui: 
+    upgradepanel: 
+      islandneed: "岛屿最低等级: [islandlevel]"
+      limitsupgrade: "[block] limits upgrade of [level]"
+      limitsupgradedone: "&a 您岛屿的 [block] 限制已升级到 [level]"
+      maxlevel: "已达到最大等级"
+      moneycost: "需花费: [cost]"
+      nolimitsupgrade: "&7升级 [block] 限制"
+      norangeupgrade: "&7 边界升级"
+      rangeupgrade: "Range upgrade of [rangelevel]"
+      rangeupgradedone: "&a 您的岛屿边界已扩大 [rangelevel] 个方块"
+      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
+      title: "岛屿升级商店"
+      tryreloadlevel: "不要忘了通过岛屿升级指令升级您的岛屿"
+protection: 
+  flags: 
+    UPGRADES_RANK_RIGHT: 
+      description: "切换可升级的玩家"
+      name: "升级等级"
