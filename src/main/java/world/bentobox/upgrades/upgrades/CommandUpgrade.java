@@ -14,13 +14,39 @@ import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
+/**
+ * Represents an upgrade that executes a specific command when applied.
+ * This class extends the base functionality of {@link Upgrade} to support
+ * command-based upgrades for islands or players.
+ *
+ * <p>The {@code CommandUpgrade} class enables server administrators to
+ * configure upgrades that trigger predefined commands, allowing for
+ * customized upgrade behaviors.</p>
+ */
 public class CommandUpgrade extends Upgrade {
 	
-	public CommandUpgrade(UpgradesAddon addon, String cmdId, Material icon) {
+    private String cmdId;
+
+    /**
+     * Constructs a new {@code CommandUpgrade} instance.
+     *
+     * @param addon The instance of the {@code UpgradesAddon}.
+     * @param cmdId The command
+     * @param icon The material to represent the upgrade visually in the UI.
+     */
+    public CommandUpgrade(UpgradesAddon addon, String cmdId, Material icon) {
 		super(addon, "command-" + cmdId, addon.getSettings().getCommandName(cmdId), icon);
 		this.cmdId = cmdId;
 	}
 	
+    /**
+     * Updates the upgrade values for the specified user and island.
+     * This method sets the upgrade's display name and other relevant
+     * attributes based on the current configuration and context.
+     *
+     * @param user The user for whom the upgrade values are being updated.
+     * @param island The island associated with the upgrade.
+     */
 	@Override
 	public void updateUpgradeValue(User user, Island island) {
 		UpgradesAddon upgradesAddon = this.getUpgradesAddon();
@@ -48,6 +74,15 @@ public class CommandUpgrade extends Upgrade {
 		this.setUpgradeValues(user, upgrade);
 	}
 	
+    /**
+     * Determines whether this upgrade should be displayed to the user.
+     * Checks the visibility conditions for the upgrade, including
+     * permissions and other contextual requirements.
+     *
+     * @param user The user requesting the visibility check.
+     * @param island The island associated with the upgrade.
+     * @return {@code true} if the upgrade should be displayed; {@code false} otherwise.
+     */
 	@Override
 	public boolean isShowed(User user, Island island) {
 		UpgradesAddon upgradeAddon = this.getUpgradesAddon();
@@ -93,10 +128,26 @@ public class CommandUpgrade extends Upgrade {
 		return false;
 	}
 	
+    /**
+     * Logs an error message for issues related to the command upgrade configuration.
+     *
+     * @param user The user associated with the error.
+     * @param command The command causing the error.
+     * @param message The specific error message to log.
+     */
 	private void logError(String name, String perm, String error) {
         this.getUpgradesAddon().logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
     }
 	
+    /**
+     * Executes the command associated with the upgrade.
+     * This method is triggered when the upgrade is applied and performs
+     * the configured command action.
+     *
+     * @param user The user triggering the upgrade.
+     * @param island The island on which the upgrade is applied.
+     * @return {@code true} if the command was executed successfully; {@code false} otherwise.
+     */
 	@Override
 	public boolean doUpgrade(User user, Island island) {
 		UpgradesAddon upgradeAddon = this.getUpgradesAddon();
@@ -118,7 +169,5 @@ public class CommandUpgrade extends Upgrade {
 		});
 		return true;
 	}
-	
-	private String cmdId;
 	
 }

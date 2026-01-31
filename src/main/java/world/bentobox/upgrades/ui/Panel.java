@@ -10,18 +10,35 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.Upgrade;
 
+/**
+ * User interface for Upgrades
+ */
 public class Panel {
 
+    private UpgradesAddon addon;
+    private Island island;
+
+    /**
+     * Start to create a panel for this island
+     * @param addon Upgrades
+     * @param island island
+     */
 	public Panel(UpgradesAddon addon, Island island) {
 		super();
 		this.addon = addon;
 		this.island = island;
 	}
 
+    /**
+     * Show the GUI to the user
+     * @param user user
+     */
 	public void showPanel(User user) {
-		int islandLevel = this.addon.getUpgradesManager().getIslandLevel(this.island);
+        // Start the builder
+        PanelBuilder pb = new PanelBuilder().name(user.getTranslation("upgrades.ui.upgradepanel.title"));
 
-		PanelBuilder pb = new PanelBuilder().name(user.getTranslation("upgrades.ui.upgradepanel.title"));
+        // Get the island level
+		int islandLevel = this.addon.getUpgradesManager().getIslandLevel(this.island);
 
 		this.addon.getAvailableUpgrades().forEach(upgrade -> {
 			upgrade.updateUpgradeValue(user, this.island);
@@ -69,8 +86,5 @@ public class Panel {
 
 		return descrip;
 	}
-
-	private UpgradesAddon addon;
-	private Island island;
 
 }

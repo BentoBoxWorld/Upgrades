@@ -8,6 +8,9 @@ import com.google.gson.annotations.Expose;
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
 
+/**
+ * Database object for storing upgrades data
+ */
 @Table(name = "UpgradesData")
 public class UpgradesData implements DataObject {
 

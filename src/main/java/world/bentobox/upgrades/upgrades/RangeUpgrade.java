@@ -15,19 +15,37 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
 import world.bentobox.upgrades.api.Upgrade;
 
 /**
- * Upgrade Object for range upgrade
+ * Represents an upgrade that increases the protection range of an island.
+ * This class extends the {@link Upgrade} base class and provides functionality
+ * for managing range upgrades within the BentoBox ecosystem.
  *
+ * <p>The {@code RangeUpgrade} dynamically calculates upgrade levels, updates
+ * protection ranges, and ensures that the new range stays within configured limits.</p>
+ * 
+ * <p>Administrators can configure this upgrade to allow players to extend their
+ * island's protected area based on various factors such as the island's level,
+ * number of members, and the current game mode.</p>
+ * 
  * @author Ikkino, tastybento
- *
  */
 public class RangeUpgrade extends Upgrade {
 
+    /**
+     * Constructs a new {@code RangeUpgrade} instance.
+     *
+     * @param addon The instance of the {@code UpgradesAddon}.
+     */
     public RangeUpgrade(UpgradesAddon addon) {
         super(addon, "RangeUpgrade", "RangeUpgrade", Material.OAK_FENCE);
     }
 
     /**
-     * When user open the interface
+     * Updates the upgrade values when the user opens the upgrade interface.
+     * This method dynamically calculates and sets the upgrade's details such as
+     * the current level, maximum level, and associated costs.
+     *
+     * @param user The user viewing the upgrade interface.
+     * @param island The island for which the upgrade is being viewed.
      */
     @Override
     public void updateUpgradeValue(User user, Island island) {
@@ -80,6 +98,14 @@ public class RangeUpgrade extends Upgrade {
         this.setDisplayName(newDisplayName);
     }
 
+    /**
+     * Determines whether the upgrade should be displayed in the user's interface.
+     * This involves checking user permissions and other contextual requirements.
+     *
+     * @param user The user requesting the visibility check.
+     * @param island The island associated with the upgrade.
+     * @return {@code true} if the upgrade should be visible; {@code false} otherwise.
+     */
     @Override
     public boolean isShowed(User user, Island island) {
         // Get the addon
@@ -131,13 +157,26 @@ public class RangeUpgrade extends Upgrade {
         return false;
     }
 
+    /**
+     * Logs an error related to permissions or configuration issues.
+     *
+     * @param name The name of the player associated with the error.
+     * @param perm The permission string causing the error.
+     * @param error A description of the specific error to log.
+     */
     private void logError(String name, String perm, String error) {
         this.getUpgradesAddon()
         .logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
     }
 
     /**
-     * When user do upgrade
+     * Applies the range upgrade to the specified island.
+     * Increases the island's protection range and triggers relevant events to
+     * reflect the change. Ensures that the new range does not exceed the maximum limit.
+     *
+     * @param user The user performing the upgrade.
+     * @param island The island to which the upgrade is applied.
+     * @return {@code true} if the upgrade was successfully applied; {@code false} otherwise.
      */
     @Override
     public boolean doUpgrade(User user, Island island) {
