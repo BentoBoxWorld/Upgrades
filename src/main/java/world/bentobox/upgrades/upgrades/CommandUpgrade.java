@@ -87,7 +87,7 @@ public class CommandUpgrade extends Upgrade {
 	public boolean isShowed(User user, Island island) {
 		UpgradesAddon upgradeAddon = this.getUpgradesAddon();
 		UpgradesData islandData = upgradeAddon.getUpgradesLevels(island.getUniqueId());
-		int upgradeLevel = islandData.getUpgradeLevel(this.cmdId);
+		int upgradeLevel = islandData.getUpgradeLevel(this.getName());
 		int permissionLevel = upgradeAddon.getUpgradesManager().getCommandPermissionLevel(this.cmdId, upgradeLevel, island.getWorld());
 		
 		if (permissionLevel == 0)
