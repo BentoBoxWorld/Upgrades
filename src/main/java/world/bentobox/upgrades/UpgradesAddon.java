@@ -31,31 +31,74 @@ import world.bentobox.upgrades.upgrades.EntityGroupLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
 import world.bentobox.upgrades.upgrades.RangeUpgrade;
 
+/**
+ * Main addon class for the Upgrades addon.
+ * This addon allows islands to purchase various upgrades including range extensions,
+ * entity/block limits, and execute commands upon upgrade purchase.
+ *
+ * @author BONNe
+ * @since 1.0.0
+ */
 public class UpgradesAddon extends Addon {
 
+    /**
+     * The addon settings loaded from config.yml
+     */
     private Settings settings;
 
+    /**
+     * Whether the addon successfully hooked into at least one game mode
+     */
     private boolean hooked;
 
+    /**
+     * Manager for handling upgrade operations
+     */
     private UpgradesManager upgradesManager;
 
+    /**
+     * Set of all registered upgrades available in the addon
+     */
     private Set<Upgrade> upgrade = new HashSet<>();
 
+    /**
+     * Database for storing and loading upgrade data
+     */
     private Database<UpgradesData> database = new Database<>(this, UpgradesData.class);
 
+    /**
+     * Cache of upgrade data mapped by island unique ID for performance
+     */
     private Map<String, UpgradesData> upgradesCache = new HashMap<>();
 
+    /**
+     * Reference to the Level addon for island level requirements
+     */
     private Level levelAddon;
 
+    /**
+     * Reference to the Limits addon for entity/block limit upgrades
+     */
     private Limits limitsAddon;
 
+    /**
+     * Reference to the Vault hook for economy-based upgrade costs
+     */
     private VaultHook vault;
 
+    /**
+     * Protection flag that determines the minimum rank required to use upgrades.
+     * Default is MEMBER_RANK, can be cycled up to OWNER_RANK.
+     */
     public final static Flag UPGRADES_RANK_RIGHT = new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
             .type(Flag.Type.PROTECTION).mode(Flag.Mode.BASIC)
             .clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
             .defaultRank(RanksManager.MEMBER_RANK).build();
 
+    /**
+     * Executes when the addon is loaded.
+     * Saves the default configuration file and initializes settings.
+     */
     @Override
     public void onLoad() {
         super.onLoad();
@@ -63,6 +106,20 @@ public class UpgradesAddon extends Addon {
         this.settings = new Settings(this);
     }
 
+    /**
+     * Executes when the addon is enabled.
+     * Initializes the addon by:
+     * <ul>
+     *   <li>Hooking into available game modes that are not disabled</li>
+     *   <li>Registering player commands for each game mode</li>
+     *   <li>Setting up the upgrades manager</li>
+     *   <li>Connecting to Level, Limits, and Vault addons/plugins if available</li>
+     *   <li>Registering all configured upgrades (entity limits, block limits, range, commands)</li>
+     *   <li>Registering event listeners</li>
+     *   <li>Registering protection flags</li>
+     * </ul>
+     * If no game modes can be hooked, the addon disables itself.
+     */
     @Override
     public void onEnable() {
         if (this.getState().equals(State.DISABLED)) {
@@ -138,12 +195,20 @@ public class UpgradesAddon extends Addon {
         }
     }
 
+    /**
+     * Executes when the addon is disabled.
+     * Saves all cached upgrade data to the database asynchronously.
+     */
     @Override
     public void onDisable() {
         if (this.upgradesCache != null)
             this.upgradesCache.values().forEach(this.database::saveObjectAsync);
     }
 
+    /**
+     * Executes when the addon is reloaded.
+     * Reloads settings from config.yml if the addon is hooked to a game mode.
+     */
     @Override
     public void onReload() {
         super.onReload();
@@ -154,23 +219,41 @@ public class UpgradesAddon extends Addon {
     }
 
     /**
-     * @return the settings
+     * Gets the addon settings.
+     *
+     * @return the settings loaded from config.yml
      */
     public Settings getSettings() {
         return settings;
     }
 
     /**
-     * @return the islandUpgradesManager
+     * Gets the upgrades manager.
+     *
+     * @return the manager responsible for handling upgrade operations
      */
     public UpgradesManager getUpgradesManager() {
         return upgradesManager;
     }
 
+    /**
+     * Gets the database instance for upgrade data.
+     *
+     * @return the database for storing and loading {@link UpgradesData}
+     */
     public Database<UpgradesData> getDatabase() {
         return this.database;
     }
 
+    /**
+     * Gets the upgrade data for a specific island.
+     * If the data is cached, it returns the cached version.
+     * Otherwise, it loads from the database or creates a new instance.
+     * The loaded data is then cached for future access.
+     *
+     * @param targetIsland the unique ID of the island
+     * @return the upgrade data for the island
+     */
     public UpgradesData getUpgradesLevels(@NonNull String targetIsland) {
         UpgradesData upgradesData = this.upgradesCache.get(targetIsland);
         if (upgradesData != null)
@@ -182,6 +265,13 @@ public class UpgradesAddon extends Addon {
         return data;
     }
 
+    /**
+     * Removes an island's upgrade data from the cache.
+     * Optionally saves the data to the database before removing it.
+     *
+     * @param targetIsland the unique ID of the island to uncache
+     * @param save whether to save the data to the database before removing from cache
+     */
     public void uncacheIsland(@Nullable String targetIsland, boolean save) {
         UpgradesData data = this.upgradesCache.remove(targetIsland);
         if (data == null)
@@ -190,34 +280,75 @@ public class UpgradesAddon extends Addon {
             this.database.saveObjectAsync(data);
     }
 
+    /**
+     * Gets the Level addon instance.
+     *
+     * @return the Level addon, or null if not available
+     */
     public Level getLevelAddon() {
         return this.levelAddon;
     }
 
+    /**
+     * Gets the Limits addon instance.
+     *
+     * @return the Limits addon, or null if not available
+     */
     public Limits getLimitsAddon() {
         return this.limitsAddon;
     }
 
+    /**
+     * Gets the Vault hook instance.
+     *
+     * @return the Vault hook for economy operations, or null if not available
+     */
     public VaultHook getVaultHook() {
         return this.vault;
     }
 
+    /**
+     * Checks if the Level addon is available.
+     *
+     * @return true if Level addon is present and hooked, false otherwise
+     */
     public boolean isLevelProvided() {
         return this.levelAddon != null;
     }
 
+    /**
+     * Checks if the Limits addon is available.
+     *
+     * @return true if Limits addon is present and hooked, false otherwise
+     */
     public boolean isLimitsProvided() {
         return this.limitsAddon != null;
     }
 
+    /**
+     * Checks if Vault is available.
+     *
+     * @return true if Vault is present and hooked, false otherwise
+     */
     public boolean isVaultProvided() {
         return this.vault != null;
     }
 
+    /**
+     * Gets all registered upgrades available in the addon.
+     *
+     * @return an unmodifiable set of all available upgrades
+     */
     public Set<Upgrade> getAvailableUpgrades() {
         return this.upgrade;
     }
 
+    /**
+     * Registers a new upgrade to the addon.
+     * This allows the upgrade to be available for purchase by islands.
+     *
+     * @param upgrade the upgrade to register
+     */
     public void registerUpgrade(Upgrade upgrade) {
         this.upgrade.add(upgrade);
     }

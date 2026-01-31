@@ -328,6 +328,14 @@ public class UpgradesManager {
 		return null;
 	}
 
+	/**
+	 * Retrieves the tier information for a block limits upgrade at the specified level and world.
+	 *
+	 * @param mat The material type for the block limits upgrade.
+	 * @param limitsLevel The current level of the block limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The {@link Settings.UpgradeTier} for the specified level and world, or {@code null} if not found.
+	 */
 	public Settings.UpgradeTier getBlockLimitsUpgradeTier(Material mat, int limitsLevel, World world) {
 		Map<Material, List<Settings.UpgradeTier>> matTierList = this.getAllBlockLimitsUpgradeTiers(world);
 
@@ -348,6 +356,14 @@ public class UpgradesManager {
 		return null;
 	}
 
+	/**
+	 * Retrieves the tier information for an entity limits upgrade at the specified level and world.
+	 *
+	 * @param ent The entity type for the entity limits upgrade.
+	 * @param limitsLevel The current level of the entity limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The {@link Settings.UpgradeTier} for the specified level and world, or {@code null} if not found.
+	 */
 	public Settings.UpgradeTier getEntityLimitsUpgradeTier(EntityType ent, int limitsLevel, World world) {
 		Map<EntityType, List<Settings.UpgradeTier>> entTierList = this.getAllEntityLimitsUpgradeTiers(world);
 
@@ -369,6 +385,14 @@ public class UpgradesManager {
 		return null;
 	}
 
+	/**
+	 * Retrieves the tier information for an entity group limits upgrade at the specified level and world.
+	 *
+	 * @param group The entity group name for the entity group limits upgrade.
+	 * @param limitsLevel The current level of the entity group limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The {@link Settings.UpgradeTier} for the specified level and world, or {@code null} if not found.
+	 */
 	public Settings.UpgradeTier getEntityGroupLimitsUpgradeTier(String group, int limitsLevel, World world) {
 		Map<String, List<Settings.UpgradeTier>> entTierList = this.getAllEntityGroupLimitsUpgradeTiers(world);
 
@@ -390,6 +414,14 @@ public class UpgradesManager {
 		return null;
 	}
 
+	/**
+	 * Retrieves the tier information for a command upgrade at the specified level and world.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The current level of the command upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The {@link Settings.CommandUpgradeTier} for the specified level and world, or {@code null} if not found.
+	 */
 	public Settings.CommandUpgradeTier getCommandUpgradeTier(String cmd, int cmdLevel, World world) {
 		Map<String, List<Settings.CommandUpgradeTier>> cmdTierList = this.getAllCommandUpgradeTiers(world);
 
@@ -436,6 +468,13 @@ public class UpgradesManager {
 		return info;
 	}
 
+	/**
+	 * Retrieves the permission level required for a range upgrade at the specified level.
+	 *
+	 * @param rangeLevel The level of the range upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The permission level required, or 0 if not found.
+	 */
 	public int getRangePermissionLevel(int rangeLevel, World world) {
 		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
 
@@ -444,6 +483,13 @@ public class UpgradesManager {
 		return rangeUpgradeTier.getPermissionLevel();
 	}
 
+	/**
+	 * Retrieves the tier name for a range upgrade at the specified level.
+	 *
+	 * @param rangeLevel The level of the range upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The tier name, or {@code null} if not found.
+	 */
 	public String getRangeUpgradeTierName(int rangeLevel, World world) {
 		Settings.UpgradeTier rangeUpgradeTier = this.getRangeUpgradeTier(rangeLevel, world);
 
@@ -452,12 +498,28 @@ public class UpgradesManager {
 		return rangeUpgradeTier.getTierName();
 	}
 
+	/**
+	 * Retrieves the maximum level for range upgrades in the specified world.
+	 *
+	 * @param world The world to check.
+	 * @return The maximum range upgrade level.
+	 */
 	public int getRangeUpgradeMax(World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);
 		return this.addon.getSettings().getMaxRangeUpgrade(name);
 	}
 
+	/**
+	 * Retrieves detailed information about the block limits upgrade tier, such as costs and effects.
+	 *
+	 * @param mat The material type for the block limits upgrade.
+	 * @param limitsLevel The level of the block limits upgrade.
+	 * @param islandLevel The level of the island.
+	 * @param numberPeople The number of people on the island.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return A map containing information about the block limits upgrade tier, or {@code null} if not found.
+	 */
 	public Map<String, Integer> getBlockLimitsUpgradeInfos(Material mat, int limitsLevel, int islandLevel,
 			int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
@@ -475,6 +537,14 @@ public class UpgradesManager {
 		return info;
 	}
 
+	/**
+	 * Retrieves the permission level required for a block limits upgrade at the specified level.
+	 *
+	 * @param mat The material type for the block limits upgrade.
+	 * @param limitsLevel The level of the block limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The permission level required, or 0 if not found.
+	 */
 	public int getBlockLimitsPermissionLevel(Material mat, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
 
@@ -483,6 +553,14 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getPermissionLevel();
 	}
 
+	/**
+	 * Retrieves the tier name for a block limits upgrade at the specified level.
+	 *
+	 * @param mat The material type for the block limits upgrade.
+	 * @param limitsLevel The level of the block limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The tier name, or {@code null} if not found.
+	 */
 	public String getBlockLimitsUpgradeTierName(Material mat, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getBlockLimitsUpgradeTier(mat, limitsLevel, world);
 
@@ -491,12 +569,29 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getTierName();
 	}
 
+	/**
+	 * Retrieves the maximum level for block limits upgrades for a specific material in the specified world.
+	 *
+	 * @param mat The material type for the block limits upgrade.
+	 * @param world The world to check.
+	 * @return The maximum block limits upgrade level for the material.
+	 */
 	public int getBlockLimitsUpgradeMax(Material mat, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);
 		return this.addon.getSettings().getMaxBlockLimitsUpgrade(mat, name);
 	}
 
+	/**
+	 * Retrieves detailed information about the entity limits upgrade tier, such as costs and effects.
+	 *
+	 * @param ent The entity type for the entity limits upgrade.
+	 * @param limitsLevel The level of the entity limits upgrade.
+	 * @param islandLevel The level of the island.
+	 * @param numberPeople The number of people on the island.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return A map containing information about the entity limits upgrade tier, or {@code null} if not found.
+	 */
 	public Map<String, Integer> getEntityLimitsUpgradeInfos(EntityType ent, int limitsLevel, int islandLevel,
 			int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
@@ -514,6 +609,16 @@ public class UpgradesManager {
 		return info;
 	}
 
+	/**
+	 * Retrieves detailed information about the entity group limits upgrade tier, such as costs and effects.
+	 *
+	 * @param group The entity group name for the entity group limits upgrade.
+	 * @param limitsLevel The level of the entity group limits upgrade.
+	 * @param islandLevel The level of the island.
+	 * @param numberPeople The number of people on the island.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return A map containing information about the entity group limits upgrade tier, or {@code null} if not found.
+	 */
 	public Map<String, Integer> getEntityGroupLimitsUpgradeInfos(String group, int limitsLevel, int islandLevel,
 			int numberPeople, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
@@ -531,6 +636,14 @@ public class UpgradesManager {
 		return info;
 	}
 
+	/**
+	 * Retrieves the permission level required for an entity limits upgrade at the specified level.
+	 *
+	 * @param ent The entity type for the entity limits upgrade.
+	 * @param limitsLevel The level of the entity limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The permission level required, or 0 if not found.
+	 */
 	public int getEntityLimitsPermissionLevel(EntityType ent, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
 
@@ -539,6 +652,14 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getPermissionLevel();
 	}
 
+	/**
+	 * Retrieves the permission level required for an entity group limits upgrade at the specified level.
+	 *
+	 * @param group The entity group name for the entity group limits upgrade.
+	 * @param limitsLevel The level of the entity group limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The permission level required, or 0 if not found.
+	 */
 	public int getEntityGroupLimitsPermissionLevel(String group, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
 
@@ -547,6 +668,14 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getPermissionLevel();
 	}
 
+	/**
+	 * Retrieves the tier name for an entity limits upgrade at the specified level.
+	 *
+	 * @param ent The entity type for the entity limits upgrade.
+	 * @param limitsLevel The level of the entity limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The tier name, or {@code null} if not found.
+	 */
 	public String getEntityLimitsUpgradeTierName(EntityType ent, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityLimitsUpgradeTier(ent, limitsLevel, world);
 
@@ -555,6 +684,14 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getTierName();
 	}
 
+	/**
+	 * Retrieves the tier name for an entity group limits upgrade at the specified level.
+	 *
+	 * @param group The entity group name for the entity group limits upgrade.
+	 * @param limitsLevel The level of the entity group limits upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The tier name, or {@code null} if not found.
+	 */
 	public String getEntityGroupLimitsUpgradeTierName(String group, int limitsLevel, World world) {
 		Settings.UpgradeTier limitsUpgradeTier = this.getEntityGroupLimitsUpgradeTier(group, limitsLevel, world);
 
@@ -563,18 +700,42 @@ public class UpgradesManager {
 		return limitsUpgradeTier.getTierName();
 	}
 
+	/**
+	 * Retrieves the maximum level for entity limits upgrades for a specific entity type in the specified world.
+	 *
+	 * @param ent The entity type for the entity limits upgrade.
+	 * @param world The world to check.
+	 * @return The maximum entity limits upgrade level for the entity type.
+	 */
 	public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);
 		return this.addon.getSettings().getMaxEntityLimitsUpgrade(ent, name);
 	}
 
+	/**
+	 * Retrieves the maximum level for entity group limits upgrades for a specific group in the specified world.
+	 *
+	 * @param group The entity group name for the entity group limits upgrade.
+	 * @param world The world to check.
+	 * @return The maximum entity group limits upgrade level for the group.
+	 */
 	public int getEntityGroupLimitsUpgradeMax(String group, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);
 		return this.addon.getSettings().getMaxEntityGroupLimitsUpgrade(group, name);
 	}
 
+	/**
+	 * Retrieves detailed information about the command upgrade tier, such as costs and effects.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The level of the command upgrade.
+	 * @param islandLevel The level of the island.
+	 * @param numberPeople The number of people on the island.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return A map containing information about the command upgrade tier, or {@code null} if not found.
+	 */
 	public Map<String, Integer> getCommandUpgradeInfos(String cmd, int cmdLevel, int islandLevel, int numberPeople,
 			World world) {
 		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
@@ -591,6 +752,14 @@ public class UpgradesManager {
 		return info;
 	}
 
+	/**
+	 * Retrieves the permission level required for a command upgrade at the specified level.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The level of the command upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The permission level required, or 0 if not found.
+	 */
 	public int getCommandPermissionLevel(String cmd, int cmdLevel, World world) {
 		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
 
@@ -599,6 +768,14 @@ public class UpgradesManager {
 		return cmdUpgradeTier.getPermissionLevel();
 	}
 
+	/**
+	 * Retrieves the tier name for a command upgrade at the specified level.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The level of the command upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return The tier name, or {@code null} if not found.
+	 */
 	public String getCommandUpgradeTierName(String cmd, int cmdLevel, World world) {
 		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
 
@@ -607,12 +784,28 @@ public class UpgradesManager {
 		return cmdUpgradeTier.getTierName();
 	}
 
+	/**
+	 * Retrieves the maximum level for command upgrades for a specific command in the specified world.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param world The world to check.
+	 * @return The maximum command upgrade level for the command.
+	 */
 	public int getCommandUpgradeMax(String cmd, World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);
 		return this.addon.getSettings().getMaxCommandUpgrade(cmd, name);
 	}
 
+	/**
+	 * Retrieves the list of commands to execute for a command upgrade.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The level of the command upgrade.
+	 * @param island The island on which the upgrade is being applied.
+	 * @param playerName The name of the player purchasing the upgrade.
+	 * @return A list of commands to execute, or an empty list if not found.
+	 */
 	public List<String> getCommandList(String cmd, int cmdLevel, Island island, String playerName) {
 		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, island.getWorld());
 
@@ -621,6 +814,14 @@ public class UpgradesManager {
 		return cmdUpgradeTier.getCommandList(playerName, island, cmdLevel);
 	}
 
+	/**
+	 * Checks if the command upgrade should be executed from the console.
+	 *
+	 * @param cmd The command name for the command upgrade.
+	 * @param cmdLevel The level of the command upgrade.
+	 * @param world The world in which the upgrade is being applied.
+	 * @return {@code true} if the command should be executed from console, {@code false} otherwise.
+	 */
 	public Boolean isCommantConsole(String cmd, int cmdLevel, World world) {
 		Settings.CommandUpgradeTier cmdUpgradeTier = this.getCommandUpgradeTier(cmd, cmdLevel, world);
 
@@ -665,8 +866,14 @@ public class UpgradesManager {
 		return entityGroupLimits;
 	}
 
+	/**
+	 * The UpgradesAddon instance this manager is associated with.
+	 */
 	private UpgradesAddon addon;
 
+	/**
+	 * Set of game mode names that this manager has successfully hooked into.
+	 */
 	private Set<String> hookedGameModes;
 
 }

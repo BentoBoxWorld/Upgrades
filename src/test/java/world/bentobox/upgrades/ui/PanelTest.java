@@ -1,6 +1,6 @@
 package world.bentobox.upgrades.ui;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -14,15 +14,14 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
@@ -33,8 +32,6 @@ import world.bentobox.upgrades.UpgradesManager;
 /**
  * @author tastybento
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class })
 public class PanelTest {
 
     @Mock
@@ -56,12 +53,15 @@ public class PanelTest {
     @Mock
     private Player p;
     private Panel panel;
+    private MockedStatic<Bukkit> mockBukkit;
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+        MockBukkit.mock();
         // World
         when(world.toString()).thenReturn("world");
         // Player
@@ -80,7 +80,7 @@ public class PanelTest {
         when(addon.getUpgradesManager()).thenReturn(um);
 
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
+        mockBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
 
         panel = new Panel(addon, island);
     }
@@ -88,9 +88,11 @@ public class PanelTest {
     /**
      * @throws java.lang.Exception
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         User.clearUsers();
+        mockBukkit.closeOnDemand();
+        MockBukkit.unmock();
     }
 
     /**

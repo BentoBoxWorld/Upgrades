@@ -1,10 +1,10 @@
 package world.bentobox.upgrades.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -13,21 +13,19 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockitoAnnotations;
 
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings.Expression;
-import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
  */
-@RunWith(PowerMockRunner.class)
 public class SettingsTest {
 
     @Mock
@@ -38,9 +36,10 @@ public class SettingsTest {
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        ServerMocks.newServer();
+        MockitoAnnotations.openMocks(this);
+        MockBukkit.mock();
         // Config
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File("src/main/resources/config.yml");
@@ -52,9 +51,9 @@ public class SettingsTest {
         settings = new Settings(addon);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        ServerMocks.unsetBukkitServer();
+        MockBukkit.unmock();
     }
 
     /**

@@ -1,6 +1,6 @@
 package world.bentobox.upgrades;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -34,19 +34,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.Settings;
@@ -65,13 +63,10 @@ import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.upgrades.api.Upgrade;
-import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, BentoBox.class, User.class, IslandsManager.class })
 public class UpgradesAddonTest {
 
     private static File jFile;
@@ -114,8 +109,10 @@ public class UpgradesAddonTest {
     @Mock
     private VaultHook vh;
     private @NonNull String targetIslandId = UUID.randomUUID().toString();
+    private MockedStatic<Bukkit> mockBukkit;
+    private MockedStatic<IslandsManager> mockIslandsManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws IOException {
         // Make the addon jar
         jFile = new File("addon.jar");
@@ -140,13 +137,14 @@ public class UpgradesAddonTest {
      * @throws java.lang.Exception
      */
     @SuppressWarnings("deprecation")
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        ServerMocks.newServer();
-        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
-        PowerMockito.mockStatic(IslandsManager.class, Mockito.RETURNS_MOCKS);
+        MockitoAnnotations.openMocks(this);
+        MockBukkit.mock();
+        mockBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
+        mockIslandsManager = Mockito.mockStatic(IslandsManager.class, Mockito.RETURNS_MOCKS);
         // Set up plugin
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
 
         // The database type has to be created one line before the thenReturn() to work!
         DatabaseType value = DatabaseType.JSON;
@@ -242,13 +240,15 @@ public class UpgradesAddonTest {
     /**
      * @throws java.lang.Exception
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
-        ServerMocks.unsetBukkitServer();
+        MockBukkit.unmock();
+        mockBukkit.closeOnDemand();
+        mockIslandsManager.closeOnDemand();
         deleteAll(new File("database"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanUp() throws Exception {
         new File("addon.jar").delete();
         new File("config.yml").delete();

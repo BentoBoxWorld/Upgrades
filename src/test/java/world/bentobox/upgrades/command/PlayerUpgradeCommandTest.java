@@ -1,8 +1,8 @@
 package world.bentobox.upgrades.command;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -22,16 +22,14 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
@@ -45,14 +43,12 @@ import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;
+import world.bentobox.upgrades.WhiteBox;
 import world.bentobox.upgrades.config.Settings;
-import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, BentoBox.class, Util.class })
 public class PlayerUpgradeCommandTest {
 
     @Mock
@@ -82,14 +78,18 @@ public class PlayerUpgradeCommandTest {
     private IslandWorldManager iwm;
     @Mock
     private UpgradesManager um;
+    private MockedStatic<Bukkit> bukkitMock;
+    private MockedStatic<Util> utilMock;
 
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @SuppressWarnings("deprecation")
+    @BeforeEach
     public void setUp() throws Exception {
-        ServerMocks.newServer();
+        MockitoAnnotations.openMocks(this);
+        MockBukkit.mock();
         // Config
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File("src/main/resources/config.yml");
@@ -100,7 +100,7 @@ public class PlayerUpgradeCommandTest {
 
         // Set up plugin
         BentoBox plugin = mock(BentoBox.class);
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
         User.setPlugin(plugin);
 
         when(addon.getPlugin()).thenReturn(plugin);
@@ -135,8 +135,8 @@ public class PlayerUpgradeCommandTest {
         when(user.getTranslation(anyString())).thenReturn("translation");
 
         // Util
-        PowerMockito.mockStatic(Util.class);
-        when(Util.getWorld(any())).thenReturn(world);
+        utilMock = Mockito.mockStatic(Util.class);
+        utilMock.when(() -> Util.getWorld(any())).thenReturn(world);
 
         // Island Manager
         when(plugin.getIslands()).thenReturn(im);
@@ -158,7 +158,7 @@ public class PlayerUpgradeCommandTest {
         when(um.getIslandLevel(island)).thenReturn(20);
         when(addon.getUpgradesManager()).thenReturn(um);
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
+        bukkitMock = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
 
 
         puc = new PlayerUpgradeCommand(addon, ic);
@@ -167,11 +167,12 @@ public class PlayerUpgradeCommandTest {
     /**
      * @throws java.lang.Exception
      */
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
-        ServerMocks.unsetBukkitServer();
+        MockBukkit.unmock();
         User.clearUsers();
-
+        bukkitMock.closeOnDemand();
+        utilMock.closeOnDemand();
     }
 
     /**

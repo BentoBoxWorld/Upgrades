@@ -1,9 +1,10 @@
 package world.bentobox.upgrades.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.verify;
@@ -12,13 +13,12 @@ import static org.mockito.Mockito.when;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import world.bentobox.bentobox.api.user.User;
@@ -27,12 +27,10 @@ import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
  */
-@RunWith(PowerMockRunner.class)
 public class UpgradeTest {
 
     @Mock
@@ -52,9 +50,9 @@ public class UpgradeTest {
     private UUID userId;
     private String islandId;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        ServerMocks.newServer();
+        MockBukkit.mock();
 
         MockitoAnnotations.openMocks(this);
 
@@ -75,9 +73,9 @@ public class UpgradeTest {
         testUpgrade = new TestUpgrade(addon, "test_upgrade", "Test Upgrade", Material.DIAMOND);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        ServerMocks.unsetBukkitServer();
+        MockBukkit.unmock();
     }
 
     @Test
