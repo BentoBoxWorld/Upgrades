@@ -6,11 +6,11 @@ import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem.ClickHandler;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 public class PanelClick implements ClickHandler {
 
-	public PanelClick(Upgrade upgrade, Island island) {
+	public PanelClick(UpgradeAPI upgrade, Island island) {
 		this.upgrade = upgrade;
 		this.island = island;
 	}
@@ -29,7 +29,7 @@ public class PanelClick implements ClickHandler {
 		return true;
 	}
 	
-	private Upgrade upgrade;
+	private UpgradeAPI upgrade;
 	private Island island;
 	
 }

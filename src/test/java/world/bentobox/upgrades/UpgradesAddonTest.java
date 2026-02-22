@@ -62,7 +62,7 @@ import world.bentobox.bentobox.managers.FlagsManager;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 /**
  * @author tastybento
@@ -412,11 +412,11 @@ public class UpgradesAddonTest {
      */
     @Test
     public void testRegisterUpgrade() {
-        Upgrade upgrade = new TestUpgrade(addon, "name", "Name", Material.ACACIA_BOAT);
+        UpgradeAPI upgrade = new TestUpgrade(addon, "name", "Name", Material.ACACIA_BOAT);
         addon.registerUpgrade(upgrade);
     }
 
-    private static class TestUpgrade extends Upgrade {
+    private static class TestUpgrade extends UpgradeAPI {
 
         public TestUpgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
             super(addon, name, displayName, icon);

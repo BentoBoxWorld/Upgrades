@@ -20,7 +20,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  * @author Ikkino
  *
  */
-public abstract class Upgrade {
+public abstract class UpgradeAPI {
 
     /**
      * Initialize the upgrade object you should call it in your init methode
@@ -31,7 +31,7 @@ public abstract class Upgrade {
      * @param displayName This is the name that is shown to the user
      * @param icon        This is the icon shown to the user
      */
-    public Upgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
+    public UpgradeAPI(UpgradesAddon addon, String name, String displayName, Material icon) {
         this.name = name;
         this.displayName = displayName;
         this.icon = icon;
@@ -214,10 +214,10 @@ public abstract class Upgrade {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Upgrade)) {
+        if (!(obj instanceof UpgradeAPI)) {
             return false;
         }
-        Upgrade other = (Upgrade) obj;
+        UpgradeAPI other = (UpgradeAPI) obj;
         return Objects.equals(name, other.name);
     }
 

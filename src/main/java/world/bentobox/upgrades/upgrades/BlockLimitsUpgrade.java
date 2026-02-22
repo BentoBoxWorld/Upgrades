@@ -13,35 +13,20 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-/**
- * An upgrade of limits for a specific block type
- */
-public class BlockLimitsUpgrade extends Upgrade {
+public class BlockLimitsUpgrade extends UpgradeAPI {
 
+    private static final String BLOCK = "[block]";
+    private static final String LEVEL = "[level]";
     private Material block;
 
-    /**
-     * Initializes a BlockLimitsUpgrade for a specific block type.
-     *
-     * @param addon The instance of the UpgradesAddon.
-     * @param block The Material representing the block type for this upgrade.
-     */
     public BlockLimitsUpgrade(UpgradesAddon addon, Material block) {
         super(addon, "LimitsUpgrade-" + block.toString(), block.toString() + " limits Upgrade", block);
         this.block = block;
     }
 
-    /**
-     * Updates the upgrade values for the specified user and island.
-     * This includes calculating the upgrade level, adjusting descriptions,
-     * and setting the display name for the upgrade based on current configurations.
-     *
-     * @param user The user for whom the upgrade values are being updated.
-     * @param island The island associated with the upgrade.
-     */
     @Override
     public void updateUpgradeValue(User user, Island island) {
         UpgradesAddon upgradeAddon = this.getUpgradesAddon();
@@ -75,24 +60,16 @@ public class BlockLimitsUpgrade extends Upgrade {
         String newDisplayName;
 
         if (upgrade == null) {
-            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", "[block]",
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", BLOCK,
                     this.block.toString());
         } else {
-            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade", "[block]",
-                    this.block.toString(), "[level]", Integer.toString(upgrade.getUpgradeValue()));
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade", BLOCK,
+                    this.block.toString(), LEVEL, Integer.toString(upgrade.getUpgradeValue()));
         }
 
         this.setDisplayName(newDisplayName);
     }
 
-    /**
-     * Determines whether this upgrade should be displayed to the user.
-     * Checks permissions and other configurations to ensure visibility.
-     *
-     * @param user The user requesting the visibility check.
-     * @param island The island associated with the upgrade.
-     * @return true if the upgrade should be displayed; false otherwise.
-     */
     @Override
     public boolean isShowed(User user, Island island) {
         // Get the addon
@@ -144,26 +121,11 @@ public class BlockLimitsUpgrade extends Upgrade {
         return false;
     }
 
-    /**
-     * Logs an error message for issues related to permissions or configurations.
-     *
-     * @param name The name of the player associated with the error.
-     * @param perm The permission string causing the error.
-     * @param error The specific error message to log.
-     */
     private void logError(String name, String perm, String error) {
         this.getUpgradesAddon()
         .logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
     }
 
-    /**
-     * Performs the upgrade for the specified user and island.
-     * This involves applying the upgrade's effects, such as modifying block limits.
-     *
-     * @param user The user performing the upgrade.
-     * @param island The island to which the upgrade is being applied.
-     * @return true if the upgrade is successfully applied; false otherwise.
-     */
     @Override
     public boolean doUpgrade(User user, Island island) {
         UpgradesAddon islandAddon = this.getUpgradesAddon();
@@ -181,7 +143,7 @@ public class BlockLimitsUpgrade extends Upgrade {
         int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
         isb.setBlockLimitsOffset(block, newCount);
 
-        user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", "[block]", this.block.toString(), "[level]",
+        user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK, this.block.toString(), LEVEL,
                 Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
 
         return true;

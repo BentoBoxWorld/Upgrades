@@ -11,3 +11,8 @@ authors:
   - tastybento
 
 softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, AOneBlock, Level, Limits
+
+permissions:
+  '[gamemode].admin.upgrade':
+    description: Access upgrade admin commands
+    default: op
