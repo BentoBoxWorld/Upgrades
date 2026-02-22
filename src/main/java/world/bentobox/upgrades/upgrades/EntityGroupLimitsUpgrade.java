@@ -11,18 +11,10 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-/**
- * Represents an upgrade that modifies the limits of a specific entity group on an island.
- * This class extends the {@link Upgrade} base class to support entity group-specific limits,
- * allowing for customized upgrade behaviors in the BentoBox ecosystem.
- *
- * <p>Each instance of {@code EntityGroupLimitsUpgrade} is associated with a specific entity group,
- * enabling server administrators to configure upgrades for entity group limits such as mobs or other entities.</p>
- */
-public class EntityGroupLimitsUpgrade extends Upgrade {
+public class EntityGroupLimitsUpgrade extends UpgradeAPI {
 
     private String group;
 

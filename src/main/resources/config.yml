@@ -7,6 +7,9 @@
 # Specify game modes by name in the array below.
 disabled-gamemodes: []
 
+# String used when asking input in chat to cancel input
+chat-input-escape: "END"
+
 # Range Upgrade Default Tiers
 # Each tier must contain:
 #      max-level: Upgrade level up to which tier apply

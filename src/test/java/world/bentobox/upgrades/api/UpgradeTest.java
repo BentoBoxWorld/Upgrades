@@ -88,7 +88,7 @@ public class UpgradeTest {
 
     @Test
     public void testCanUpgrade_WithSufficientResources() {
-        Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
+        UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
         when(addon.isLevelProvided()).thenReturn(true);
@@ -101,7 +101,7 @@ public class UpgradeTest {
 
     @Test
     public void testCanUpgrade_WithInsufficientResources() {
-        Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(10, 200, 1);
+        UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(10, 200, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
         when(addon.isLevelProvided()).thenReturn(true);
@@ -114,7 +114,7 @@ public class UpgradeTest {
 
     @Test
     public void testDoUpgrade_SuccessfulTransaction() {
-        Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
+        UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
         when(addon.isVaultProvided()).thenReturn(true);
@@ -127,7 +127,7 @@ public class UpgradeTest {
 
     @Test
     public void testDoUpgrade_FailedTransaction() {
-        Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
+        UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
         when(addon.isVaultProvided()).thenReturn(true);
@@ -147,13 +147,13 @@ public class UpgradeTest {
 
     @Test
     public void testGetAndSetUpgradeValues() {
-        Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
+        UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
         assertEquals(upgradeValues, testUpgrade.getUpgradeValues(user));
     }
 
-    private static class TestUpgrade extends Upgrade {
+    private static class TestUpgrade extends UpgradeAPI {
 
         public TestUpgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
             super(addon, name, displayName, icon);
