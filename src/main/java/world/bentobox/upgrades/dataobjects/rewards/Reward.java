@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.PanelAdminItem;
@@ -32,5 +33,7 @@ public abstract class Reward implements PanelAdminItem, PanelPublicItem {
 
     public abstract AbPanel getAdminPanel(UpgradesAddon addon, GameModeAddon gamemode, User user,
                                           AbPanel parent, UpgradeTier tier, @Nullable RewardDB saved);
+
+    public abstract void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB);
 
 }

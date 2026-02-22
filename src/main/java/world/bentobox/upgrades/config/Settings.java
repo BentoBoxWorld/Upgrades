@@ -1246,5 +1246,15 @@ public class Settings {
         }.parse();
     }
 
+    /**
+     * Evaluate a formula string with the given variables and return the result.
+     *
+     * @param equation   The formula string (e.g. "100*[level]")
+     * @param variables  Variable bindings (e.g. "[level]" -> 5.0)
+     * @return The evaluated result as a double
+     */
+    public static double evaluate(String equation, Map<String, Double> variables) {
+        return parse(equation, variables).eval();
+    }
 
 }

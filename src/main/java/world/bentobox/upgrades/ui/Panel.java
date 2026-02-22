@@ -49,10 +49,15 @@ public class Panel {
 			String ownDescription = upgrade.getOwnDescription(user);
 			List<String> fullDescription = new ArrayList<>();
 
-			if (ownDescription != null && upgrade.getUpgradeValues(user) != null) {
+			if (ownDescription != null) {
 				fullDescription.add(ownDescription);
+				if (upgrade.getUpgradeValues(user) != null) {
+					// Legacy: also show vault/level summary
+					fullDescription.addAll(this.getDescription(user, upgrade, islandLevel));
+				}
+			} else {
+				fullDescription.addAll(this.getDescription(user, upgrade, islandLevel));
 			}
-			fullDescription.addAll(this.getDescription(user, upgrade, islandLevel));
 
 			pb.item(new PanelItemBuilder().name(upgrade.getDisplayName()).icon(upgrade.getIcon())
 					.description(fullDescription).clickHandler(new PanelClick(upgrade, this.island)).build());

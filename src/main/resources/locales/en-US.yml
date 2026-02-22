@@ -140,6 +140,27 @@ upgrades:
       rulequestion: |-
         Enter the new rule for this island level price
         Actual: [actual]
+    money:
+      name: "Money"
+      description: "Costs [amount] money"
+      admindescription: "Charge Vault currency"
+      paneltitle: "Money price"
+      rulequestion: |-
+        Enter amount formula (e.g. 100*[level])
+        Actual: [actual]
+    item:
+      name: "Item"
+      description: "Costs [amount]x [item]"
+      admindescription: "Requires items from inventory"
+      paneltitle: "Item price"
+    permission:
+      name: "Permission"
+      description: "Requires permission [permission]"
+      admindescription: "Gate by permission node"
+      paneltitle: "Permission price"
+      rulequestion: |-
+        Enter permission node
+        Actual: [actual]
   rewards:
     rangeupgrade:
       name: "Range upgrade"
@@ -152,6 +173,16 @@ upgrades:
       rulequestion: |-
         Enter the new rule for this range upgrade reward
         Actual: [actual]
+    limits:
+      name: "Limits upgrade"
+      description: "Increases [type] limit for [target] by [amount]"
+      admindescription: "Increase block/entity limits (requires Limits addon)"
+      paneltitle: "Limits reward"
+    command:
+      name: "Command"
+      description: "Runs commands on upgrade"
+      admindescription: "Execute console or player commands"
+      paneltitle: "Command reward"
 protection:
   flags:
     UPGRADES_RANK_RIGHT:

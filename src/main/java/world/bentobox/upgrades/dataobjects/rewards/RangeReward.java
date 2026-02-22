@@ -5,16 +5,21 @@ import org.bukkit.Material;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
+import world.bentobox.bentobox.api.events.island.IslandEvent;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
+import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class RangeReward extends Reward {
@@ -42,6 +47,31 @@ public class RangeReward extends Reward {
     @Override
     public String getPublicDescription(User user) {
         return user.getTranslation("upgrades.rewards.rangeupgrade.description");
+    }
+
+    @Override
+    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
+        RangeRewardDB db = (RangeRewardDB) rewardDB;
+        Map<String, Double> variables = new TreeMap<>();
+        variables.put("[level]", 0.0);
+        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        int amount = (int) Settings.evaluate(db.getRangeUpgradeEquation(), variables);
+
+        int newRange = island.getProtectionRange() + amount;
+        if (newRange > island.getRange()) {
+            addon.logWarning("Tried to upgrade island range over max for island " + island.getUniqueId());
+            return;
+        }
+
+        int oldRange = island.getProtectionRange();
+        island.addBonusRange(addon.getDescription().getName(), amount, "");
+        IslandEvent.builder().island(island).location(island.getCenter())
+                .reason(IslandEvent.Reason.RANGE_CHANGE)
+                .involvedPlayer(user.getUniqueId()).admin(false)
+                .protectionRange(island.getProtectionRange(), oldRange).build();
+
+        user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone", "[rangelevel]", Integer.toString(amount));
     }
 
     @Override
