@@ -26,7 +26,13 @@ import world.bentobox.upgrades.command.admin.AdminCommand;
 import world.bentobox.upgrades.config.Settings;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 import world.bentobox.upgrades.dataobjects.prices.IslandLevelPrice;
+import world.bentobox.upgrades.dataobjects.prices.ItemPrice;
+import world.bentobox.upgrades.dataobjects.prices.MoneyPrice;
+import world.bentobox.upgrades.dataobjects.prices.PermissionPrice;
+import world.bentobox.upgrades.dataobjects.rewards.CommandReward;
+import world.bentobox.upgrades.dataobjects.rewards.LimitsReward;
 import world.bentobox.upgrades.dataobjects.rewards.RangeReward;
+import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
 import world.bentobox.upgrades.ui.utils.ChatInput;
@@ -53,7 +59,7 @@ public class UpgradesAddon extends Addon {
             return;
         }
 
-        List<String> hookedGameModes = new ArrayList<>();
+        this.hookedGameModes = new ArrayList<>();
 
         getPlugin().getAddonsManager()
                 .getGameModeAddons()
@@ -68,7 +74,7 @@ public class UpgradesAddon extends Addon {
                                 new PlayerUpgradeCommand(this, pc);
                                 UpgradesAddon.UPGRADES_RANK_RIGHT.addGameModeAddon(g);
                                 this.hooked = true;
-                                hookedGameModes.add(g.getDescription()
+                                this.hookedGameModes.add(g.getDescription()
                                         .getName());
                             });
                     // Hook admin command if present
@@ -78,7 +84,7 @@ public class UpgradesAddon extends Addon {
 
         if (this.hooked) {
             this.upgradesManager = new UpgradesManager(this);
-            this.upgradesManager.addGameModes(hookedGameModes);
+            this.upgradesManager.addGameModes(this.hookedGameModes);
 
             this.upgradesDataManager = new UpgradesDataManager(this);
 
@@ -116,6 +122,11 @@ public class UpgradesAddon extends Addon {
             }
 
             this.upgradesManager.addReward(new RangeReward());
+            this.upgradesManager.addPrice(new MoneyPrice());
+            this.upgradesManager.addPrice(new ItemPrice());
+            this.upgradesManager.addPrice(new PermissionPrice());
+            this.upgradesManager.addReward(new LimitsReward());
+            this.upgradesManager.addReward(new CommandReward());
 
             this.getSettings()
                     .getCommandUpgrade()
@@ -125,6 +136,13 @@ public class UpgradesAddon extends Addon {
             if (this.getSettings()
                     .getHasRangeUpgrade())
                 this.registerUpgrade(new RangeUpgrade(this));
+
+            // Load database-backed upgrades
+            this.hookedGameModes.forEach(gameModeName ->
+                    this.upgradesDataManager.getUpgradeDataByGameMode(gameModeName).forEach(data -> {
+                        if (data.isActive()) this.registerUpgrade(new DatabaseUpgrade(this, data));
+                    })
+            );
 
             this.registerListener(new IslandChangeListener(this));
 
@@ -241,9 +259,20 @@ public class UpgradesAddon extends Addon {
         this.upgrade.add(upgrade);
     }
 
+    public void refreshDatabaseUpgrades() {
+        this.upgrade.removeIf(u -> u instanceof DatabaseUpgrade);
+        this.hookedGameModes.forEach(gameModeName ->
+                this.upgradesDataManager.getUpgradeDataByGameMode(gameModeName).forEach(data -> {
+                    if (data.isActive()) this.registerUpgrade(new DatabaseUpgrade(this, data));
+                })
+        );
+    }
+
     private Settings settings;
 
     private boolean hooked;
+
+    private List<String> hookedGameModes = new ArrayList<>();
 
     private UpgradesManager upgradesManager;
 

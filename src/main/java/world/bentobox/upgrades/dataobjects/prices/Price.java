@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.PanelAdminItem;
@@ -33,5 +34,9 @@ public abstract class Price implements PanelAdminItem, PanelPublicItem {
 
     public abstract AbPanel getAdminPanel(UpgradesAddon addon, GameModeAddon gamemode, User user,
                                           AbPanel parent, UpgradeTier tier, @Nullable PriceDB saved);
+
+    public abstract boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);
+
+    public abstract void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);
 
 }

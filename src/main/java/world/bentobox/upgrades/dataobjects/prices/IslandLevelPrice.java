@@ -15,7 +15,12 @@ import world.bentobox.upgrades.ui.utils.AbPanel;
 import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
+
+import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.upgrades.config.Settings;
 
 public class IslandLevelPrice extends Price {
 
@@ -41,6 +46,22 @@ public class IslandLevelPrice extends Price {
     @Override
     public String getAdminDescription(User user) {
         return user.getTranslation("upgrades.prices.islandlevel.admindescription");
+    }
+
+    @Override
+    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+        IslandLevelPriceDB db = (IslandLevelPriceDB) priceDB;
+        Map<String, Double> variables = new TreeMap<>();
+        variables.put("[level]", 0.0);
+        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        int required = (int) Settings.evaluate(db.getLevelNeededEquation(), variables);
+        return addon.getUpgradesManager().getIslandLevel(island) >= required;
+    }
+
+    @Override
+    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+        // Island level is a gate, not consumed
     }
 
     @Override
