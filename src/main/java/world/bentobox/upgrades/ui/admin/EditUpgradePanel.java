@@ -63,7 +63,7 @@ public class EditUpgradePanel extends AbPanel {
 		
 		this.setItems(DESCRIPTION, new PanelItemBuilder()
 				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.description"))
-				.description(this.upgrade.getDescription())
+				.description(wrapLore(this.upgrade.getDescription()))
 				.icon(Material.WRITTEN_BOOK)
 				.clickHandler(this.onSetDescription)
 				.build(), 21);

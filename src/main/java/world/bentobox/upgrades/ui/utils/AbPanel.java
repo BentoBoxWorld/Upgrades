@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 
@@ -22,7 +23,10 @@ public class AbPanel {
 	
 	protected static final String RETURN = "return";
 	protected static final String EXIT = "exit";
-	
+
+	/** Maximum characters per lore line before word-wrapping. */
+	protected static final int LORE_MAX_WIDTH = 35;
+
 	protected static final Set<Material> BADICON = new HashSet<Material>(Arrays.asList(
 			Material.AIR,
 			Material.CAVE_AIR,
@@ -167,6 +171,46 @@ public class AbPanel {
 		return parent;
 	}
 	
+	/**
+	 * Word-wraps a single string into multiple lines, each no wider than
+	 * {@code maxWidth} characters. Breaks only on spaces.
+	 *
+	 * @param text     the text to wrap (may be null or empty)
+	 * @param maxWidth maximum characters per line
+	 * @return list of wrapped lines
+	 */
+	protected static List<String> wrapText(String text, int maxWidth) {
+		if (text == null || text.isEmpty()) return Collections.emptyList();
+		List<String> lines = new ArrayList<>();
+		StringBuilder current = new StringBuilder();
+		for (String word : text.split(" ")) {
+			if (current.length() == 0) {
+				current.append(word);
+			} else if (current.length() + 1 + word.length() <= maxWidth) {
+				current.append(' ').append(word);
+			} else {
+				lines.add(current.toString());
+				current = new StringBuilder(word);
+			}
+		}
+		if (current.length() > 0) lines.add(current.toString());
+		return lines;
+	}
+
+	/**
+	 * Word-wraps every entry in a lore list at {@link #LORE_MAX_WIDTH} characters,
+	 * returning a flat list of wrapped lines.
+	 *
+	 * @param lore source lore lines (may contain long strings)
+	 * @return wrapped lore ready for {@link PanelItemBuilder#description(List)}
+	 */
+	protected static List<String> wrapLore(List<String> lore) {
+		if (lore == null) return Collections.emptyList();
+		return lore.stream()
+				.flatMap(line -> wrapText(line, LORE_MAX_WIDTH).stream())
+				.collect(Collectors.toList());
+	}
+
 	protected void setItems(String name, PanelItem item, int slot) {
 		this.items.put(name, new PanelSlot(item, slot));
 	}

@@ -62,7 +62,7 @@ public final class EditTierPanel extends AbPanel {
                 new PanelItemBuilder().name(
                                 this.getUser()
                                         .getTranslation("upgrades.ui.edittierpanel.description"))
-                        .description(this.tier.getDescription())
+                        .description(wrapLore(this.tier.getDescription()))
                         .icon(Material.WRITTEN_BOOK)
                         .clickHandler(this.onSetDescription)
                         .build(),
