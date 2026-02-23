@@ -121,14 +121,14 @@ public class DatabaseUpgrade extends UpgradeAPI {
     }
 
     /**
-     * Find the tier that covers the next level (currentLevel + 1).
+     * Find the tier that covers the current level (i.e. the next purchase available).
+     * Level 0 = not yet purchased; a tier with startLevel=0, endLevel=0 means one purchase.
      */
     private UpgradeTier findNextTier(int currentLevel) {
-        int nextLevel = currentLevel + 1;
         List<UpgradeTier> tiers = this.getUpgradesAddon().getUpgradeDataManager()
                 .getUpgradeTierByUpgradeData(upgradeData);
         for (UpgradeTier tier : tiers) {
-            if (tier.getStartLevel() <= nextLevel && nextLevel <= tier.getEndLevel()) {
+            if (tier.getStartLevel() <= currentLevel && currentLevel <= tier.getEndLevel()) {
                 return tier;
             }
         }
