@@ -39,7 +39,7 @@ public class ListUpgradeDataPanel extends AbPanel {
 				// (idx / 7) = row    (idx % 7) = column
 				int pos = ((idx / 7) * 9) + (idx % 7) + 10;
 				this.setItems(upgrade.getUniqueId(), new PanelItemBuilder()
-						.name(upgrade.getUniqueId())
+						.name(upgrade.getName())
 						.icon(upgrade.getIcon())
 						.clickHandler(this.onClick(upgrade))
 						.build(), pos);

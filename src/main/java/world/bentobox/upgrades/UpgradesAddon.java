@@ -178,6 +178,7 @@ public class UpgradesAddon extends Addon {
         }
         if (this.upgradesDataManager != null)
             this.upgradesDataManager.reload();
+        this.refreshDatabaseUpgrades();
         this.log("Island upgrade addon reloaded");
     }
 

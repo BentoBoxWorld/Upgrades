@@ -70,6 +70,7 @@ upgrades:
       tieradd: "Add tier"
       tieredit: "Edit tier"
       tierdelete: "Delete tier"
+      tierrequired: "Add at least one tier before editing or deleting"
       order: "Actual order: [order]"
       orderdesc: |-
         Click to change order
@@ -120,6 +121,9 @@ upgrades:
       active: "Active"
       validconf: "Valid configuration"
       invalidconf: "Invalid configuration"
+      noupgrades: "No upgrades yet — click 'Add upgrade' to create one"
+      leftclickedit: "&aLeft click: Edit"
+      rightclickdelete: "&cRight click: Delete"
     titles:
       adminupgrade: "Admin upgrade"
       delete: "Delete: [name]"
@@ -171,8 +175,13 @@ upgrades:
         Careful to not go over the island limit
       paneltitle: "Range upgrade reward"
       rulequestion: |-
-        Enter the new rule for this range upgrade reward
+        Enter the range formula (e.g. 5, or 2*[level])
         Actual: [actual]
+      invalidrule: "Invalid formula. Use a number or math expression (e.g. 5, 2*[level])"
+      setformula: "Set range formula"
+      formulastatus: "Formula OK"
+      formulaneeded: "Formula needed"
+      formulaneededdesc: "Click the paper icon to set a range formula"
     limits:
       name: "Limits upgrade"
       description: "Increases [type] limit for [target] by [amount]"

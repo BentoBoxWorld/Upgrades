@@ -72,10 +72,10 @@ public class UpgradeData implements DataObject {
 	
 	/**
 	 * If this upgrade is shown to the user
-	 * Default to false
+	 * Default to true so newly created upgrades are immediately active
 	 */
 	@Expose
-	private boolean active = false;
+	private boolean active = true;
 	
 	// ------------------------------------------------------------
 	// Section: Getters

@@ -35,10 +35,18 @@ public class AbPanel {
 		this.user = user;
 		this.title = title;
 		this.parent = parent;
-		
+
 		this.border = new ArrayList<AbPanel.PanelSlot>();
 		this.items = new HashMap<String, AbPanel.PanelSlot>();
-		
+
+		this.setupNavigationButton();
+	}
+
+	/**
+	 * Sets up (or re-sets up) the return or exit button at slot 8.
+	 * Call this after clearItems() to restore the navigation button.
+	 */
+	protected void setupNavigationButton() {
 		if (parent != null) {
 			PanelItem returnItem = new PanelItemBuilder()
 					.name(this.user.getTranslation("upgrades.ui.buttons.return"))
@@ -61,8 +69,23 @@ public class AbPanel {
 			this.setItems(EXIT, exitItem, 8);
 		}
 	}
+
+	/**
+	 * Hook called at the start of getBuild() before building the panel.
+	 * Override in subclasses to refresh panel content dynamically.
+	 */
+	protected void onBuildHook() {}
 	
+	/**
+	 * Clears all named panel items (but not the border).
+	 * Use in onBuildHook() to allow dynamic refresh of panel content.
+	 */
+	protected void clearItems() {
+		this.items.clear();
+	}
+
 	public PanelBuilder getBuild() {
+		this.onBuildHook();
 		PanelBuilder builder = new PanelBuilder();
 		
 		builder.user(this.user);

@@ -65,7 +65,7 @@ public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
 
         if (this.createButton != null && this.createName != null) {
             this.setItems(CREATE, new PanelItemBuilder().name(this.createName)
-                    .icon(Material.GREEN_STAINED_GLASS_PANE)
+                    .icon(Material.EMERALD)
                     .clickHandler(this.onClickCreate)
                     .build(), 4);
         }
