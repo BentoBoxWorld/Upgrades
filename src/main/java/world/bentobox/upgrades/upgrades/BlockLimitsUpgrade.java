@@ -139,9 +139,9 @@ public class BlockLimitsUpgrade extends UpgradeAPI {
         if (!super.doUpgrade(user, island))
             return false;
 
-        int oldCount = isb.getBlockLimitsOffset().getOrDefault(block, 0);
+        int oldCount = isb.getBlockLimitsOffset().getOrDefault(block.getKey(), 0);
         int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
-        isb.setBlockLimitsOffset(block, newCount);
+        isb.setBlockLimitsOffset(block.getKey(), newCount);
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK, this.block.toString(), LEVEL,
                 Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

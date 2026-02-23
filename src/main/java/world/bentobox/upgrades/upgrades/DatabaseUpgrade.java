@@ -110,6 +110,10 @@ public class DatabaseUpgrade extends UpgradeAPI {
     @Override
     public boolean isShowed(User user, Island island) {
         if (!upgradeData.isActive()) return false;
+        // Don't show upgrades with no tiers configured — they'd appear "maxed out"
+        List<UpgradeTier> tiers = this.getUpgradesAddon().getUpgradeDataManager()
+                .getUpgradeTierByUpgradeData(upgradeData);
+        if (tiers.isEmpty()) return false;
         return this.getUpgradesAddon().getPlugin().getIWM().getAddon(island.getWorld())
                 .map(a -> a.getDescription().getName())
                 .orElse("")

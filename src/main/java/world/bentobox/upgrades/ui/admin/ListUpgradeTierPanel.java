@@ -40,7 +40,7 @@ public class ListUpgradeTierPanel extends AbPanel {
 				UpgradeTier tier = this.tiers.get(idx);
 				int pos = ((idx / 7) * 9) + (idx % 7) + 10;
 				this.setItems(tier.getUniqueId(), new PanelItemBuilder()
-					.name(tier.getUniqueId())
+					.name(tier.getName())
 					.icon(tier.getIcon())
 					.clickHandler(this.onClickEdit(tier))
 					.build(), pos);

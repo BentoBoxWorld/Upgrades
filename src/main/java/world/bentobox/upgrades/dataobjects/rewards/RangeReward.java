@@ -16,7 +16,6 @@ import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -119,19 +118,24 @@ public class RangeReward extends Reward {
         private void createInterface() {
             this.fillBorder(Material.BLACK_STAINED_GLASS_PANE);
 
+            // Show the formula status in-line with the formula item (#70 items 7 & 8)
             if (this.saved.isValid()) {
-                this.setItems(VALID, new PanelItemBuilder().name(this.getUser()
-                                .getTranslation("upgrades.ui.buttons.validconf"))
+                this.setItems(VALID, new PanelItemBuilder()
+                        .name(this.getUser().getTranslation("upgrades.rewards.rangeupgrade.formulastatus"))
+                        .description(this.saved.getRangeUpgradeEquation())
                         .icon(Material.GREEN_CONCRETE)
                         .build(), 10);
             } else {
-                this.setItems(INVALID, new PanelItemBuilder().name(this.getUser()
-                                .getTranslation("upgrades.ui.buttons.invalidconf"))
+                this.setItems(INVALID, new PanelItemBuilder()
+                        .name(this.getUser().getTranslation("upgrades.rewards.rangeupgrade.formulaneeded"))
+                        .description(this.getUser().getTranslation("upgrades.rewards.rangeupgrade.formulaneededdesc"))
                         .icon(Material.RED_CONCRETE)
                         .build(), 10);
             }
 
-            this.setItems(RULE, new PanelItemBuilder().name(this.saved.getRangeUpgradeEquation())
+            this.setItems(RULE, new PanelItemBuilder()
+                    .name(this.getUser().getTranslation("upgrades.rewards.rangeupgrade.setformula"))
+                    .description(this.saved.getRangeUpgradeEquation())
                     .icon(Material.PAPER)
                     .clickHandler(this.onSetRule())
                     .build(), 22);
@@ -141,10 +145,24 @@ public class RangeReward extends Reward {
             return (panel, client, click, slot) -> {
                 this.getAddon()
                         .getChatInput()
-                        .askOneInput(this.doSetRule(), input -> true,
+                        .askOneInput(this.doSetRule(),
+                                input -> {
+                                    // Validate that input is a parseable math expression (#70 item 8)
+                                    try {
+                                        Map<String, Double> vars = new TreeMap<>();
+                                        vars.put("[level]", 1.0);
+                                        vars.put("[islandLevel]", 1.0);
+                                        vars.put("[numberPlayer]", 1.0);
+                                        Settings.evaluate(input, vars);
+                                        return true;
+                                    } catch (Exception e) {
+                                        return false;
+                                    }
+                                },
                                 client.getTranslation("upgrades.rewards.rangeupgrade.rulequestion",
-                                        "[actual]", this.saved.getRangeUpgradeEquation()), "", client,
-                                false);
+                                        "[actual]", this.saved.getRangeUpgradeEquation()),
+                                client.getTranslation("upgrades.rewards.rangeupgrade.invalidrule"),
+                                client, false);
                 return true;
             };
         }

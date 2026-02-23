@@ -29,7 +29,7 @@ public class EditUpgradePanel extends AbPanel {
 	private UpgradeData upgrade;
 
 	public EditUpgradePanel(UpgradesAddon addon, GameModeAddon gamemode, User user, UpgradeData upgrade, AbPanel parent) {
-		super(addon, gamemode, user, upgrade.getUniqueId(), parent);
+		super(addon, gamemode, user, upgrade.getName(), parent);
 		this.upgrade = upgrade;
 		
 		this.fillBorder(Material.BLACK_STAINED_GLASS_PANE);
@@ -75,23 +75,30 @@ public class EditUpgradePanel extends AbPanel {
 				.clickHandler(this.onSetIcon)
 				.build(), 30);
 		
+		boolean hasTiers = !this.getAddon().getUpgradeDataManager()
+				.getUpgradeTierByUpgradeData(this.upgrade).isEmpty();
+
 		this.setItems(TIERADD, new PanelItemBuilder()
 				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tieradd"))
+				.description(hasTiers ? "" :
+						this.getUser().getTranslation("upgrades.ui.editupgradepanel.tierrequired"))
 				.icon(Material.ANVIL)
 				.clickHandler(this.onTierAdd)
 				.build(), 14);
-		
-		this.setItems(TIEREDIT, new PanelItemBuilder()
-				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tieredit"))
-				.icon(Material.WRITABLE_BOOK)
-				.clickHandler(this.onTierEdit)
-				.build(), 23);
-		
-		this.setItems(TIERDELETE, new PanelItemBuilder()
-				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tierdelete"))
-				.icon(Material.LAVA_BUCKET)
-				.clickHandler(this.onTierDelete)
-				.build(), 32);
+
+		if (hasTiers) {
+			this.setItems(TIEREDIT, new PanelItemBuilder()
+					.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tieredit"))
+					.icon(Material.WRITABLE_BOOK)
+					.clickHandler(this.onTierEdit)
+					.build(), 23);
+
+			this.setItems(TIERDELETE, new PanelItemBuilder()
+					.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.tierdelete"))
+					.icon(Material.LAVA_BUCKET)
+					.clickHandler(this.onTierDelete)
+					.build(), 32);
+		}
 		
 		this.setItems(ORDER, new PanelItemBuilder()
 				.name(this.getUser().getTranslation("upgrades.ui.editupgradepanel.order",
@@ -104,6 +111,9 @@ public class EditUpgradePanel extends AbPanel {
 	
 	private ClickHandler onActive = (panel, client, click, slot) -> {
 		this.upgrade.setActive(!this.upgrade.isActive());
+		// Persist the change and update the player-facing shop (#71)
+		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
+		this.getAddon().refreshDatabaseUpgrades();
 		this.setButton();
 		this.getBuild().build();
 		return true;
@@ -173,15 +183,19 @@ public class EditUpgradePanel extends AbPanel {
 		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
 		List<UpgradeTier> tiers = this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade);
 		int lastpos = tiers.size() > 0 ? tiers.get(tiers.size() - 1).getEndLevel() + 1 : 0;
-		
+
 		UpgradeTier newTier = this.getAddon().getUpgradeDataManager()
 				.createUpgradeTier(uniqueId, this.upgrade, lastpos, lastpos, this.getUser());
-		
+
 		if (newTier == null) {
 			this.getUser().sendMessage("upgrades.error.unknownerror");
 			this.getAddon().logError("Couldn't create the upgradeTier with id " + uniqueId);
 			return;
 		}
+
+		// Use the user-typed name as display name (#70 item 5)
+		newTier.setName(input);
+		this.getAddon().getUpgradeDataManager().saveUpgradeTier(newTier);
 		
 		new EditTierPanel(this.getAddon(),
 				this.getGamemode(), this.getUser(), newTier,
