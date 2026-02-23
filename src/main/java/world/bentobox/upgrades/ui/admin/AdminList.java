@@ -82,7 +82,7 @@ public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
                     if (this.rightClickDesc != null)
                         desc.add(this.rightClickDesc);
 
-                    desc.add(item.getAdminDescription(this.getUser()));
+                    desc.addAll(wrapText(item.getAdminDescription(this.getUser()), LORE_MAX_WIDTH));
 
                     this.setItems(item.getName() + "-" + idx,
                             new PanelItemBuilder().name(item.getAdminName(this.getUser()))
