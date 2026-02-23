@@ -42,23 +42,28 @@ public class DatabaseUpgrade extends UpgradeAPI {
             return;
         }
 
-        // Build description from prices and rewards
+        // Build description from prices and rewards, using DB-aware overloads so that
+        // formula placeholders (e.g. [amount] in MoneyPrice) are substituted correctly.
         StringBuilder sb = new StringBuilder();
         for (PriceDB priceDB : nextTier.getPrices()) {
             Price price = this.getUpgradesAddon().getUpgradesManager().searchPrice(priceDB.getPriceType());
             if (price != null) {
-                sb.append(price.getPublicDescription(user)).append("\n");
+                sb.append(price.getPublicDescription(user, priceDB)).append("\n");
             }
         }
         for (RewardDB rewardDB : nextTier.getRewards()) {
             Reward reward = this.getUpgradesAddon().getUpgradesManager().searchReward(rewardDB.getRewardType());
             if (reward != null) {
-                sb.append(reward.getPublicDescription(user)).append("\n");
+                sb.append(reward.getPublicDescription(user, rewardDB)).append("\n");
             }
         }
 
         String description = sb.toString().trim();
-        this.setOwnDescription(user, description.isEmpty() ? null : description);
+        // Always set a non-null ownDescription when a tier is found.
+        // PanelClick uses (upgradeValues == null && ownDescription == null) to detect
+        // the maxed-out state, so ownDescription must be non-null here even when the
+        // tier has no prices or rewards configured (free upgrade).
+        this.setOwnDescription(user, description.isEmpty() ? nextTier.getName() : description);
         // Do NOT set upgradeValues so Panel skips legacy vault/level display
         this.setUpgradeValues(user, null);
         this.setDisplayName(upgradeData.getName());
@@ -121,14 +126,14 @@ public class DatabaseUpgrade extends UpgradeAPI {
     }
 
     /**
-     * Find the tier that covers the next level (currentLevel + 1).
+     * Find the tier that covers the current level (i.e. the next purchase available).
+     * Level 0 = not yet purchased; a tier with startLevel=0, endLevel=0 means one purchase.
      */
     private UpgradeTier findNextTier(int currentLevel) {
-        int nextLevel = currentLevel + 1;
         List<UpgradeTier> tiers = this.getUpgradesAddon().getUpgradeDataManager()
                 .getUpgradeTierByUpgradeData(upgradeData);
         for (UpgradeTier tier : tiers) {
-            if (tier.getStartLevel() <= nextLevel && nextLevel <= tier.getEndLevel()) {
+            if (tier.getStartLevel() <= currentLevel && currentLevel <= tier.getEndLevel()) {
                 return tier;
             }
         }

@@ -42,7 +42,7 @@ public class UpgradesData implements DataObject {
 	}
 	
 	public int getUpgradeLevel(String name) {
-		this.upgradesLevels.putIfAbsent(name, 1);
+		this.upgradesLevels.putIfAbsent(name, 0);
 		return this.upgradesLevels.get(name);
 	}
 	

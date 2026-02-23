@@ -31,6 +31,16 @@ public abstract class Reward implements PanelAdminItem, PanelPublicItem {
         return this.icon;
     }
 
+    /**
+     * Returns a player-facing description with any formula placeholders substituted
+     * using values from the stored DB object.  Override in concrete Reward types that
+     * carry a formula (e.g. RangeReward substitutes the range amount).
+     * The default falls back to {@link PanelPublicItem#getPublicDescription(User)}.
+     */
+    public String getPublicDescription(User user, RewardDB rewardDB) {
+        return this.getPublicDescription(user);
+    }
+
     public abstract AbPanel getAdminPanel(UpgradesAddon addon, GameModeAddon gamemode, User user,
                                           AbPanel parent, UpgradeTier tier, @Nullable RewardDB saved);
 

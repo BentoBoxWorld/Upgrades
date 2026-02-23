@@ -108,6 +108,11 @@ public class AdminPanel extends AbPanel {
 		newUpgrade.setName(input);
 		this.getAddon().getUpgradeDataManager().saveUpgradeData(newUpgrade);
 
+		// Register the new upgrade in the player-facing shop immediately.
+		// Without this call the upgrade lives in the DB but is never added to
+		// addon.upgrade, so /is upgrade shows nothing for it.
+		this.getAddon().refreshDatabaseUpgrades();
+
 		new EditUpgradePanel(this.getAddon(), this.getGamemode(), this.getUser(), newUpgrade, this)
 				.getBuild().build();
 	};

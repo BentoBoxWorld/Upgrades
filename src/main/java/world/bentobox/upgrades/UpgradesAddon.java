@@ -36,11 +36,6 @@ import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
 import world.bentobox.upgrades.ui.utils.ChatInput;
-import world.bentobox.upgrades.upgrades.BlockLimitsUpgrade;
-import world.bentobox.upgrades.upgrades.CommandUpgrade;
-import world.bentobox.upgrades.upgrades.EntityGroupLimitsUpgrade;
-import world.bentobox.upgrades.upgrades.EntityLimitsUpgrade;
-import world.bentobox.upgrades.upgrades.RangeUpgrade;
 
 public class UpgradesAddon extends Addon {
 
@@ -106,36 +101,13 @@ public class UpgradesAddon extends Addon {
                 this.logWarning("Vault plugin not found so Upgrades won't look for money");
             }
 
-            if (this.isLimitsProvided()) {
-                this.getSettings()
-                        .getEntityLimitsUpgrade()
-                        .forEach(ent -> this.registerUpgrade(new EntityLimitsUpgrade(this, ent)));
-                this.getSettings()
-                        .getEntityGroupLimitsUpgrade()
-                        .forEach(group -> this.registerUpgrade(
-                                new EntityGroupLimitsUpgrade(this, group)));
-                this.getSettings()
-                        .getMaterialsLimitsUpgrade()
-                        .forEach(mat -> this.registerUpgrade(new BlockLimitsUpgrade(this, mat)));
-
-                this.upgradesManager.addPrice(new IslandLevelPrice());
-            }
-
-            this.upgradesManager.addReward(new RangeReward());
+            this.upgradesManager.addPrice(new IslandLevelPrice());
             this.upgradesManager.addPrice(new MoneyPrice());
             this.upgradesManager.addPrice(new ItemPrice());
             this.upgradesManager.addPrice(new PermissionPrice());
+            this.upgradesManager.addReward(new RangeReward());
             this.upgradesManager.addReward(new LimitsReward());
             this.upgradesManager.addReward(new CommandReward());
-
-            this.getSettings()
-                    .getCommandUpgrade()
-                    .forEach(cmd -> this.registerUpgrade(new CommandUpgrade(this, cmd, this.getSettings()
-                            .getCommandIcon(cmd))));
-
-            if (this.getSettings()
-                    .getHasRangeUpgrade())
-                this.registerUpgrade(new RangeUpgrade(this));
 
             // Load database-backed upgrades
             this.hookedGameModes.forEach(gameModeName ->
