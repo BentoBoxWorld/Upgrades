@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import world.bentobox.limits.Settings.EntityGroup;
+import world.bentobox.limits.EntityGroup;
 import world.bentobox.limits.events.LimitsPermCheckEvent;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;

@@ -74,8 +74,8 @@ public class LimitsReward extends Reward {
             case "BLOCK" -> {
                 try {
                     Material mat = Material.valueOf(db.getTarget().toUpperCase());
-                    int oldCount = isb.getBlockLimitsOffset().getOrDefault(mat, 0);
-                    isb.setBlockLimitsOffset(mat, oldCount + amount);
+                    int oldCount = isb.getBlockLimitsOffset().getOrDefault(mat.getKey(), 0);
+                    isb.setBlockLimitsOffset(mat.getKey(), oldCount + amount);
                 } catch (IllegalArgumentException e) {
                     addon.logWarning("LimitsReward: invalid material '" + db.getTarget() + "'");
                 }
