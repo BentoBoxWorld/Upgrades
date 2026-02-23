@@ -49,6 +49,13 @@ public class RangeReward extends Reward {
     }
 
     @Override
+    public String getPublicDescription(User user, RewardDB rewardDB) {
+        RangeRewardDB db = (RangeRewardDB) rewardDB;
+        return user.getTranslation("upgrades.rewards.rangeupgrade.description",
+                "[rangelevel]", db.getRangeUpgradeEquation());
+    }
+
+    @Override
     public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
         RangeRewardDB db = (RangeRewardDB) rewardDB;
         Map<String, Double> variables = new TreeMap<>();

@@ -17,7 +17,14 @@ public class PanelClick implements ClickHandler {
 	
 	@Override
 	public boolean onClick(Panel panel, User user, ClickType clickType, int slot) {
-		if (this.upgrade == null || this.upgrade.getUpgradeValues(user) == null)
+		if (this.upgrade == null) return true;
+
+		// Block when truly maxed out:
+		//   Legacy upgrades: upgradeValues == null means maxed.
+		//   DB upgrades: upgradeValues is always null; ownDescription == null means maxed.
+		// An upgrade is available if EITHER signal is non-null.
+		if (this.upgrade.getUpgradeValues(user) == null
+				&& this.upgrade.getOwnDescription(user) == null)
 			return true;
 		
 		if (!this.upgrade.canUpgrade(user, this.island)) {

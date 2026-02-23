@@ -37,7 +37,14 @@ public class MoneyPrice extends Price {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.prices.money.description");
+        return user.getTranslation("upgrades.prices.money.description", "[amount]", "?");
+    }
+
+    @Override
+    public String getPublicDescription(User user, PriceDB priceDB) {
+        MoneyPriceDB db = (MoneyPriceDB) priceDB;
+        return user.getTranslation("upgrades.prices.money.description",
+                "[amount]", db.getAmountEquation());
     }
 
     @Override

@@ -168,8 +168,7 @@ upgrades:
   rewards:
     rangeupgrade:
       name: "Range upgrade"
-      description: |-
-        Increase the border size
+      description: "Increase border by [rangelevel] blocks"
       admindescription: |-
         Increase the island border size
         Careful to not go over the island limit

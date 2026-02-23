@@ -35,6 +35,16 @@ public abstract class Price implements PanelAdminItem, PanelPublicItem {
     public abstract AbPanel getAdminPanel(UpgradesAddon addon, GameModeAddon gamemode, User user,
                                           AbPanel parent, UpgradeTier tier, @Nullable PriceDB saved);
 
+    /**
+     * Returns a player-facing description with any formula placeholders substituted
+     * using values from the stored DB object.  Override in concrete Price types that
+     * carry a formula (e.g. MoneyPrice substitutes [amount]).
+     * The default falls back to {@link PanelPublicItem#getPublicDescription(User)}.
+     */
+    public String getPublicDescription(User user, PriceDB priceDB) {
+        return this.getPublicDescription(user);
+    }
+
     public abstract boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);
 
     public abstract void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);

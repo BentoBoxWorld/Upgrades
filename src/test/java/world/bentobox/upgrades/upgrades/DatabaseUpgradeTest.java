@@ -314,4 +314,63 @@ public class DatabaseUpgradeTest {
         assertTrue(databaseUpgrade.doUpgrade(user, island));
         assertEquals(1, upgradesData.getUpgradeLevel(upgradeData.getUniqueId()));
     }
+
+    // ─── PanelClick gating regression ─────────────────────────────────────
+    //
+    // DB upgrades never populate upgradeValues (it stays null by design).
+    // PanelClick used to check only getUpgradeValues(user) == null, which
+    // silently blocked every DB upgrade click.  The fix: treat
+    //   (upgradeValues == null && ownDescription == null) as "maxed".
+    // So ownDescription must be non-null whenever a tier is found.
+
+    @Test
+    void updateUpgradeValue_withPricesAndRewards_ownDescriptionIsNonNull() {
+        PriceDB priceDB = mock(PriceDB.class);
+        Price price = mock(Price.class);
+        when(upgradesManager.searchPrice(any())).thenReturn(price);
+        when(price.getPublicDescription(eq(user), eq(priceDB))).thenReturn("Costs 100 money");
+        tier.setPrices(List.of(priceDB));
+
+        databaseUpgrade.updateUpgradeValue(user, island);
+
+        assertNotNull(databaseUpgrade.getOwnDescription(user),
+                "ownDescription must not be null when a tier is found — PanelClick uses null ownDescription to block clicks");
+    }
+
+    @Test
+    void updateUpgradeValue_noPricesOrRewards_ownDescriptionFallsBackToTierName() {
+        // A tier with no prices or rewards: description should be tier name so that
+        // PanelClick can distinguish "available free upgrade" from "maxed".
+        databaseUpgrade.updateUpgradeValue(user, island);
+
+        assertEquals(tier.getName(), databaseUpgrade.getOwnDescription(user),
+                "ownDescription must fall back to tier name when there are no price/reward descriptions");
+    }
+
+    @Test
+    void updateUpgradeValue_maxedState_ownDescriptionIsNull() {
+        // Level 1 with tier 0-0: maxed → ownDescription must be null so PanelClick blocks the click.
+        upgradesData.setUpgradeLevel(upgradeData.getUniqueId(), 1);
+        databaseUpgrade.updateUpgradeValue(user, island);
+
+        assertNull(databaseUpgrade.getOwnDescription(user),
+                "ownDescription must be null when maxed so PanelClick correctly blocks the click");
+    }
+
+    // ─── Description substitution ─────────────────────────────────────────
+
+    @Test
+    void updateUpgradeValue_moneyPrice_substitutesAmountInDescription() {
+        PriceDB priceDB = mock(PriceDB.class);
+        Price price = mock(Price.class);
+        when(upgradesManager.searchPrice(any())).thenReturn(price);
+        // Simulate MoneyPrice.getPublicDescription(user, priceDB) returning "Costs 500 money"
+        when(price.getPublicDescription(user, priceDB)).thenReturn("Costs 500 money");
+        tier.setPrices(List.of(priceDB));
+
+        databaseUpgrade.updateUpgradeValue(user, island);
+
+        assertTrue(databaseUpgrade.getOwnDescription(user).contains("Costs 500 money"),
+                "Description must use the DB-aware overload that substitutes [amount]");
+    }
 }
