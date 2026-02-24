@@ -31,12 +31,16 @@ import world.bentobox.upgrades.dataobjects.prices.ItemPrice;
 import world.bentobox.upgrades.dataobjects.prices.MoneyPrice;
 import world.bentobox.upgrades.dataobjects.prices.PermissionPrice;
 import world.bentobox.upgrades.dataobjects.rewards.CommandReward;
+import world.bentobox.upgrades.dataobjects.rewards.CropGrowthReward;
 import world.bentobox.upgrades.dataobjects.rewards.LimitsReward;
 import world.bentobox.upgrades.dataobjects.rewards.RangeReward;
+import world.bentobox.upgrades.dataobjects.rewards.SpawnerReward;
 import world.bentobox.upgrades.DefaultUpgradeSeeder;
 import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
+import world.bentobox.upgrades.listeners.CropGrowthListener;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
+import world.bentobox.upgrades.listeners.SpawnerUpgradeListener;
 import world.bentobox.upgrades.ui.utils.ChatInput;
 
 public class UpgradesAddon extends Addon {
@@ -110,6 +114,8 @@ public class UpgradesAddon extends Addon {
             this.upgradesManager.addReward(new RangeReward());
             this.upgradesManager.addReward(new LimitsReward());
             this.upgradesManager.addReward(new CommandReward());
+            this.upgradesManager.addReward(new SpawnerReward());
+            this.upgradesManager.addReward(new CropGrowthReward());
 
             // Seed example upgrades for any game mode that has none yet
             new DefaultUpgradeSeeder(this).seedIfEmpty();
@@ -122,6 +128,8 @@ public class UpgradesAddon extends Addon {
             );
 
             this.registerListener(new IslandChangeListener(this));
+            this.registerListener(new SpawnerUpgradeListener(this));
+            this.registerListener(new CropGrowthListener(this));
 
             if (this.isLimitsProvided())
                 this.registerListener(new JoinPermCheckListener(this));

@@ -189,6 +189,32 @@ upgrades:
       description: "Runs commands on upgrade"
       admindescription: "Execute console or player commands"
       paneltitle: "Command reward"
+    spawner:
+      name: "Spawner Boost"
+      description: "+[amount] entities per spawner trigger"
+      admindescription: "Spawn extra entities per spawner activation"
+      paneltitle: "Spawner boost reward"
+      rulequestion: |-
+        Enter spawn bonus formula (e.g. 0.5, 0.1*[level])
+        Actual: [actual]
+      invalidrule: "Invalid formula. Use a number or math expression (e.g. 0.5, 0.1*[level])"
+      setformula: "Set spawn bonus formula"
+      formulastatus: "Formula OK"
+      formulaneeded: "Formula needed"
+      formulaneededdesc: "Click the paper icon to set a spawn bonus formula"
+    cropgrowth:
+      name: "Crop Growth Boost"
+      description: "+[amount] extra growth trigger per crop tick"
+      admindescription: "Increase crop growth speed per island"
+      paneltitle: "Crop growth reward"
+      rulequestion: |-
+        Enter growth bonus formula (e.g. 0.5, 0.1*[level])
+        Actual: [actual]
+      invalidrule: "Invalid formula. Use a number or math expression (e.g. 0.5, 0.1*[level])"
+      setformula: "Set growth bonus formula"
+      formulastatus: "Formula OK"
+      formulaneeded: "Formula needed"
+      formulaneededdesc: "Click the paper icon to set a growth bonus formula"
 protection:
   flags:
     UPGRADES_RANK_RIGHT:
