@@ -40,7 +40,14 @@ public class IslandLevelPrice extends Price {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.prices.islandlevel.description");
+        return user.getTranslation("upgrades.prices.islandlevel.description", "[level]", "?");
+    }
+
+    @Override
+    public String getPublicDescription(User user, PriceDB priceDB) {
+        IslandLevelPriceDB db = (IslandLevelPriceDB) priceDB;
+        return user.getTranslation("upgrades.prices.islandlevel.description",
+                "[level]", db.getLevelNeededEquation());
     }
 
     @Override

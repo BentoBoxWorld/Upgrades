@@ -1,6 +1,7 @@
 package world.bentobox.upgrades;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import world.bentobox.upgrades.dataobjects.prices.PermissionPrice;
 import world.bentobox.upgrades.dataobjects.rewards.CommandReward;
 import world.bentobox.upgrades.dataobjects.rewards.LimitsReward;
 import world.bentobox.upgrades.dataobjects.rewards.RangeReward;
+import world.bentobox.upgrades.DefaultUpgradeSeeder;
 import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
 import world.bentobox.upgrades.listeners.JoinPermCheckListener;
@@ -108,6 +110,9 @@ public class UpgradesAddon extends Addon {
             this.upgradesManager.addReward(new RangeReward());
             this.upgradesManager.addReward(new LimitsReward());
             this.upgradesManager.addReward(new CommandReward());
+
+            // Seed example upgrades for any game mode that has none yet
+            new DefaultUpgradeSeeder(this).seedIfEmpty();
 
             // Load database-backed upgrades
             this.hookedGameModes.forEach(gameModeName ->
@@ -222,6 +227,10 @@ public class UpgradesAddon extends Addon {
 
     public boolean isVaultProvided() {
         return this.vault != null;
+    }
+
+    public List<String> getHookedGameModes() {
+        return Collections.unmodifiableList(hookedGameModes);
     }
 
     public Set<UpgradeAPI> getAvailableUpgrades() {

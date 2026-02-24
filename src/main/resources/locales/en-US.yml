@@ -134,9 +134,7 @@ upgrades:
   prices:
     islandlevel:
       name: "Island level"
-      description: |-
-        Required island level
-        Don't consume anything
+      description: "Min. island level: [level]"
       admindescription: |-
         Add a minimum required level
         This price don't use anything

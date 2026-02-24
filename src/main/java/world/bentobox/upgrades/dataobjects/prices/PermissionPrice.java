@@ -34,7 +34,14 @@ public class PermissionPrice extends Price {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.prices.permission.description");
+        return user.getTranslation("upgrades.prices.permission.description", "[permission]", "?");
+    }
+
+    @Override
+    public String getPublicDescription(User user, PriceDB priceDB) {
+        PermissionPriceDB db = (PermissionPriceDB) priceDB;
+        return user.getTranslation("upgrades.prices.permission.description",
+                "[permission]", db.getPermission());
     }
 
     @Override

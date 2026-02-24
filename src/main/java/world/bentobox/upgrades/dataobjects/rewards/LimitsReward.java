@@ -45,7 +45,17 @@ public class LimitsReward extends Reward {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.rewards.limits.description");
+        return user.getTranslation("upgrades.rewards.limits.description",
+                "[type]", "?", "[target]", "?", "[amount]", "?");
+    }
+
+    @Override
+    public String getPublicDescription(User user, RewardDB rewardDB) {
+        LimitsRewardDB db = (LimitsRewardDB) rewardDB;
+        return user.getTranslation("upgrades.rewards.limits.description",
+                "[type]", db.getLimitType(),
+                "[target]", db.getTarget(),
+                "[amount]", db.getAmountEquation());
     }
 
     @Override

@@ -35,7 +35,15 @@ public class ItemPrice extends Price {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.prices.item.description");
+        return user.getTranslation("upgrades.prices.item.description", "[amount]", "?", "[item]", "?");
+    }
+
+    @Override
+    public String getPublicDescription(User user, PriceDB priceDB) {
+        ItemPriceDB db = (ItemPriceDB) priceDB;
+        return user.getTranslation("upgrades.prices.item.description",
+                "[amount]", Integer.toString(db.getAmount()),
+                "[item]", db.getMaterial());
     }
 
     @Override
