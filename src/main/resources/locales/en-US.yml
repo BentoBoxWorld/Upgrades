@@ -56,6 +56,16 @@ upgrades:
       tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
       title: "Island upgrade shop"
       tryreloadlevel: "Don't forget to update your island level with the level command"
+      previous:
+        name: "&7Previous page"
+        description: "&7Go to previous page"
+        tooltip: "Click to go to previous page"
+      next:
+        name: "&7Next page"
+        description: "&7Go to next page"
+        tooltip: "Click to go to next page"
+      upgrade:
+        tooltip: "Click to purchase upgrade"
     editupgradepanel:
       active: "Active"
       activedesc: "Click to turn inactive"

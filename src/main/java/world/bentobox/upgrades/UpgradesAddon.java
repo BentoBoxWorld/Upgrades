@@ -117,6 +117,8 @@ public class UpgradesAddon extends Addon {
             this.upgradesManager.addReward(new SpawnerReward());
             this.upgradesManager.addReward(new CropGrowthReward());
 
+            saveResource("panels/upgrades_panel.yml", false);
+
             // Seed example upgrades for any game mode that has none yet
             new DefaultUpgradeSeeder(this).seedIfEmpty();
 
