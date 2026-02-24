@@ -301,14 +301,14 @@ public final class EditTierPanel extends AbPanel {
                 if (delete) {
                     List<PriceDB> prices = this.tier.getPrices();
                     prices = prices.stream()
-                            .filter(p -> p.getPriceType() == price.getClass())
+                            .filter(p -> p.getPriceType() != price.getClass())
                             .collect(
                                     Collectors.toList());
                     this.tier.setPrices(prices);
                 }
                 this.getBuild()
                         .build();
-            });
+            }).getBuild().build();
 
     private final Consumer<Reward> onDeleteReward = (reward) ->
             new YesNoPanel(this.getAddon(), this.getGamemode(), this.getUser(), this.getUser()
@@ -316,14 +316,14 @@ public final class EditTierPanel extends AbPanel {
                 if (delete) {
                     List<RewardDB> rewards = this.tier.getRewards();
                     rewards = rewards.stream()
-                            .filter(r -> r.getRewardType() == reward.getClass())
+                            .filter(r -> r.getRewardType() != reward.getClass())
                             .collect(
                                     Collectors.toList());
                     this.tier.setRewards(rewards);
                 }
                 this.getBuild()
                         .build();
-            });
+            }).getBuild().build();
 
     private final Runnable onCreatePrice = () -> {
         String title = this.getUser()
