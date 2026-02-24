@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Upgrades is a BentoBox addon (Paper/Bukkit plugin) that lets island players purchase upgrades using Vault economy. It hooks into BentoBox GameMode addons (BSkyBlock, AcidIsland, CaveBlock, SkyGrid, AOneBlock) and optionally integrates with the Level and Limits addons.
 
+### Relation to other addons for BentoBox
+
+Upgrades runs within the BentoBox system as a plugin/addon to it. For coding, testing, and other patterns, it can and should draw on what other addons and BentoBox itself does. So the wider code base should be utilized when needed. This can be found at https://bentobox.world (GitHub) and the CI system is in https://ci.bentobox.world (CodeMC).
+
 ## Build & Test Commands
 
 ```bash

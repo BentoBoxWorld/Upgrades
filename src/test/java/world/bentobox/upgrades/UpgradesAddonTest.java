@@ -121,15 +121,23 @@ public class UpgradesAddonTest {
         Path path = Paths.get("config.yml");
         Files.copy(fromPath, path);
         try (JarOutputStream tempJarOutputStream = new JarOutputStream(new FileOutputStream(jFile))) {
-            //Added the new files to the jar.
-            try (FileInputStream fis = new FileInputStream(path.toFile())) {
-                byte[] buffer = new byte[1024];
-                int bytesRead = 0;
-                JarEntry entry = new JarEntry(path.toString());
-                tempJarOutputStream.putNextEntry(entry);
-                while ((bytesRead = fis.read(buffer)) != -1) {
-                    tempJarOutputStream.write(buffer, 0, bytesRead);
-                }
+            // Add config.yml
+            addFileToJar(tempJarOutputStream, path.toFile(), "config.yml");
+            // Add panel template
+            addFileToJar(tempJarOutputStream,
+                    Paths.get("src/main/resources/panels/upgrades_panel.yml").toFile(),
+                    "panels/upgrades_panel.yml");
+        }
+    }
+
+    private static void addFileToJar(JarOutputStream jar, File file, String entryName) throws IOException {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            JarEntry entry = new JarEntry(entryName);
+            jar.putNextEntry(entry);
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                jar.write(buffer, 0, bytesRead);
             }
         }
     }
