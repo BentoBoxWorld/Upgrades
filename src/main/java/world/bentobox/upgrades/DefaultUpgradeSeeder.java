@@ -10,8 +10,10 @@ import world.bentobox.upgrades.dataobjects.prices.ItemPriceDB;
 import world.bentobox.upgrades.dataobjects.prices.MoneyPriceDB;
 import world.bentobox.upgrades.dataobjects.prices.PermissionPriceDB;
 import world.bentobox.upgrades.dataobjects.rewards.CommandRewardDB;
+import world.bentobox.upgrades.dataobjects.rewards.CropGrowthRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.LimitsRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.RangeRewardDB;
+import world.bentobox.upgrades.dataobjects.rewards.SpawnerRewardDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class DefaultUpgradeSeeder {
         for (String gm : addon.getHookedGameModes()) {
             if (dm.getUpgradeDataByGameMode(gm).isEmpty()) {
                 seed(dm, gm);
-                addon.log("Seeded 6 example upgrades for " + gm
+                addon.log("Seeded 8 example upgrades for " + gm
                         + " — edit or delete them via /[gamemode] admin upgrade");
             }
         }
@@ -49,6 +51,8 @@ public class DefaultUpgradeSeeder {
         seedCowLimit(dm, gm);
         seedDiamondBorder(dm, gm);
         seedDonorPerk(dm, gm);
+        seedSpawnerBoost(dm, gm);
+        seedCropBoost(dm, gm);
     }
 
     // ─── Example 1: Border Expansion I ───────────────────────────────────────
@@ -219,6 +223,60 @@ public class DefaultUpgradeSeeder {
         cmd.setCommands(commands);
         cmd.setConsole(true);
         tier.setRewards(List.of(cmd));
+
+        dm.saveUpgradeTier(tier);
+    }
+
+    // ─── Example 7: Spawner Boost ─────────────────────────────────────────────
+    // Demonstrates: MoneyPrice → SpawnerRewardDB (5 purchases)
+
+    private void seedSpawnerBoost(UpgradesDataManager dm, String gm) {
+        UpgradeData data = dm.createUpgradeData(gm + "_example_spawner", gm, null);
+        if (data == null) return;
+        data.setName("Spawner Boost");
+        data.setIcon(new ItemStack(Material.SPAWNER));
+        data.setOrder(7);
+        data.setDescription(List.of("Example: pay $2000 for +0.5 extra entities per spawner trigger."));
+        dm.saveUpgradeData(data);
+
+        UpgradeTier tier = dm.createUpgradeTier(gm + "_example_spawner_t1", data, 0, 4, null);
+        if (tier == null) return;
+        tier.setName("Spawner Boost");
+
+        MoneyPriceDB money = new MoneyPriceDB();
+        money.setAmountEquation("2000");
+        tier.setPrices(List.of(money));
+
+        SpawnerRewardDB spawner = new SpawnerRewardDB();
+        spawner.setSpawnBonusEquation("0.5");
+        tier.setRewards(List.of(spawner));
+
+        dm.saveUpgradeTier(tier);
+    }
+
+    // ─── Example 8: Crop Growth Boost ─────────────────────────────────────────
+    // Demonstrates: MoneyPrice → CropGrowthRewardDB (5 purchases)
+
+    private void seedCropBoost(UpgradesDataManager dm, String gm) {
+        UpgradeData data = dm.createUpgradeData(gm + "_example_cropgrowth", gm, null);
+        if (data == null) return;
+        data.setName("Crop Growth Boost");
+        data.setIcon(new ItemStack(Material.WHEAT));
+        data.setOrder(8);
+        data.setDescription(List.of("Example: pay $500 for 50% extra growth chance per crop tick."));
+        dm.saveUpgradeData(data);
+
+        UpgradeTier tier = dm.createUpgradeTier(gm + "_example_cropgrowth_t1", data, 0, 4, null);
+        if (tier == null) return;
+        tier.setName("Crop Growth Boost");
+
+        MoneyPriceDB money = new MoneyPriceDB();
+        money.setAmountEquation("500");
+        tier.setPrices(List.of(money));
+
+        CropGrowthRewardDB crop = new CropGrowthRewardDB();
+        crop.setGrowthBonusEquation("0.5");
+        tier.setRewards(List.of(crop));
 
         dm.saveUpgradeTier(tier);
     }

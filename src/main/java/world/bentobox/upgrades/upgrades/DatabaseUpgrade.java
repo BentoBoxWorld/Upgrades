@@ -125,6 +125,10 @@ public class DatabaseUpgrade extends UpgradeAPI {
                 .equals(upgradeData.getWorld());
     }
 
+    public UpgradeData getUpgradeData() {
+        return upgradeData;
+    }
+
     /**
      * Find the tier that covers the current level (i.e. the next purchase available).
      * Level 0 = not yet purchased; a tier with startLevel=0, endLevel=0 means one purchase.
