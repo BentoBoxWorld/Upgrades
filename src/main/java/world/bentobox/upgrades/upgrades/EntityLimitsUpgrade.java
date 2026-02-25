@@ -32,7 +32,7 @@ public class EntityLimitsUpgrade extends Upgrade {
      * @param entity The {@link EntityType} associated with this upgrade.
      */
     public EntityLimitsUpgrade(UpgradesAddon addon, EntityType entity) {
-        super(addon, "LimitsUpgrade-" + entity.toString(), entity.toString() + " limits Upgrade",
+        super(addon, "LimitsUpgrade-" + entity.toString(), entity + " limits Upgrade",
                 addon.getSettings().getEntityIcon(entity));
         this.entity = entity;
     }
@@ -195,6 +195,6 @@ public class EntityLimitsUpgrade extends Upgrade {
         return true;
     }
 
-    private EntityType entity;
+    private final EntityType entity;
 
 }

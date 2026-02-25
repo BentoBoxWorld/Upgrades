@@ -24,7 +24,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  */
 public class EntityGroupLimitsUpgrade extends Upgrade {
 
-    private String group;
+    private final String group;
 
     /**
      * Constructs a new {@code EntityGroupLimitsUpgrade} instance for a specified entity group.

@@ -1,15 +1,6 @@
 package world.bentobox.upgrades;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
@@ -315,15 +306,15 @@ public class UpgradesManager {
 		if (tierList.isEmpty())
 			return null;
 
-		Settings.UpgradeTier rangeUpgradeTier = tierList.get(0);
+		Settings.UpgradeTier rangeUpgradeTier = tierList.getFirst();
 
 		if (rangeUpgradeTier.getMaxLevel() < 0)
 			return rangeUpgradeTier;
 
-		for (int i = 0; i < tierList.size(); i++) {
-			if (rangeLevel <= tierList.get(i).getMaxLevel())
-				return tierList.get(i);
-		}
+        for (Settings.UpgradeTier upgradeTier : tierList) {
+            if (rangeLevel <= upgradeTier.getMaxLevel())
+                return upgradeTier;
+        }
 
 		return null;
 	}
@@ -349,10 +340,10 @@ public class UpgradesManager {
 
 		List<Settings.UpgradeTier> tierList = matTierList.get(mat);
 
-		for (int i = 0; i < tierList.size(); i++) {
-			if (limitsLevel <= tierList.get(i).getMaxLevel())
-				return tierList.get(i);
-		}
+        for (Settings.UpgradeTier upgradeTier : tierList) {
+            if (limitsLevel <= upgradeTier.getMaxLevel())
+                return upgradeTier;
+        }
 		return null;
 	}
 
@@ -377,10 +368,10 @@ public class UpgradesManager {
 
 		List<Settings.UpgradeTier> tierList = entTierList.get(ent);
 
-		for (int i = 0; i < tierList.size(); i++) {
-			if (limitsLevel <= tierList.get(i).getMaxLevel())
-				return tierList.get(i);
-		}
+        for (Settings.UpgradeTier upgradeTier : tierList) {
+            if (limitsLevel <= upgradeTier.getMaxLevel())
+                return upgradeTier;
+        }
 
 		return null;
 	}
@@ -406,10 +397,10 @@ public class UpgradesManager {
 
 		List<Settings.UpgradeTier> tierList = entTierList.get(group);
 
-		for (int i = 0; i < tierList.size(); i++) {
-			if (limitsLevel <= tierList.get(i).getMaxLevel())
-				return tierList.get(i);
-		}
+        for (Settings.UpgradeTier upgradeTier : tierList) {
+            if (limitsLevel <= upgradeTier.getMaxLevel())
+                return upgradeTier;
+        }
 
 		return null;
 	}
@@ -435,10 +426,10 @@ public class UpgradesManager {
 
 		List<Settings.CommandUpgradeTier> tierList = cmdTierList.get(cmd);
 
-		for (int i = 0; i < tierList.size(); i++) {
-			if (cmdLevel <= tierList.get(i).getMaxLevel())
-				return tierList.get(i);
-		}
+        for (Settings.CommandUpgradeTier commandUpgradeTier : tierList) {
+            if (cmdLevel <= commandUpgradeTier.getMaxLevel())
+                return commandUpgradeTier;
+        }
 
 		return null;
 	}
@@ -843,7 +834,7 @@ public class UpgradesManager {
 		Map<EntityType, Integer> entityLimits = new TreeMap<>(this.addon.getLimitsAddon().getSettings().getLimits());
 		IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
 		if (ibc != null)
-			ibc.getEntityLimits().forEach(entityLimits::put);
+            entityLimits.putAll(ibc.getEntityLimits());
 		return entityLimits;
 	}
 
@@ -858,22 +849,22 @@ public class UpgradesManager {
 			return Collections.emptyMap();
 
 		Map<String, Integer> entityGroupLimits = new TreeMap<>(
-				this.addon.getLimitsAddon().getSettings().getGroupLimits().values().stream().flatMap(e -> e.stream())
-						.distinct().collect(Collectors.toMap(e -> e.getName(), e -> e.getLimit())));
+				this.addon.getLimitsAddon().getSettings().getGroupLimits().values().stream().flatMap(Collection::stream)
+						.distinct().collect(Collectors.toMap(world.bentobox.limits.Settings.EntityGroup::getName, world.bentobox.limits.Settings.EntityGroup::getLimit)));
 		IslandBlockCount ibc = this.addon.getLimitsAddon().getBlockLimitListener().getIsland(island.getUniqueId());
 		if (ibc != null)
-			ibc.getEntityGroupLimits().forEach(entityGroupLimits::put);
+            entityGroupLimits.putAll(ibc.getEntityGroupLimits());
 		return entityGroupLimits;
 	}
 
 	/**
 	 * The UpgradesAddon instance this manager is associated with.
 	 */
-	private UpgradesAddon addon;
+	private final UpgradesAddon addon;
 
 	/**
 	 * Set of game mode names that this manager has successfully hooked into.
 	 */
-	private Set<String> hookedGameModes;
+	private final Set<String> hookedGameModes;
 
 }

@@ -29,12 +29,12 @@ public class Settings {
     /**
      * The UpgradesAddon instance associated with this settings object.
      */
-    private UpgradesAddon addon;
+    private final UpgradesAddon addon;
 
     /**
      * Set of game modes where the upgrades are disabled.
      */
-    private Set<String> disabledGameModes;
+    private final Set<String> disabledGameModes;
 
     /**
      * Maximum range for range upgrades.
@@ -49,27 +49,27 @@ public class Settings {
     /**
      * Custom maximum range upgrades per game mode.
      */
-    private Map<String, Integer> customMaxRangeUpgrade = new TreeMap<>();
+    private final Map<String, Integer> customMaxRangeUpgrade = new TreeMap<>();
 
     /**
      * Default range upgrade tiers.
      */
-    private Map<String, UpgradeTier> rangeUpgradeTierMap = new TreeMap<>();
+    private final Map<String, UpgradeTier> rangeUpgradeTierMap = new TreeMap<>();
 
     /**
      * Custom range upgrade tiers per game mode.
      */
-    private Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new TreeMap<>();
+    private final Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new TreeMap<>();
 
     /**
      * Default block limits upgrades for each material.
      */
-    private Map<Material, Integer> maxBlockLimitsUpgrade = new EnumMap<>(Material.class);
+    private final Map<Material, Integer> maxBlockLimitsUpgrade = new EnumMap<>(Material.class);
 
     /**
      * Custom block limits upgrades for each material and game mode.
      */
-    private Map<String, Map<Material, Integer>> customMaxBlockLimitsUpgrade = new TreeMap<>();
+    private final Map<String, Map<Material, Integer>> customMaxBlockLimitsUpgrade = new TreeMap<>();
 
     /**
      * Default block limits upgrade tiers for each material.
@@ -79,37 +79,37 @@ public class Settings {
     /**
      * Custom block limits upgrade tiers per game mode.
      */
-    private Map<String, Map<Material, Map<String, UpgradeTier>>> customBlockLimitsUpgradeTierMap = new TreeMap<>();
+    private final Map<String, Map<Material, Map<String, UpgradeTier>>> customBlockLimitsUpgradeTierMap = new TreeMap<>();
 
     /**
      * Entity type to material icon mapping.
      */
-    private Map<EntityType, Material> entityIcon = new EnumMap<>(EntityType.class);
+    private final Map<EntityType, Material> entityIcon = new EnumMap<>(EntityType.class);
 
     /**
      * Entity group to material icon mapping.
      */
-    private Map<String, Material> entityGroupIcon = new TreeMap<>();
+    private final Map<String, Material> entityGroupIcon = new TreeMap<>();
 
     /**
      * Default entity limits upgrades for each entity type.
      */
-    private Map<EntityType, Integer> maxEntityLimitsUpgrade = new EnumMap<>(EntityType.class);
+    private final Map<EntityType, Integer> maxEntityLimitsUpgrade = new EnumMap<>(EntityType.class);
 
     /**
      * Default entity group limits upgrades.
      */
-    private Map<String, Integer> maxEntityGroupLimitsUpgrade = new TreeMap<>();
+    private final Map<String, Integer> maxEntityGroupLimitsUpgrade = new TreeMap<>();
 
     /**
      * Custom entity limits upgrades per game mode.
      */
-    private Map<String, Map<EntityType, Integer>> customMaxEntityLimitsUpgrade = new TreeMap<>();
+    private final Map<String, Map<EntityType, Integer>> customMaxEntityLimitsUpgrade = new TreeMap<>();
 
     /**
      * Custom entity group limits upgrades per game mode.
      */
-    private Map<String, Map<String, Integer>> customMaxEntityGroupLimitsUpgrade = new TreeMap<>();
+    private final Map<String, Map<String, Integer>> customMaxEntityGroupLimitsUpgrade = new TreeMap<>();
 
     /**
      * Default entity limits upgrade tiers for each entity type.
@@ -124,22 +124,22 @@ public class Settings {
     /**
      * Custom entity limits upgrade tiers per game mode.
      */
-    private Map<String, Map<EntityType, Map<String, UpgradeTier>>> customEntityLimitsUpgradeTierMap = new TreeMap<>();
+    private final Map<String, Map<EntityType, Map<String, UpgradeTier>>> customEntityLimitsUpgradeTierMap = new TreeMap<>();
 
     /**
      * Custom entity group limits upgrade tiers per game mode.
      */
-    private Map<String, Map<String, Map<String, UpgradeTier>>> customEntityGroupLimitsUpgradeTierMap = new TreeMap<>();
+    private final Map<String, Map<String, Map<String, UpgradeTier>>> customEntityGroupLimitsUpgradeTierMap = new TreeMap<>();
 
     /**
      * Default command limits upgrades.
      */
-    private Map<String, Integer> maxCommandUpgrade = new TreeMap<>();
+    private final Map<String, Integer> maxCommandUpgrade = new TreeMap<>();
 
     /**
      * Custom command limits upgrades per game mode.
      */
-    private Map<String, Map<String, Integer>> customMaxCommandUpgrade = new TreeMap<>();
+    private final Map<String, Map<String, Integer>> customMaxCommandUpgrade = new TreeMap<>();
 
     /**
      * Default command upgrade tiers.
@@ -149,17 +149,17 @@ public class Settings {
     /**
      * Custom command upgrade tiers per game mode.
      */
-    private Map<String, Map<String, Map<String, CommandUpgradeTier>>> customCommandUpgradeTierMap = new TreeMap<>();
+    private final Map<String, Map<String, Map<String, CommandUpgradeTier>>> customCommandUpgradeTierMap = new TreeMap<>();
 
     /**
      * Command to material icon mapping.
      */
-    private Map<String, Material> commandIcon = new TreeMap<>();
+    private final Map<String, Material> commandIcon = new TreeMap<>();
 
     /**
      * Command name mappings.
      */
-    private Map<String, String> commandName = new TreeMap<>();
+    private final Map<String, String> commandName = new TreeMap<>();
 
     private EntityType getEntityType(String key) {
         return Arrays.stream(EntityType.values()).filter(v -> v.name().equalsIgnoreCase(key)).findFirst().orElse(null);
@@ -605,9 +605,7 @@ public class Settings {
     public Set<Material> getMaterialsLimitsUpgrade() {
         Set<Material> materials = new HashSet<>();
 
-        customBlockLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
-            materials.addAll(addonUpgrade.keySet());
-        });
+        customBlockLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> materials.addAll(addonUpgrade.keySet()));
         materials.addAll(blockLimitsUpgradeTierMap.keySet());
 
         return materials;
@@ -702,9 +700,7 @@ public class Settings {
     public Set<EntityType> getEntityLimitsUpgrade() {
         Set<EntityType> entity = new HashSet<>();
 
-        customEntityLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
-            entity.addAll(addonUpgrade.keySet());
-        });
+        customEntityLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> entity.addAll(addonUpgrade.keySet()));
         entity.addAll(entityLimitsUpgradeTierMap.keySet());
 
         return entity;
@@ -718,9 +714,7 @@ public class Settings {
     public Set<String> getEntityGroupLimitsUpgrade() {
         Set<String> groups = new HashSet<>();
 
-        customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
-            groups.addAll(addonUpgrade.keySet());
-        });
+        customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> groups.addAll(addonUpgrade.keySet()));
         groups.addAll(entityGroupLimitsUpgradeTierMap.keySet());
 
         return groups;
@@ -769,9 +763,7 @@ public class Settings {
     public Set<String> getCommandUpgrade() {
         Set<String> command = new HashSet<>();
 
-        customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> {
-            command.addAll(addonUpgrade.keySet());
-        });
+        customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> command.addAll(addonUpgrade.keySet()));
         command.addAll(commandUpgradeTierMap.keySet());
 
         return command;
@@ -839,7 +831,7 @@ public class Settings {
         /**
          * Variables used in expressions for calculations.
          */
-        private Map<String, Double> expressionVariables;
+        private final Map<String, Double> expressionVariables;
 
         /**
          * Creates a new UpgradeTier instance.
@@ -1188,8 +1180,7 @@ public class Settings {
                 if (eat('+'))
                     return parseFactor(); // unary plus
                 if (eat('-')) {
-                    Expression x = (() -> -parseFactor().eval());
-                    return x; // unary minus
+                    return (() -> -parseFactor().eval()); // unary minus
                 }
 
                 Expression x;
@@ -1200,7 +1191,7 @@ public class Settings {
                 } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.')
                         nextChar();
-                    final Integer innerPos = Integer.valueOf(this.pos);
+                    final int innerPos = this.pos;
                     x = (() -> Double.parseDouble(str.substring(startPos, innerPos)));
                 } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') { // functions
                     while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']')
@@ -1208,16 +1199,13 @@ public class Settings {
                     String func = str.substring(startPos, this.pos);
                     if (funct.contains(func)) {
                         Expression a = parseFactor();
-                        if (func.equals("sqrt"))
-                            x = (() -> Math.sqrt(a.eval()));
-                        else if (func.equals("sin"))
-                            x = (() -> Math.sin(Math.toRadians(a.eval())));
-                        else if (func.equals("cos"))
-                            x = (() -> Math.cos(Math.toRadians(a.eval())));
-                        else if (func.equals("tan"))
-                            x = (() -> Math.tan(Math.toRadians(a.eval())));
-                        else
-                            throw new RuntimeException("Unknown function: " + func);
+                        x = switch (func) {
+                            case "sqrt" -> (() -> Math.sqrt(a.eval()));
+                            case "sin" -> (() -> Math.sin(Math.toRadians(a.eval())));
+                            case "cos" -> (() -> Math.cos(Math.toRadians(a.eval())));
+                            case "tan" -> (() -> Math.tan(Math.toRadians(a.eval())));
+                            default -> throw new RuntimeException("Unknown function: " + func);
+                        };
                     } else {
                         x = (() -> variables.get(func));
                     }

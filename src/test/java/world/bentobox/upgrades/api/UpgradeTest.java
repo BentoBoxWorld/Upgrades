@@ -47,8 +47,6 @@ public class UpgradeTest {
     private VaultHook vh;
 
     private TestUpgrade testUpgrade;
-    private UUID userId;
-    private String islandId;
 
     @BeforeEach
     public void setUp() {
@@ -56,8 +54,8 @@ public class UpgradeTest {
 
         MockitoAnnotations.openMocks(this);
 
-        userId = UUID.randomUUID();
-        islandId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
+        String islandId = UUID.randomUUID().toString();
 
         when(user.getUniqueId()).thenReturn(userId);
         when(island.getUniqueId()).thenReturn(islandId);

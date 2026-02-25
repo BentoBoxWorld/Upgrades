@@ -142,7 +142,7 @@ public class SettingsTest {
      */
     @Test
     public void testGetEntityIcon() {
-        assertEquals(null, settings.getEntityIcon(EntityType.CAT));
+        assertNull(settings.getEntityIcon(EntityType.CAT));
     }
 
     /**
@@ -150,7 +150,7 @@ public class SettingsTest {
      */
     @Test
     public void testGetEntityGroupIcon() {
-        assertEquals(null, settings.getEntityGroupIcon(""));
+        assertNull(settings.getEntityGroupIcon(""));
     }
 
     /**
@@ -262,7 +262,7 @@ public class SettingsTest {
      */
     @Test
     public void testGetCommandName() {
-        assertEquals(null, settings.getCommandName(""));
+        assertNull(settings.getCommandName(""));
     }
 
     /**

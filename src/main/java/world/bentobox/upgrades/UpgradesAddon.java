@@ -59,17 +59,17 @@ public class UpgradesAddon extends Addon {
     /**
      * Set of all registered upgrades available in the addon
      */
-    private Set<Upgrade> upgrade = new HashSet<>();
+    private final Set<Upgrade> upgrade = new HashSet<>();
 
     /**
      * Database for storing and loading upgrade data
      */
-    private Database<UpgradesData> database = new Database<>(this, UpgradesData.class);
+    private final Database<UpgradesData> database = new Database<>(this, UpgradesData.class);
 
     /**
      * Cache of upgrade data mapped by island unique ID for performance
      */
-    private Map<String, UpgradesData> upgradesCache = new HashMap<>();
+    private final Map<String, UpgradesData> upgradesCache = new HashMap<>();
 
     /**
      * Reference to the Level addon for island level requirements
@@ -149,7 +149,7 @@ public class UpgradesAddon extends Addon {
 
             Optional<Addon> level = this.getAddonByName("Level");
 
-            if (!level.isPresent()) {
+            if (level.isEmpty()) {
                 this.logWarning("Level addon not found so Upgrades won't look for Island Level");
                 this.levelAddon = null;
             } else
@@ -157,14 +157,14 @@ public class UpgradesAddon extends Addon {
 
             Optional<Addon> limits = this.getAddonByName("Limits");
 
-            if (!limits.isPresent()) {
+            if (limits.isEmpty()) {
                 this.logWarning("Limits addon not found so Island Upgrade won't look for IslandLevel");
                 this.limitsAddon = null;
             } else
                 this.limitsAddon = (Limits) limits.get();
 
             Optional<VaultHook> vault = this.getPlugin().getVault();
-            if (!vault.isPresent()) {
+            if (vault.isEmpty()) {
                 this.logWarning("Vault plugin not found so Upgrades won't look for money");
                 this.vault = null;
             } else
@@ -182,9 +182,6 @@ public class UpgradesAddon extends Addon {
                 this.registerUpgrade(new RangeUpgrade(this));
 
             this.registerListener(new IslandChangeListener(this));
-
-            //if (this.isLimitsProvided())
-            //this.registerListener(new JoinPermCheckListener(this));
 
             getPlugin().getFlagsManager().registerFlag(UpgradesAddon.UPGRADES_RANK_RIGHT);
 

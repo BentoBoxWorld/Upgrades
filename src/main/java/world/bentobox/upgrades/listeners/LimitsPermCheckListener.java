@@ -16,7 +16,7 @@ import world.bentobox.upgrades.UpgradesAddon;
  */
 public class LimitsPermCheckListener implements Listener {
 
-    private UpgradesAddon addon;
+    private final UpgradesAddon addon;
 
 	public LimitsPermCheckListener(UpgradesAddon addon) {
 		this.addon = addon;
@@ -26,7 +26,7 @@ public class LimitsPermCheckListener implements Listener {
      * Limits changed a permission - cancel it if it's being managed by Upgrades
      * @param e LimitsPermCheckEvent
      */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLimitsPermCheckEvent(LimitsPermCheckEvent e) {
 		Material block = e.getMaterial();
 		EntityType et = e.getEntityType();

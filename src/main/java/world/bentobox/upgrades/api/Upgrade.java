@@ -68,7 +68,7 @@ public abstract class Upgrade {
     /**
      * This function return true if the user can upgrade for this island. You can
      * override it and call the super.
-     *
+     * <p>
      * The super test for islandLevel and for money
      *
      * @param user   This is the user that try to upgrade
@@ -77,13 +77,8 @@ public abstract class Upgrade {
      */
     public boolean canUpgrade(User user, Island island) {
         UpgradeValues upgradeValues = this.getUpgradeValues(user);
-        boolean can = true;
-
-        if (this.upgradesAddon.isLevelProvided()
-                && this.upgradesAddon.getUpgradesManager().getIslandLevel(island) < upgradeValues.getIslandLevel()) {
-
-            can = false;
-        }
+        boolean can = !this.upgradesAddon.isLevelProvided()
+                || this.upgradesAddon.getUpgradesManager().getIslandLevel(island) >= upgradeValues.getIslandLevel();
 
         if (this.upgradesAddon.isVaultProvided()
                 && !this.upgradesAddon.getVaultHook().has(user, upgradeValues.getMoneyCost())) {
@@ -97,7 +92,7 @@ public abstract class Upgrade {
     /**
      * This function is called when the user is upgrading for the island It is
      * called after the canUpgrade function
-     *
+     * <p>
      * You should call the super to update the balance of the user as well as the
      * level is the island
      *
@@ -214,20 +209,19 @@ public abstract class Upgrade {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Upgrade)) {
+        if (!(obj instanceof Upgrade other)) {
             return false;
         }
-        Upgrade other = (Upgrade) obj;
         return Objects.equals(name, other.name);
     }
 
     private final String name;
     private String displayName;
-    private Material icon;
-    private Addon addon;
-    private UpgradesAddon upgradesAddon;
-    private Map<UUID, UpgradeValues> playerCache;
-    private Map<UUID, String> ownDescription;
+    private final Material icon;
+    private final Addon addon;
+    private final UpgradesAddon upgradesAddon;
+    private final Map<UUID, UpgradeValues> playerCache;
+    private final Map<UUID, String> ownDescription;
 
     public class UpgradeValues {
 

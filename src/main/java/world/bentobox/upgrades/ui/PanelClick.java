@@ -29,7 +29,7 @@ public class PanelClick implements ClickHandler {
 		return true;
 	}
 	
-	private Upgrade upgrade;
-	private Island island;
+	private final Upgrade upgrade;
+	private final Island island;
 	
 }

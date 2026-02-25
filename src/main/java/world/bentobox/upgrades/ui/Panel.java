@@ -15,8 +15,8 @@ import world.bentobox.upgrades.api.Upgrade;
  */
 public class Panel {
 
-    private UpgradesAddon addon;
-    private Island island;
+    private final UpgradesAddon addon;
+    private final Island island;
 
     /**
      * Start to create a panel for this island

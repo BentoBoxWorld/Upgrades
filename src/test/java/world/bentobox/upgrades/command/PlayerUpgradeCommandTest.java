@@ -60,9 +60,6 @@ public class PlayerUpgradeCommandTest {
     @Mock
     private User user;
 
-    private UUID uuid;
-    private Settings settings;
-
     @Mock
     private Location location;
     @Mock
@@ -80,12 +77,12 @@ public class PlayerUpgradeCommandTest {
     private UpgradesManager um;
     private MockedStatic<Bukkit> bukkitMock;
     private MockedStatic<Util> utilMock;
+    private MockedStatic<RanksManager> ranksManagerStatic;
 
 
     /**
      * @throws java.lang.Exception
      */
-    @SuppressWarnings("deprecation")
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
@@ -107,7 +104,8 @@ public class PlayerUpgradeCommandTest {
 
         // RanksManager
         when(rm.getRank(anyInt())).thenReturn(RanksManager.MEMBER_RANK_REF);
-        when(plugin.getRanksManager()).thenReturn(rm);
+        ranksManagerStatic = Mockito.mockStatic(RanksManager.class);
+        ranksManagerStatic.when(() -> RanksManager.getInstance()).thenReturn(rm);
 
         // Command manager
         CommandsManager cm = mock(CommandsManager.class);
@@ -125,7 +123,7 @@ public class PlayerUpgradeCommandTest {
         // Player
         // Sometimes use Mockito.withSettings().verboseLogging()
         when(user.isOp()).thenReturn(false);
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         when(user.getUniqueId()).thenReturn(uuid);
         when(user.getPlayer()).thenReturn(p);
         when(user.getName()).thenReturn("tastybento");
@@ -144,7 +142,7 @@ public class PlayerUpgradeCommandTest {
         when(im.getIslandAt(any())).thenReturn(opIsland);
 
         // Settings
-        settings = new Settings(addon);
+        Settings settings = new Settings(addon);
         when(addon.getSettings()).thenReturn(settings);
 
         // Island
@@ -165,14 +163,14 @@ public class PlayerUpgradeCommandTest {
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         MockBukkit.unmock();
         User.clearUsers();
         bukkitMock.closeOnDemand();
         utilMock.closeOnDemand();
+        ranksManagerStatic.closeOnDemand();
     }
 
     /**

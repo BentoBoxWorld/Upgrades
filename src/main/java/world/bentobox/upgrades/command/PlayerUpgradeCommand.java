@@ -6,6 +6,7 @@ import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.localization.TextVariables;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.ui.Panel;
 
@@ -72,7 +73,7 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 		if (!island.isAllowed(user, UpgradesAddon.UPGRADES_RANK_RIGHT)) {
 			user.sendMessage("general.errors.insufficient-rank",
 				TextVariables.RANK,
-				user.getTranslation(this.addon.getPlugin().getRanksManager().getRank(island.getRank(user))));
+				user.getTranslation(RanksManager.getInstance().getRank(island.getRank(user))));
 			return false;
 		}
 		
@@ -91,7 +92,7 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	 */
 	@Override
 	public boolean execute(User user, String label, List<String> args) {
-		if (args.size() == 0) {
+		if (args.isEmpty()) {
 			Island island = getIslands().getIsland(this.getWorld(), user); 
 			
 			if (island == null) {
@@ -114,6 +115,6 @@ public class PlayerUpgradeCommand extends CompositeCommand {
 	/**
 	 * The Upgrades addon instance.
 	 */
-	UpgradesAddon addon;
+    final UpgradesAddon addon;
 	
 }

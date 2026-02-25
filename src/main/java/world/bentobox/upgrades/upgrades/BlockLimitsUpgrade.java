@@ -21,7 +21,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  */
 public class BlockLimitsUpgrade extends Upgrade {
 
-    private Material block;
+    private final Material block;
 
     /**
      * Initializes a BlockLimitsUpgrade for a specific block type.
@@ -30,7 +30,7 @@ public class BlockLimitsUpgrade extends Upgrade {
      * @param block The Material representing the block type for this upgrade.
      */
     public BlockLimitsUpgrade(UpgradesAddon addon, Material block) {
-        super(addon, "LimitsUpgrade-" + block.toString(), block.toString() + " limits Upgrade", block);
+        super(addon, "LimitsUpgrade-" + block.toString(), block + " limits Upgrade", block);
         this.block = block;
     }
 

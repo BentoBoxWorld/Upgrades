@@ -33,7 +33,7 @@ public class IslandChangeListener implements Listener {
      *
      * @param e the IslandDeleteEvent containing information about the deleted island
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onIslandDeleteEvent(IslandDeleteEvent e) {
         Island island = e.getIsland();
         this.addon.uncacheIsland(island.getUniqueId(), false);
@@ -43,6 +43,6 @@ public class IslandChangeListener implements Listener {
     /**
      * The Upgrades addon instance.
      */
-    private UpgradesAddon addon;
+    private final UpgradesAddon addon;
 
 }

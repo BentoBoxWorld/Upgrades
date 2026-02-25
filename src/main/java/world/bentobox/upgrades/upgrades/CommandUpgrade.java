@@ -25,7 +25,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  */
 public class CommandUpgrade extends Upgrade {
 	
-    private String cmdId;
+    private final String cmdId;
 
     /**
      * Constructs a new {@code CommandUpgrade} instance.
@@ -131,9 +131,9 @@ public class CommandUpgrade extends Upgrade {
     /**
      * Logs an error message for issues related to the command upgrade configuration.
      *
-     * @param user The user associated with the error.
-     * @param command The command causing the error.
-     * @param message The specific error message to log.
+     * @param name - The name of the player associated with the error.
+	 * @param perm - The specific permission string that caused the error.
+     * @param error The specific error message to log.
      */
 	private void logError(String name, String perm, String error) {
         this.getUpgradesAddon().logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");

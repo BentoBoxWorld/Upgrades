@@ -45,7 +45,6 @@ public class PanelTest {
     @Mock
     private User user;
 
-    private UUID uuid;
     @Mock
     private Location location;
     @Mock
@@ -56,10 +55,9 @@ public class PanelTest {
     private MockedStatic<Bukkit> mockBukkit;
 
     /**
-     * @throws java.lang.Exception
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
         // World
@@ -67,7 +65,7 @@ public class PanelTest {
         // Player
         // Sometimes use Mockito.withSettings().verboseLogging()
         when(user.isOp()).thenReturn(false);
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         when(user.getUniqueId()).thenReturn(uuid);
         when(user.getPlayer()).thenReturn(p);
         when(user.getName()).thenReturn("tastybento");
@@ -86,10 +84,9 @@ public class PanelTest {
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         User.clearUsers();
         mockBukkit.closeOnDemand();
         MockBukkit.unmock();

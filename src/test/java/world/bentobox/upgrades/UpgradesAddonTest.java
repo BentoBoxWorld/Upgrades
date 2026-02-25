@@ -102,13 +102,12 @@ public class UpgradesAddonTest {
     private CompositeCommand adminCmd;
     @Mock
     private World world;
-    private UUID uuid;
 
     @Mock
     private PluginManager pim;
     @Mock
     private VaultHook vh;
-    private @NonNull String targetIslandId = UUID.randomUUID().toString();
+    private final @NonNull String targetIslandId = UUID.randomUUID().toString();
     private MockedStatic<Bukkit> mockBukkit;
     private MockedStatic<IslandsManager> mockIslandsManager;
 
@@ -134,11 +133,10 @@ public class UpgradesAddonTest {
         }
     }
     /**
-     * @throws java.lang.Exception
      */
     @SuppressWarnings("deprecation")
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
         mockBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
@@ -158,7 +156,7 @@ public class UpgradesAddonTest {
         // Player
         Player p = mock(Player.class);
         when(user.isOp()).thenReturn(false);
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         when(user.getUniqueId()).thenReturn(uuid);
         when(user.getPlayer()).thenReturn(p);
         when(user.getName()).thenReturn("tastybento");
