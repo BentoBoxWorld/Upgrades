@@ -68,7 +68,7 @@ public class PanelTest {
     /**
      */
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
 
@@ -110,7 +110,7 @@ public class PanelTest {
     /**
      */
     @AfterEach
-    public void tearDown() {
+    public void tearDown() throws IOException {
         User.clearUsers();
         WhiteBox.setInternalState(BentoBox.class, "instance", null);
         mockBukkit.closeOnDemand();

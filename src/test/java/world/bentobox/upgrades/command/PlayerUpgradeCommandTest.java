@@ -104,6 +104,7 @@ public class PlayerUpgradeCommandTest {
 
         // RanksManager
         when(rm.getRank(anyInt())).thenReturn(RanksManager.MEMBER_RANK_REF);
+        when(plugin.getRanksManager()).thenReturn(rm);
         ranksManagerStatic = Mockito.mockStatic(RanksManager.class);
         ranksManagerStatic.when(() -> RanksManager.getInstance()).thenReturn(rm);
 
