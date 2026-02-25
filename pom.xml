@@ -29,6 +29,14 @@
         <url>https://github.com/BentoBoxWorld/Upgrades/issues</url>
     </issueManagement>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/BentoBoxWorld/Upgrades/blob/develop/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <distributionManagement>
         <repository>
             <id>bentoboxworld</id>
