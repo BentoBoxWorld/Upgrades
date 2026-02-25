@@ -12,18 +12,10 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-/**
- * Represents an upgrade that modifies the limits for a specific entity type on an island.
- * This class extends the {@link Upgrade} base class, enabling administrators to configure
- * entity-specific limit upgrades for the BentoBox ecosystem.
- *
- * <p>The {@code EntityLimitsUpgrade} class allows for the customization and management
- * of entity limits based on upgrade levels, island configurations, and permissions.</p>
- */
-public class EntityLimitsUpgrade extends Upgrade {
+public class EntityLimitsUpgrade extends UpgradeAPI {
 
     /**
      * Constructs a new {@code EntityLimitsUpgrade} instance for a specific entity type.
@@ -32,7 +24,7 @@ public class EntityLimitsUpgrade extends Upgrade {
      * @param entity The {@link EntityType} associated with this upgrade.
      */
     public EntityLimitsUpgrade(UpgradesAddon addon, EntityType entity) {
-        super(addon, "LimitsUpgrade-" + entity.toString(), entity + " limits Upgrade",
+        super(addon, "LimitsUpgrade-" + entity.toString(), entity.toString() + " limits Upgrade",
                 addon.getSettings().getEntityIcon(entity));
         this.entity = entity;
     }
@@ -195,6 +187,6 @@ public class EntityLimitsUpgrade extends Upgrade {
         return true;
     }
 
-    private final EntityType entity;
+    private EntityType entity;
 
 }

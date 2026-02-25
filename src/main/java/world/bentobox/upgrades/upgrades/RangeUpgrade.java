@@ -12,7 +12,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 /**
  * Represents an upgrade that increases the protection range of an island.
@@ -28,7 +28,7 @@ import world.bentobox.upgrades.api.Upgrade;
  * 
  * @author Ikkino, tastybento
  */
-public class RangeUpgrade extends Upgrade {
+public class RangeUpgrade extends UpgradeAPI {
 
     /**
      * Constructs a new {@code RangeUpgrade} instance.

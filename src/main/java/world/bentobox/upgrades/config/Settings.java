@@ -37,6 +37,11 @@ public class Settings {
     private final Set<String> disabledGameModes;
 
     /**
+     * The escape string for chat input prompts.
+     */
+    private String chatInputEscape;
+
+    /**
      * Maximum range for range upgrades.
      */
     private int maxRangeUpgrade = 0;
@@ -177,6 +182,8 @@ public class Settings {
         this.hasRangeUpgrade = false;
 
         this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
+        
+        this.chatInputEscape = this.addon.getConfig().getString("chat-input-escape", "END");
 
         if (this.addon.getConfig().isSet("range-upgrade")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
@@ -527,6 +534,10 @@ public class Settings {
      */
     public Set<String> getDisabledGameModes() {
         return disabledGameModes;
+    }
+    
+    public String getChatInputEscape() {
+    	return this.chatInputEscape;
     }
 
     /**
@@ -1223,5 +1234,15 @@ public class Settings {
         }.parse();
     }
 
+    /**
+     * Evaluate a formula string with the given variables and return the result.
+     *
+     * @param equation   The formula string (e.g. "100*[level]")
+     * @param variables  Variable bindings (e.g. "[level]" -> 5.0)
+     * @return The evaluated result as a double
+     */
+    public static double evaluate(String equation, Map<String, Double> variables) {
+        return parse(equation, variables).eval();
+    }
 
 }

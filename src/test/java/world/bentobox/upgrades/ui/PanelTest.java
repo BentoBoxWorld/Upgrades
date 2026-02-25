@@ -7,6 +7,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -23,11 +29,13 @@ import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito;
 
+import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;
+import world.bentobox.upgrades.WhiteBox;
 
 /**
  * @author tastybento
@@ -44,6 +52,8 @@ public class PanelTest {
     private World world;
     @Mock
     private User user;
+    @Mock
+    private BentoBox plugin;
 
     @Mock
     private Location location;
@@ -53,6 +63,7 @@ public class PanelTest {
     private Player p;
     private Panel panel;
     private MockedStatic<Bukkit> mockBukkit;
+    private File dataFolder;
 
     /**
      */
@@ -60,10 +71,13 @@ public class PanelTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
+
+        // Set up BentoBox singleton (needed for TemplatedPanel internal error logging)
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
+
         // World
         when(world.toString()).thenReturn("world");
         // Player
-        // Sometimes use Mockito.withSettings().verboseLogging()
         when(user.isOp()).thenReturn(false);
         UUID uuid = UUID.randomUUID();
         when(user.getUniqueId()).thenReturn(uuid);
@@ -76,6 +90,16 @@ public class PanelTest {
 
         when(um.getIslandLevel(island)).thenReturn(20);
         when(addon.getUpgradesManager()).thenReturn(um);
+        when(addon.getAvailableUpgrades()).thenReturn(Collections.emptySet());
+        when(island.getWorld()).thenReturn(world);
+
+        // Set up data folder with panel template
+        dataFolder = Files.createTempDirectory("upgrades-panel-test").toFile();
+        File panelsDir = new File(dataFolder, "panels");
+        panelsDir.mkdirs();
+        Files.copy(Paths.get("src/main/resources/panels/upgrades_panel.yml"),
+                new File(panelsDir, "upgrades_panel.yml").toPath());
+        when(addon.getDataFolder()).thenReturn(dataFolder);
 
         // Bukkit
         mockBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
@@ -88,8 +112,15 @@ public class PanelTest {
     @AfterEach
     public void tearDown() {
         User.clearUsers();
+        WhiteBox.setInternalState(BentoBox.class, "instance", null);
         mockBukkit.closeOnDemand();
         MockBukkit.unmock();
+        if (dataFolder != null) {
+            Files.walk(dataFolder.toPath())
+                    .sorted(Comparator.reverseOrder())
+                    .map(java.nio.file.Path::toFile)
+                    .forEach(File::delete);
+        }
     }
 
     /**

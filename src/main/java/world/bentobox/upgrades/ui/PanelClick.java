@@ -6,18 +6,25 @@ import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem.ClickHandler;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.api.UpgradeAPI;
 
 public class PanelClick implements ClickHandler {
 
-	public PanelClick(Upgrade upgrade, Island island) {
+	public PanelClick(UpgradeAPI upgrade, Island island) {
 		this.upgrade = upgrade;
 		this.island = island;
 	}
 	
 	@Override
 	public boolean onClick(Panel panel, User user, ClickType clickType, int slot) {
-		if (this.upgrade == null || this.upgrade.getUpgradeValues(user) == null)
+		if (this.upgrade == null) return true;
+
+		// Block when truly maxed out:
+		//   Legacy upgrades: upgradeValues == null means maxed.
+		//   DB upgrades: upgradeValues is always null; ownDescription == null means maxed.
+		// An upgrade is available if EITHER signal is non-null.
+		if (this.upgrade.getUpgradeValues(user) == null
+				&& this.upgrade.getOwnDescription(user) == null)
 			return true;
 		
 		if (!this.upgrade.canUpgrade(user, this.island)) {
@@ -29,7 +36,7 @@ public class PanelClick implements ClickHandler {
 		return true;
 	}
 	
-	private final Upgrade upgrade;
-	private final Island island;
+	private UpgradeAPI upgrade;
+	private Island island;
 	
 }

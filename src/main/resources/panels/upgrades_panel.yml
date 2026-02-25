@@ -1,0 +1,64 @@
+upgrades_panel:
+  title: upgrades.ui.upgradepanel.title
+  type: INVENTORY
+  background:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: " "
+  border:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: " "
+  force-shown: []
+  content:
+    1:
+      1: upgrade_button
+      2: upgrade_button
+      3: upgrade_button
+      4: upgrade_button
+      5: upgrade_button
+      6: upgrade_button
+      7: upgrade_button
+    2:
+      1: upgrade_button
+      2: upgrade_button
+      3: upgrade_button
+      4: upgrade_button
+      5: upgrade_button
+      6: upgrade_button
+      7: upgrade_button
+    3:
+      1: upgrade_button
+      2: upgrade_button
+      3: upgrade_button
+      4: upgrade_button
+      5: upgrade_button
+      6: upgrade_button
+      7: upgrade_button
+    5:
+      3:
+        icon: ARROW
+        title: upgrades.ui.upgradepanel.previous.name
+        description: upgrades.ui.upgradepanel.previous.description
+        data:
+          type: PREVIOUS
+        actions:
+          previous:
+            click-type: UNKNOWN
+            tooltip: upgrades.ui.upgradepanel.previous.tooltip
+      5:
+        icon: ARROW
+        title: upgrades.ui.upgradepanel.next.name
+        description: upgrades.ui.upgradepanel.next.description
+        data:
+          type: NEXT
+        actions:
+          next:
+            click-type: UNKNOWN
+            tooltip: upgrades.ui.upgradepanel.next.tooltip
+  reusable:
+    upgrade_button:
+      data:
+        type: UPGRADE
+      actions:
+        upgrade:
+          click-type: UNKNOWN
+          tooltip: upgrades.ui.upgradepanel.upgrade.tooltip

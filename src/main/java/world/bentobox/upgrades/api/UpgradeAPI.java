@@ -20,7 +20,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  * @author Ikkino
  *
  */
-public abstract class Upgrade {
+public abstract class UpgradeAPI {
 
     /**
      * Initialize the upgrade object you should call it in your init methode
@@ -31,7 +31,7 @@ public abstract class Upgrade {
      * @param displayName This is the name that is shown to the user
      * @param icon        This is the icon shown to the user
      */
-    public Upgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
+    public UpgradeAPI(UpgradesAddon addon, String name, String displayName, Material icon) {
         this.name = name;
         this.displayName = displayName;
         this.icon = icon;
@@ -68,7 +68,7 @@ public abstract class Upgrade {
     /**
      * This function return true if the user can upgrade for this island. You can
      * override it and call the super.
-     * <p>
+     *
      * The super test for islandLevel and for money
      *
      * @param user   This is the user that try to upgrade
@@ -77,8 +77,13 @@ public abstract class Upgrade {
      */
     public boolean canUpgrade(User user, Island island) {
         UpgradeValues upgradeValues = this.getUpgradeValues(user);
-        boolean can = !this.upgradesAddon.isLevelProvided()
-                || this.upgradesAddon.getUpgradesManager().getIslandLevel(island) >= upgradeValues.getIslandLevel();
+        boolean can = true;
+
+        if (this.upgradesAddon.isLevelProvided()
+                && this.upgradesAddon.getUpgradesManager().getIslandLevel(island) < upgradeValues.getIslandLevel()) {
+
+            can = false;
+        }
 
         if (this.upgradesAddon.isVaultProvided()
                 && !this.upgradesAddon.getVaultHook().has(user, upgradeValues.getMoneyCost())) {
@@ -92,7 +97,7 @@ public abstract class Upgrade {
     /**
      * This function is called when the user is upgrading for the island It is
      * called after the canUpgrade function
-     * <p>
+     *
      * You should call the super to update the balance of the user as well as the
      * level is the island
      *
@@ -209,19 +214,20 @@ public abstract class Upgrade {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Upgrade other)) {
+        if (!(obj instanceof UpgradeAPI)) {
             return false;
         }
+        UpgradeAPI other = (UpgradeAPI) obj;
         return Objects.equals(name, other.name);
     }
 
     private final String name;
     private String displayName;
-    private final Material icon;
-    private final Addon addon;
-    private final UpgradesAddon upgradesAddon;
-    private final Map<UUID, UpgradeValues> playerCache;
-    private final Map<UUID, String> ownDescription;
+    private Material icon;
+    private Addon addon;
+    private UpgradesAddon upgradesAddon;
+    private Map<UUID, UpgradeValues> playerCache;
+    private Map<UUID, String> ownDescription;
 
     public class UpgradeValues {
 
