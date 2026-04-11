@@ -57,6 +57,8 @@ public class ChatInput {
 	 * @param user User to converse with
 	 */
 	public void askOneInput(Consumer<String> consumer, Function<String, Boolean> validation, String question, String invalidText, User user, boolean sanitize) {
+		// Track whether the consumer was already called with valid input
+		final boolean[] consumerCalled = {false};
 		// Create conversation
 		Conversation conv = new ConversationFactory(this.addon.getPlugin())
 			// Can escape conversation by using the chat-input-escape value in setting
@@ -65,8 +67,10 @@ public class ChatInput {
 			.withLocalEcho(true)
 			// When conversation end
 			.addConversationAbandonedListener(abandoned -> {
-				// Conversation ended by timeout, cancel, or escape — notify consumer
-				consumer.accept(null);
+				// If consumer was not called with valid input, notify caller about cancellation
+				// (covers timeout, cancel, and escape-sequence exits)
+				if (!consumerCalled[0])
+					consumer.accept(null);
 			})
 			.withFirstPrompt(new ValidatingPrompt() {
 				
@@ -94,6 +98,7 @@ public class ChatInput {
 						input = sanitizeInput(input);
 					}
 					// Call consumer with user input
+					consumerCalled[0] = true;
 					consumer.accept(input);
 					// End conversation
 					return Prompt.END_OF_CONVERSATION;
