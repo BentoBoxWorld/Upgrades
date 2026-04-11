@@ -56,10 +56,10 @@ public class RangeReward extends Reward {
     }
 
     @Override
-    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
+    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         RangeRewardDB db = (RangeRewardDB) rewardDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", 0.0);
+        variables.put("[level]", (double) currentLevel);
         variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
         variables.put("[numberPlayer]", (double) island.getMemberSet().size());
         int amount = (int) Settings.evaluate(db.getRangeUpgradeEquation(), variables);

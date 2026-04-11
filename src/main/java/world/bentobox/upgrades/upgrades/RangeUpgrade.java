@@ -68,6 +68,7 @@ public class RangeUpgrade extends UpgradeAPI {
         // If null -> no next upgrades
         if (upgradeInfos == null) {
             upgrade = null;
+            this.setOwnDescription(user, null);
         } else {
             // Get new description
             String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",

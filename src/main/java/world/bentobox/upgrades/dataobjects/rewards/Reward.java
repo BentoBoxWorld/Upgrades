@@ -44,6 +44,6 @@ public abstract class Reward implements PanelAdminItem, PanelPublicItem {
     public abstract AbPanel getAdminPanel(UpgradesAddon addon, GameModeAddon gamemode, User user,
                                           AbPanel parent, UpgradeTier tier, @Nullable RewardDB saved);
 
-    public abstract void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB);
+    public abstract void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel);
 
 }

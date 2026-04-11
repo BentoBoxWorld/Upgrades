@@ -43,7 +43,7 @@ public class CommandReward extends Reward {
     }
 
     @Override
-    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
+    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         CommandRewardDB db = (CommandRewardDB) rewardDB;
         String playerName = user.getName();
         String ownerName = island.getPlugin().getPlayers().getName(island.getOwner());

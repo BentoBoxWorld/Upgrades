@@ -80,7 +80,7 @@ public class DatabaseUpgrade extends UpgradeAPI {
         for (PriceDB priceDB : nextTier.getPrices()) {
             Price price = this.getUpgradesAddon().getUpgradesManager().searchPrice(priceDB.getPriceType());
             if (price == null) continue;
-            if (!price.canPay(this.getUpgradesAddon(), user, island, priceDB)) {
+            if (!price.canPay(this.getUpgradesAddon(), user, island, priceDB, currentLevel)) {
                 return false;
             }
         }
@@ -99,13 +99,13 @@ public class DatabaseUpgrade extends UpgradeAPI {
         for (PriceDB priceDB : nextTier.getPrices()) {
             Price price = this.getUpgradesAddon().getUpgradesManager().searchPrice(priceDB.getPriceType());
             if (price == null) continue;
-            price.pay(this.getUpgradesAddon(), user, island, priceDB);
+            price.pay(this.getUpgradesAddon(), user, island, priceDB, currentLevel);
         }
 
         for (RewardDB rewardDB : nextTier.getRewards()) {
             Reward reward = this.getUpgradesAddon().getUpgradesManager().searchReward(rewardDB.getRewardType());
             if (reward == null) continue;
-            reward.apply(this.getUpgradesAddon(), user, island, rewardDB);
+            reward.apply(this.getUpgradesAddon(), user, island, rewardDB, currentLevel);
         }
 
         data.setUpgradeLevel(this.getName(), currentLevel + 1);

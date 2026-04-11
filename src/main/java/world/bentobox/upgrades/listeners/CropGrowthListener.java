@@ -66,12 +66,12 @@ public class CropGrowthListener implements Listener {
         double total = 0.0;
         long islandLevel = addon.getUpgradesManager().getIslandLevel(island);
         int memberCount = island.getMemberSet().size();
+        UpgradesData data = addon.getUpgradesLevels(island.getUniqueId());
 
         for (UpgradeAPI upgradeAPI : addon.getAvailableUpgrades()) {
             if (!(upgradeAPI instanceof DatabaseUpgrade)) continue;
             DatabaseUpgrade dbUpgrade = (DatabaseUpgrade) upgradeAPI;
 
-            UpgradesData data = addon.getUpgradesLevels(island.getUniqueId());
             int currentLevel = data.getUpgradeLevel(dbUpgrade.getName());
             if (currentLevel <= 0) continue;
 

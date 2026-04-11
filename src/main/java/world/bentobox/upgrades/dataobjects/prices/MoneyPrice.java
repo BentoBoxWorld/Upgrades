@@ -53,11 +53,11 @@ public class MoneyPrice extends Price {
     }
 
     @Override
-    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         if (!addon.isVaultProvided()) return true;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", 0.0);
+        variables.put("[level]", (double) currentLevel);
         variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
         variables.put("[numberPlayer]", (double) island.getMemberSet().size());
         double amount = Settings.evaluate(db.getAmountEquation(), variables);
@@ -65,11 +65,11 @@ public class MoneyPrice extends Price {
     }
 
     @Override
-    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         if (!addon.isVaultProvided()) return;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", 0.0);
+        variables.put("[level]", (double) currentLevel);
         variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
         variables.put("[numberPlayer]", (double) island.getMemberSet().size());
         double amount = Settings.evaluate(db.getAmountEquation(), variables);

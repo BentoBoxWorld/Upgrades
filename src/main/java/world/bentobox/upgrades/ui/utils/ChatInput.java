@@ -65,9 +65,8 @@ public class ChatInput {
 			.withLocalEcho(true)
 			// When conversation end
 			.addConversationAbandonedListener(abandoned -> {
-				// If conversation was ended by timeout or cancel
-				if (!abandoned.gracefulExit())
-					consumer.accept(null);
+				// Conversation ended by timeout, cancel, or escape — notify consumer
+				consumer.accept(null);
 			})
 			.withFirstPrompt(new ValidatingPrompt() {
 				
@@ -102,7 +101,7 @@ public class ChatInput {
 				
 				@Override
 				protected String getFailedValidationText(ConversationContext context, String invalidInput) {
-					return invalidInput;
+					return invalidText;
 				}
 			})
 			.buildConversation(user.getPlayer());

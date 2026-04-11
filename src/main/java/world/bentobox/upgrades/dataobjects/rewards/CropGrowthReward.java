@@ -53,7 +53,7 @@ public class CropGrowthReward extends Reward {
     }
 
     @Override
-    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
+    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         // No-op: ongoing effect handled by CropGrowthListener
     }
 

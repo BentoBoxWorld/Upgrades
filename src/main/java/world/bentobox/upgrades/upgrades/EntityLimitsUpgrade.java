@@ -56,6 +56,7 @@ public class EntityLimitsUpgrade extends UpgradeAPI {
 
         if (upgradeInfos == null) {
             upgrade = null;
+            this.setOwnDescription(user, null);
         } else {
             // Get new description
             String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
