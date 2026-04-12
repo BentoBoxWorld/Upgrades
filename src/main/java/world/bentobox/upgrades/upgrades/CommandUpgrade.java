@@ -36,6 +36,7 @@ public class CommandUpgrade extends UpgradeAPI {
 
         if (upgradeInfos == null) {
             upgrade = null;
+            this.setOwnDescription(user, null);
         } else {
             String description = user.getTranslation("upgrades.ui.upgradepanel.tiernameandlevel",
                     "[name]",  upgradesAddon.getUpgradesManager().getCommandUpgradeTierName(this.cmdId, upgradeLevel, island.getWorld()),
@@ -65,7 +66,6 @@ public class CommandUpgrade extends UpgradeAPI {
         String permissionStart = gamemode + ".upgrades." + this.getName() + ".";
         permissionStart = permissionStart.toLowerCase();
 
-        upgradeAddon.log("permission: " + permissionStart);
         for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
 
             // If permission is the one we search

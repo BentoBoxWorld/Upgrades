@@ -93,6 +93,12 @@ public class AdminPanel extends AbPanel {
 	};
 
 	private final Consumer<String> addUpgrade = input -> {
+		if (input == null) {
+			// Conversation was cancelled or escaped — just reopen the panel
+			this.getBuild().build();
+			return;
+		}
+
 		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
 
 		UpgradeData newUpgrade = this.getAddon().getUpgradeDataManager()

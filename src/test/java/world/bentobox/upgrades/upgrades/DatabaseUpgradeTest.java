@@ -234,7 +234,7 @@ public class DatabaseUpgradeTest {
         PriceDB priceDB = mock(PriceDB.class);
         Price price = mock(Price.class);
         when(upgradesManager.searchPrice(any())).thenReturn(price);
-        when(price.canPay(addon, user, island, priceDB)).thenReturn(true);
+        when(price.canPay(eq(addon), eq(user), eq(island), eq(priceDB), anyInt())).thenReturn(true);
         tier.setPrices(List.of(priceDB));
 
         assertTrue(databaseUpgrade.canUpgrade(user, island));
@@ -245,7 +245,7 @@ public class DatabaseUpgradeTest {
         PriceDB priceDB = mock(PriceDB.class);
         Price price = mock(Price.class);
         when(upgradesManager.searchPrice(any())).thenReturn(price);
-        when(price.canPay(addon, user, island, priceDB)).thenReturn(false);
+        when(price.canPay(eq(addon), eq(user), eq(island), eq(priceDB), anyInt())).thenReturn(false);
         tier.setPrices(List.of(priceDB));
 
         assertFalse(databaseUpgrade.canUpgrade(user, island));
@@ -293,8 +293,8 @@ public class DatabaseUpgradeTest {
 
         databaseUpgrade.doUpgrade(user, island);
 
-        verify(price).pay(addon, user, island, priceDB);
-        verify(reward).apply(addon, user, island, rewardDB);
+        verify(price).pay(eq(addon), eq(user), eq(island), eq(priceDB), anyInt());
+        verify(reward).apply(eq(addon), eq(user), eq(island), eq(rewardDB), anyInt());
     }
 
     @Test

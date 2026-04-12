@@ -52,7 +52,7 @@ public class ItemPrice extends Price {
     }
 
     @Override
-    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         ItemPriceDB db = (ItemPriceDB) priceDB;
         try {
             Material mat = Material.valueOf(db.getMaterial().toUpperCase());
@@ -64,7 +64,7 @@ public class ItemPrice extends Price {
     }
 
     @Override
-    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         ItemPriceDB db = (ItemPriceDB) priceDB;
         try {
             Material mat = Material.valueOf(db.getMaterial().toUpperCase());

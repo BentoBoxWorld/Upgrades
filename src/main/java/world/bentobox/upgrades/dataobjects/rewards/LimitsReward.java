@@ -59,7 +59,7 @@ public class LimitsReward extends Reward {
     }
 
     @Override
-    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB) {
+    public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         if (!addon.isLimitsProvided()) {
             addon.logWarning("LimitsReward: Limits addon not available");
             return;
@@ -67,7 +67,7 @@ public class LimitsReward extends Reward {
 
         LimitsRewardDB db = (LimitsRewardDB) rewardDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", 0.0);
+        variables.put("[level]", (double) currentLevel);
         variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
         variables.put("[numberPlayer]", (double) island.getMemberSet().size());
         int amount = (int) Settings.evaluate(db.getAmountEquation(), variables);

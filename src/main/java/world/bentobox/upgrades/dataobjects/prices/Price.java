@@ -45,8 +45,8 @@ public abstract class Price implements PanelAdminItem, PanelPublicItem {
         return this.getPublicDescription(user);
     }
 
-    public abstract boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);
+    public abstract boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel);
 
-    public abstract void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB);
+    public abstract void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel);
 
 }

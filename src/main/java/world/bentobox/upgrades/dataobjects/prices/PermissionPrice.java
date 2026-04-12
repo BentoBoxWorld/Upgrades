@@ -50,13 +50,13 @@ public class PermissionPrice extends Price {
     }
 
     @Override
-    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         PermissionPriceDB db = (PermissionPriceDB) priceDB;
         return user.hasPermission(db.getPermission());
     }
 
     @Override
-    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB) {
+    public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         // Permission is a gate, not consumed
     }
 
