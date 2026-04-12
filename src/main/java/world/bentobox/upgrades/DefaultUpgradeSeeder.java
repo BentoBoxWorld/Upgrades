@@ -15,14 +15,23 @@ import world.bentobox.upgrades.dataobjects.rewards.LimitsRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.RangeRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.SpawnerRewardDB;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Seeds 6 example upgrades for each hooked game mode on first install.
  * Skips any game mode that already has at least one configured upgrade.
  */
 public class DefaultUpgradeSeeder {
+
+    private static final String SEEDED_FILE = ".seeded-gamemodes";
 
     private final UpgradesAddon addon;
 
@@ -31,16 +40,68 @@ public class DefaultUpgradeSeeder {
     }
 
     /**
-     * For each hooked game mode that has no upgrades configured, seed examples.
+     * For each hooked game mode that has no upgrades configured and has not
+     * been seeded before, seed examples. Tracks seeded game modes in a
+     * persistent marker file so deleted examples are not regenerated.
      */
     public void seedIfEmpty() {
+        Set<String> alreadySeeded = loadSeededGameModes();
         UpgradesDataManager dm = addon.getUpgradeDataManager();
+        boolean changed = false;
         for (String gm : addon.getHookedGameModes()) {
+            if (alreadySeeded.contains(gm)) {
+                continue;
+            }
             if (dm.getUpgradeDataByGameMode(gm).isEmpty()) {
                 seed(dm, gm);
                 addon.log("Seeded 8 example upgrades for " + gm
                         + " — edit or delete them via /[gamemode] admin upgrade");
             }
+            // Mark as seeded regardless — either we just seeded, or upgrades
+            // already existed. Either way, don't re-seed on future startups.
+            alreadySeeded.add(gm);
+            changed = true;
+        }
+        if (changed) {
+            saveSeededGameModes(alreadySeeded);
+        }
+    }
+
+    /**
+     * Load the set of game mode names that have already been seeded.
+     */
+    private Set<String> loadSeededGameModes() {
+        Set<String> seeded = new HashSet<>();
+        File file = new File(addon.getDataFolder(), SEEDED_FILE);
+        if (!file.exists()) {
+            return seeded;
+        }
+        try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String trimmed = line.trim();
+                if (!trimmed.isEmpty()) {
+                    seeded.add(trimmed);
+                }
+            }
+        } catch (IOException e) {
+            addon.logWarning("Could not read seeded game modes file: " + e.getMessage());
+        }
+        return seeded;
+    }
+
+    /**
+     * Persist the set of seeded game mode names.
+     */
+    private void saveSeededGameModes(Set<String> seeded) {
+        File file = new File(addon.getDataFolder(), SEEDED_FILE);
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
+            for (String gm : seeded) {
+                writer.write(gm);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            addon.logWarning("Could not save seeded game modes file: " + e.getMessage());
         }
     }
 
