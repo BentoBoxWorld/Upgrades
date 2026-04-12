@@ -1,44 +1,226 @@
-# Config file for IslandUpgrades addon
+# Config file for Upgrades addon
 
+# ======================
 # Disabled Game Mode Addons
-# IslandUpgrades will not work in these game modes
+# ======================
+# List of game modes where the IslandUpgrades functionality will not work.
+# Specify game modes by name in the array below.
 disabled-gamemodes: []
+
+# String used when asking input in chat to cancel input
+chat-input-escape: "END"
 
 # Range Upgrade Default Tiers
 # Each tier must contain:
 #      max-level: Upgrade level up to which tier apply
 #      upgrade-range: How much block is added to the range with each upgrade
+#
+# Each tier can contain:
 #      island-min-level: Minimum level required to upgrade (if level addon is provided)
 #      vault-cost: Money cost of upgrade
+#      permission-level: Is the level of permission needed to upgrade
+#         permission: "[GAMEMODE].upgrades.[UPGRADE].[LEVEL]"
+#             Example for bskyblock with range-upgrade with a permission level of 2
+#                 "bskyblock.upgrades.rangeupgrade.2"
+#
 # Note: for upgrade-range, island-min-level and vault-cost:
 #      Mathematical expression can be used (+,-,*,/,^,(,))
-#      Mathematical function can be used (sqrt,sin,cost,tan)
+#      Mathematical function can be used (sqrt,sin,cos,tan)
 #      Special value can be used:
 #         [level] : Is the actual level for this upgrade
-#         [islandLevel] : Is the islandLevel from level addon
+#         [islandLevel] : Is the islandLevel from level addon !!!!Can be 0!!!!
 #         [numberPlayer] : Is the number of players in team
 #
 # Caution: You should always check that at max level, your players won't attain max range for island
+# Permission upgrade name: rangeupgrade
+
+# ======================
+# Range Upgrade Configuration
+# ======================
+# Range Upgrade Default Tiers
+# Each tier must define:
+#   max-level: The maximum level this tier applies to.
+#   upgrade: The number of blocks added to the protection range at each level.
+
+# Optional fields:
+#   island-min-level: Minimum island level required to unlock this tier (requires Level addon).
+#   vault-cost: The monetary cost (in Vault currency) for each upgrade.
+#   permission-level: The required permission level for this upgrade.
+
+# Permissions format:
+#   [GAMEMODE].upgrades.[UPGRADE].[LEVEL]
+# Example:
+#   bskyblock.upgrades.rangeupgrade.2
+
+# Note:
+# - You can use mathematical expressions (+, -, *, /, ^) and functions (sqrt, sin, cos).
+# - Special variables:
+#     [level]: Current upgrade level.
+#     [islandLevel]: Island level from Level addon (can be 0 if not set).
+#     [numberPlayer]: Number of players in the island team.
+# Ensure the maximum level configuration does not allow islands to exceed their maximum range.
 range-upgrade:
   tier1:
     max-level: 5
-    upgrade-range: "5"
-    island-min-level: "2"
-    vault-cost: "[level]*100"
+    upgrade: "5"  # Adds 5 blocks to the protection range per level in this tier.
+    island-min-level: "2"  # Minimum island level required is 2.
+    vault-cost: "[level]*100"  # Cost increases by 100 Vault currency per level.
   tier2:
     max-level: 10
-    upgrade-range: "3"
+    upgrade: "3"
     island-min-level: "4"
-    vault-cost: "[level]*[numberPlayer]*200"
+    vault-cost: "[level]*[numberPlayer]*200"  # Cost scales with island members and level.
 
-# GameMode differences
+# ======================
+# Block Limits Upgrade Configuration
+# ======================
+# Defines tiers for block-specific upgrades.
+# Upgrade name format: limitsupgrade-[BLOCK] (lowercase block name).
+block-limits-upgrade:
+  HOPPER:
+    # Permission upgrade name: limitsupgrade-hopper
+    tier1:
+      max-level: 2
+      upgrade: "1"  # Adds 1 hopper per upgrade level.
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "([level]-2)*[numberPlayer]*700"  # Scales with team size for advanced upgrades.
+      permission-level: 1  # Requires permission level 1 to access.
+
+# ======================
+# Entity Limits Upgrade Configuration
+# ======================
+# Defines tiers for upgrades specific to entities (e.g., chickens).
+# UPermission upgrade name format: limitsupgrade-[ENTITY] (lowercase entity name).
+entity-limits-upgrade:
+  CHICKEN:
+    # Permission upgrade name: limitsupgrade-chicken
+    tier1:
+      max-level: 2
+      upgrade: "1"  # Adds 1 chicken limit per upgrade level.
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "([level]-2)*[numberPlayer]*700"
+      permission-level: 3  # Requires permission level 3 for advanced tiers.
+
+# ======================
+# Entity Group Limits Upgrade Configuration
+# ======================
+# Defines upgrades for groups of entities. Group names must match those in the Limits addon.
+# Upgrade name format: limitsupgrade-[GROUP] (lowercase group name).
+entity-group-limits-upgrade:
+  # this name has to match with your entity group names in the limits addon if installed
+  group1:
+    # Permission upgrade name: limitsupgrade-group1
+    tier1:
+      max-level: 2
+      upgrade: "1"       # Adds 1 group entity limit per upgrade level.
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+    tier2:
+      max-level: 5
+      upgrade: "1"
+      island-min-level: "4"
+      vault-cost: "([level]-2)*[numberPlayer]*700"
+      permission-level: 3
+
+# ======================
+# Command Upgrade Configuration
+# ======================
+# Defines upgrades that trigger commands when unlocked.
+# Variables:
+#   [player]: Name of the player unlocking the upgrade.
+#   [level]: Upgrade level.
+#   [owner]: Name of the island owner.
+# Permission upgrade name: command-[NAME]       -> In lower case + NAME != name:
+command-upgrade:
+  lambda-upgrade:
+    # Permission upgrade name: command-lambda-upgrade
+    name: "Lambda upgrade"
+    tier1:
+      max-level: 1
+      island-min-level: "2"
+      vault-cost: "[level]*100"
+      console: true       # Indicates the command is executed by the server console.
+      command:
+        - "say [player] has upgrade his lambda to level [level]"
+    tier2:
+      max-level: 2
+      island-min-level: "2"
+      vault-cost: "[level]*200"
+      console: true
+      command: 
+        - "say [player] has upgrade his lambda to level [level]"
+        - "say [player] has reached the max level"
+
+# ======================
+# GameMode-Specific Configurations
+# ======================
+# Define custom tiers for specific game modes.
 # List any tiers that you want to add
 # You can overwrite a tier by using the same name
 gamemodes:
-  BSkyblock:
+  BSkyBlock:
     range-upgrade:
       tier3:
         max-level: 15
-        upgrade-range: "5"
+        upgrade: "5"
         island-min-level: "6"
         vault-cost: "[level]*[numberPlayer]*500"
+
+    block-limits-upgrade:
+      HOPPER:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
+    entity-limits-upgrade:
+      CHICKEN:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
+    entity-group-limits-upgrade:
+      # has to match with the entity group name in the limits addon
+      group1:
+        tier1:
+          max-level: 2
+          upgrade: "1"
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+
+    command-upgrade:
+      lambda-upgrade:
+        tier2:
+          max-level: 2
+          island-min-level: "2"
+          vault-cost: "[level]*200"
+          console: true
+          command:
+            - "say [player] has upgrade his lambda to level [level]"
+            - "say [player] has attained max on BSkyBlock"
+
+# ======================
+# Icons for UI Representation
+# ======================
+# Define icons used to represent entities, groups, and commands in the user interface.
+entity-icon:
+  CHICKEN: CHICKEN_SPAWN_EGG
+
+entity-group-icon:
+  group1: CHICKEN_SPAWN_EGG
+
+command-icon:
+  lambda-upgrade: GRASS_BLOCK

@@ -1,0 +1,9 @@
+{
+  "uniqueId": "BSkyBlock_example_cow",
+  "world": "BSkyBlock",
+  "name": "",
+  "description": [],
+  "icon": "is:\n  ==: org.bukkit.inventory.ItemStack\n",
+  "order": -1,
+  "active": true
+}

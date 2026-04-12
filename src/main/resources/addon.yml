@@ -1,11 +1,18 @@
-name: IslandUpgrades
-main: world.bentobox.islandupgrades.IslandUpgradesAddon
+name: Upgrades
+main: world.bentobox.upgrades.UpgradesAddon
 version: ${version}${build.number}
-repository: "Guillaume-Lebegue/IslandUpgrades"
+api-version: '1.21'
+repository: "BentoBoxWorld/Upgrades"
 metrics: true
 icon: GOLD_INGOT
 
 authors:
   - Guillaume-Lebegue
+  - tastybento
 
-softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, Level
+softdepend: BSkyBlock, AcidIsland, CaveBlock, SkyGrid, AOneBlock, Level, Limits
+
+permissions:
+  '[gamemode].admin.upgrade':
+    description: Access upgrade admin commands
+    default: op
