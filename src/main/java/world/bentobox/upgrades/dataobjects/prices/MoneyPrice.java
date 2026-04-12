@@ -57,9 +57,9 @@ public class MoneyPrice extends Price {
         if (!addon.isVaultProvided()) return true;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", (double) currentLevel);
-        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        variables.put(LEVEL_VAR, (double) currentLevel);
+        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
         double amount = Settings.evaluate(db.getAmountEquation(), variables);
         return addon.getVaultHook().has(user, amount);
     }
@@ -69,9 +69,9 @@ public class MoneyPrice extends Price {
         if (!addon.isVaultProvided()) return;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", (double) currentLevel);
-        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        variables.put(LEVEL_VAR, (double) currentLevel);
+        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
         double amount = Settings.evaluate(db.getAmountEquation(), variables);
         var response = addon.getVaultHook().withdraw(user, amount);
         if (!response.transactionSuccess()) {

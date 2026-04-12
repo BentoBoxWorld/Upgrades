@@ -131,9 +131,9 @@ public class CropGrowthReward extends Reward {
                                 input -> {
                                     try {
                                         Map<String, Double> vars = new TreeMap<>();
-                                        vars.put("[level]", 1.0);
-                                        vars.put("[islandLevel]", 1.0);
-                                        vars.put("[numberPlayer]", 1.0);
+                                        vars.put(LEVEL_VAR, 1.0);
+                                        vars.put(ISLAND_LEVEL_VAR, 1.0);
+                                        vars.put(NUMBER_PLAYER_VAR, 1.0);
                                         Settings.evaluate(input, vars);
                                         return true;
                                     } catch (Exception e) {

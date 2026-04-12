@@ -13,6 +13,10 @@ import world.bentobox.upgrades.ui.utils.AbPanel;
 
 public abstract class Reward implements PanelAdminItem, PanelPublicItem {
 
+    public static final String LEVEL_VAR = "[level]";
+    public static final String ISLAND_LEVEL_VAR = "[islandLevel]";
+    public static final String NUMBER_PLAYER_VAR = "[numberPlayer]";
+
     private final String name;
     private final Material icon;
 

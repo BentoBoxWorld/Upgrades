@@ -59,9 +59,9 @@ public class RangeReward extends Reward {
     public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         RangeRewardDB db = (RangeRewardDB) rewardDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", (double) currentLevel);
-        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        variables.put(LEVEL_VAR, (double) currentLevel);
+        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
         int amount = (int) Settings.evaluate(db.getRangeUpgradeEquation(), variables);
 
         int newRange = island.getProtectionRange() + amount;
@@ -157,9 +157,9 @@ public class RangeReward extends Reward {
                                     // Validate that input is a parseable math expression (#70 item 8)
                                     try {
                                         Map<String, Double> vars = new TreeMap<>();
-                                        vars.put("[level]", 1.0);
-                                        vars.put("[islandLevel]", 1.0);
-                                        vars.put("[numberPlayer]", 1.0);
+                                        vars.put(LEVEL_VAR, 1.0);
+                                        vars.put(ISLAND_LEVEL_VAR, 1.0);
+                                        vars.put(NUMBER_PLAYER_VAR, 1.0);
                                         Settings.evaluate(input, vars);
                                         return true;
                                     } catch (Exception e) {

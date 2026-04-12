@@ -40,14 +40,14 @@ public class IslandLevelPrice extends Price {
 
     @Override
     public String getPublicDescription(User user) {
-        return user.getTranslation("upgrades.prices.islandlevel.description", "[level]", "?");
+        return user.getTranslation("upgrades.prices.islandlevel.description", LEVEL_VAR, "?");
     }
 
     @Override
     public String getPublicDescription(User user, PriceDB priceDB) {
         IslandLevelPriceDB db = (IslandLevelPriceDB) priceDB;
         return user.getTranslation("upgrades.prices.islandlevel.description",
-                "[level]", db.getLevelNeededEquation());
+                LEVEL_VAR, db.getLevelNeededEquation());
     }
 
     @Override
@@ -59,9 +59,9 @@ public class IslandLevelPrice extends Price {
     public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         IslandLevelPriceDB db = (IslandLevelPriceDB) priceDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", (double) currentLevel);
-        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        variables.put(LEVEL_VAR, (double) currentLevel);
+        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
         int required = (int) Settings.evaluate(db.getLevelNeededEquation(), variables);
         return addon.getUpgradesManager().getIslandLevel(island) >= required;
     }

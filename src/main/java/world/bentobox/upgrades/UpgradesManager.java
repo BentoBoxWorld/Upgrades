@@ -70,6 +70,14 @@ public class UpgradesManager {
         return this.activatedRewards.get(reward);
     }
 
+    private Optional<String> getGameModeName(World world) {
+        return this.addon.getPlugin()
+                .getIWM()
+                .getAddon(world)
+                .map(a -> a.getDescription()
+                        .getName());
+    }
+
     public int getIslandLevel(Island island) {
         if (!this.addon.isLevelProvided())
             return 0;
@@ -83,13 +91,9 @@ public class UpgradesManager {
     }
 
     public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
-        if (name == null) return Collections.emptyList();
+        Optional<String> nameOpt = getGameModeName(world);
+        if (nameOpt.isEmpty()) return Collections.emptyList();
+        String name = nameOpt.get();
 
         Map<String, Settings.UpgradeTier> defaultTiers = this.addon.getSettings()
                 .getDefaultRangeUpgradeTierMap();
@@ -118,15 +122,11 @@ public class UpgradesManager {
     }
 
     public Map<Material, List<Settings.UpgradeTier>> getAllBlockLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
-        if (name == null) {
+        Optional<String> nameOpt = getGameModeName(world);
+        if (nameOpt.isEmpty()) {
             return Collections.emptyMap();
         }
+        String name = nameOpt.get();
 
         Map<Material, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
                 .getDefaultBlockLimitsUpgradeTierMap();
@@ -165,15 +165,11 @@ public class UpgradesManager {
     }
 
     public Map<EntityType, List<Settings.UpgradeTier>> getAllEntityLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
-        if (name == null) {
+        Optional<String> nameOpt = getGameModeName(world);
+        if (nameOpt.isEmpty()) {
             return Collections.emptyMap();
         }
+        String name = nameOpt.get();
 
         Map<EntityType, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
                 .getDefaultEntityLimitsUpgradeTierMap();
@@ -212,15 +208,11 @@ public class UpgradesManager {
     }
 
     public Map<String, List<Settings.UpgradeTier>> getAllEntityGroupLimitsUpgradeTiers(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
-        if (name == null) {
+        Optional<String> nameOpt = getGameModeName(world);
+        if (nameOpt.isEmpty()) {
             return Collections.emptyMap();
         }
+        String name = nameOpt.get();
 
         Map<String, Map<String, Settings.UpgradeTier>> defaultTiers = this.addon.getSettings()
                 .getDefaultEntityGroupLimitsUpgradeTierMap();
@@ -259,15 +251,11 @@ public class UpgradesManager {
     }
 
     public Map<String, List<Settings.CommandUpgradeTier>> getAllCommandUpgradeTiers(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
-        if (name == null) {
+        Optional<String> nameOpt = getGameModeName(world);
+        if (nameOpt.isEmpty()) {
             return Collections.emptyMap();
         }
+        String name = nameOpt.get();
 
         Map<String, Map<String, Settings.CommandUpgradeTier>> defaultTiers = this.addon.getSettings()
                 .getDefaultCommandUpgradeTierMap();
@@ -454,12 +442,7 @@ public class UpgradesManager {
     }
 
     public int getRangeUpgradeMax(World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
+        String name = getGameModeName(world).orElse("");
         return this.addon.getSettings()
                 .getMaxRangeUpgrade(name);
     }
@@ -501,12 +484,7 @@ public class UpgradesManager {
     }
 
     public int getBlockLimitsUpgradeMax(Material mat, World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
+        String name = getGameModeName(world).orElse("");
         return this.addon.getSettings()
                 .getMaxBlockLimitsUpgrade(mat, name);
     }
@@ -590,23 +568,13 @@ public class UpgradesManager {
     }
 
     public int getEntityLimitsUpgradeMax(EntityType ent, World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
+        String name = getGameModeName(world).orElse("");
         return this.addon.getSettings()
                 .getMaxEntityLimitsUpgrade(ent, name);
     }
 
     public int getEntityGroupLimitsUpgradeMax(String group, World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
+        String name = getGameModeName(world).orElse("");
         return this.addon.getSettings()
                 .getMaxEntityGroupLimitsUpgrade(group, name);
     }
@@ -646,12 +614,7 @@ public class UpgradesManager {
     }
 
     public int getCommandUpgradeMax(String cmd, World world) {
-        String name = this.addon.getPlugin()
-                .getIWM()
-                .getAddon(world)
-                .map(a -> a.getDescription()
-                        .getName())
-                .orElse(null);
+        String name = getGameModeName(world).orElse("");
         return this.addon.getSettings()
                 .getMaxCommandUpgrade(cmd, name);
     }

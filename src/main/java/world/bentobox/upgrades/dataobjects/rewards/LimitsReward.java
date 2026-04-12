@@ -67,9 +67,9 @@ public class LimitsReward extends Reward {
 
         LimitsRewardDB db = (LimitsRewardDB) rewardDB;
         Map<String, Double> variables = new TreeMap<>();
-        variables.put("[level]", (double) currentLevel);
-        variables.put("[islandLevel]", (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put("[numberPlayer]", (double) island.getMemberSet().size());
+        variables.put(LEVEL_VAR, (double) currentLevel);
+        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
+        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
         int amount = (int) Settings.evaluate(db.getAmountEquation(), variables);
 
         BlockLimitsListener bLListener = addon.getLimitsAddon().getBlockLimitListener();

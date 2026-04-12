@@ -10,17 +10,7 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.UpgradeAPI;
-import world.bentobox.upgrades.config.Settings;
-import world.bentobox.upgrades.dataobjects.UpgradeTier;
-import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.dataobjects.rewards.RewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.SpawnerRewardDB;
-import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
-
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class SpawnerUpgradeListener implements Listener {
 
@@ -55,45 +45,7 @@ public class SpawnerUpgradeListener implements Listener {
     }
 
     private double computeBonus(Island island) {
-        double total = 0.0;
-        long islandLevel = addon.getUpgradesManager().getIslandLevel(island);
-        int memberCount = island.getMemberSet().size();
-        UpgradesData data = addon.getUpgradesLevels(island.getUniqueId());
-
-        for (UpgradeAPI upgradeAPI : addon.getAvailableUpgrades()) {
-            if (!(upgradeAPI instanceof DatabaseUpgrade)) continue;
-            DatabaseUpgrade dbUpgrade = (DatabaseUpgrade) upgradeAPI;
-
-            int currentLevel = data.getUpgradeLevel(dbUpgrade.getName());
-            if (currentLevel <= 0) continue;
-
-            // Find the most recently purchased tier (startLevel <= currentLevel-1 <= endLevel)
-            List<UpgradeTier> tiers = addon.getUpgradeDataManager()
-                    .getUpgradeTierByUpgradeData(dbUpgrade.getUpgradeData());
-            UpgradeTier activeTier = null;
-            for (UpgradeTier tier : tiers) {
-                if (tier.getStartLevel() <= currentLevel - 1 && currentLevel - 1 <= tier.getEndLevel()) {
-                    activeTier = tier;
-                    break;
-                }
-            }
-            if (activeTier == null) continue;
-
-            for (RewardDB rewardDB : activeTier.getRewards()) {
-                if (!(rewardDB instanceof SpawnerRewardDB)) continue;
-                SpawnerRewardDB spawnerDB = (SpawnerRewardDB) rewardDB;
-
-                Map<String, Double> vars = new TreeMap<>();
-                vars.put("[level]", (double) currentLevel);
-                vars.put("[islandLevel]", (double) islandLevel);
-                vars.put("[numberPlayer]", (double) memberCount);
-                try {
-                    total += Settings.evaluate(spawnerDB.getSpawnBonusEquation(), vars);
-                } catch (Exception ignored) {
-                    // Malformed formula — skip
-                }
-            }
-        }
-        return total;
+        return BonusCalculator.sum(addon, island, SpawnerRewardDB.class,
+                SpawnerRewardDB::getSpawnBonusEquation);
     }
 }
