@@ -54,7 +54,7 @@
         <mock-bukkit.version>v1.21-SNAPSHOT</mock-bukkit.version>
 
         <paper.version>1.21.11-R0.1-SNAPSHOT</paper.version>
-        <bentobox.version>3.0.0-SNAPSHOT</bentobox.version>
+        <bentobox.version>3.14.0</bentobox.version>
         <level.version>2.17.0</level.version>
         <limits.version>1.28.0-SNAPSHOT</limits.version>
         <vault.version>1.7</vault.version>
@@ -62,7 +62,7 @@
         <revision>${build.version}-SNAPSHOT</revision>
 
         <!-- This allows to change between versions. -->
-        <build.version>0.3.0</build.version>
+        <build.version>1.0.0</build.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->
