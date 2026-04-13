@@ -21,6 +21,7 @@ import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.AddonDescription;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.upgrades.UpgradesAddon;
@@ -59,6 +60,7 @@ public class DatabaseUpgradeTest {
     @Mock private World world;
     @Mock private GameModeAddon gameModeAddon;
     @Mock private AddonDescription gameModeDesc;
+    @Mock @SuppressWarnings("rawtypes") private Database database;
 
     private UpgradeData upgradeData;
     /** A single-purchase tier: startLevel=0, endLevel=0 */
@@ -110,6 +112,7 @@ public class DatabaseUpgradeTest {
         when(addon.getUpgradeDataManager()).thenReturn(upgradesDataManager);
         when(addon.getUpgradesManager()).thenReturn(upgradesManager);
         when(addon.getUpgradesLevels(islandId)).thenReturn(upgradesData);
+        when(addon.getDatabase()).thenReturn(database);
         when(upgradesDataManager.getUpgradeTierByUpgradeData(upgradeData))
                 .thenReturn(Collections.singletonList(tier));
 

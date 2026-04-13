@@ -185,6 +185,7 @@ public class LimitsReward extends Reward {
                     case "ENTITY" -> this.saved.setLimitType("ENTITY_GROUP");
                     default -> this.saved.setLimitType("BLOCK");
                 }
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild().build();
                 return true;
@@ -196,6 +197,7 @@ public class LimitsReward extends Reward {
                 this.getAddon().getChatInput().askOneInput(
                         rule -> {
                             this.saved.setTarget(rule);
+                            this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                             this.createInterface();
                             this.getBuild().build();
                         },
@@ -211,6 +213,7 @@ public class LimitsReward extends Reward {
                 this.getAddon().getChatInput().askOneInput(
                         rule -> {
                             this.saved.setAmountEquation(rule);
+                            this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                             this.createInterface();
                             this.getBuild().build();
                         },

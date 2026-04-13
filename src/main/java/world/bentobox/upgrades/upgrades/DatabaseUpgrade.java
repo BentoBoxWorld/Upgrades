@@ -109,6 +109,7 @@ public class DatabaseUpgrade extends UpgradeAPI {
         }
 
         data.setUpgradeLevel(this.getName(), currentLevel + 1);
+        this.getUpgradesAddon().getDatabase().saveObjectAsync(data);
         return true;
     }
 

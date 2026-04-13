@@ -138,8 +138,13 @@ public final class EditTierPanel extends AbPanel {
         return true;
     };
 
-    private final Consumer<String> doSetName = (name) -> {
+    protected void applySetName(String name) {
         this.tier.setName(name);
+        this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+    }
+
+    private final Consumer<String> doSetName = (name) -> {
+        applySetName(name);
         this.setButton();
         this.getBuild()
                 .build();
@@ -159,13 +164,19 @@ public final class EditTierPanel extends AbPanel {
         return true;
     };
 
-    private final Consumer<List<String>> doSetDescription = (description) -> {
-        if (description == null)
-            return;
+    protected void applySetDescription(List<String> description) {
+        if (description == null) return;
         this.tier.setDescription(description);
-        this.setButton();
-        this.getBuild()
-                .build();
+        this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+    }
+
+    private final Consumer<List<String>> doSetDescription = (description) -> {
+        applySetDescription(description);
+        if (description != null) {
+            this.setButton();
+            this.getBuild()
+                    .build();
+        }
     };
 
     private final ClickHandler onSetIcon = (panel, client, click, slot) -> {
@@ -178,11 +189,16 @@ public final class EditTierPanel extends AbPanel {
             return true;
         }
         this.tier.setIcon(new ItemStack(inHand.getType()));
+        this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
         this.setButton();
         this.getBuild()
                 .build();
         return true;
     };
+
+    private void saveAllTiers() {
+        this.tiers.forEach(t -> this.getAddon().getUpgradeDataManager().saveUpgradeTier(t));
+    }
 
     private final ClickHandler onSetNbLevel = (panel, client, click, slot) -> {
         int index = this.tiers.indexOf(this.tier);
@@ -196,6 +212,7 @@ public final class EditTierPanel extends AbPanel {
             return true;
 
         this.updateTierLevel(this.tiers, this.tiersLengths);
+        this.saveAllTiers();
         this.setButton();
         this.getBuild()
                 .build();
@@ -219,6 +236,7 @@ public final class EditTierPanel extends AbPanel {
         this.tiersLengths.set(newIndex, length);
         this.tiers.set(newIndex, this.tier);
         this.updateTierLevel(this.tiers, this.tiersLengths);
+        this.saveAllTiers();
         this.setButton();
         this.getBuild()
                 .build();
@@ -305,6 +323,7 @@ public final class EditTierPanel extends AbPanel {
                             .collect(
                                     Collectors.toList());
                     this.tier.setPrices(prices);
+                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 }
                 this.getBuild()
                         .build();
@@ -320,6 +339,7 @@ public final class EditTierPanel extends AbPanel {
                             .collect(
                                     Collectors.toList());
                     this.tier.setRewards(rewards);
+                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 }
                 this.getBuild()
                         .build();

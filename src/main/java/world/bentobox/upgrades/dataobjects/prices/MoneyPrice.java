@@ -147,6 +147,7 @@ public class MoneyPrice extends Price {
         private Consumer<String> doSetRule() {
             return (rule) -> {
                 this.saved.setAmountEquation(rule);
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild().build();
             };

@@ -151,6 +151,7 @@ public class SpawnerReward extends Reward {
         private Consumer<String> doSetRule() {
             return (rule) -> {
                 this.saved.setSpawnBonusEquation(rule);
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild().build();
             };

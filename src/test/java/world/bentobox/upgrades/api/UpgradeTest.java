@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.upgrades.UpgradesAddon;
@@ -45,6 +46,9 @@ public class UpgradeTest {
     private UpgradesManager um;
     @Mock
     private VaultHook vh;
+    @Mock
+    @SuppressWarnings("rawtypes")
+    private Database database;
 
     private TestUpgrade testUpgrade;
 
@@ -67,6 +71,7 @@ public class UpgradeTest {
 
         when(vh.has(any(), anyDouble())).thenReturn(true); // Player has money
         when(addon.getVaultHook()).thenReturn(vh);
+        when(addon.getDatabase()).thenReturn(database);
 
         testUpgrade = new TestUpgrade(addon, "test_upgrade", "Test Upgrade", Material.DIAMOND);
     }
