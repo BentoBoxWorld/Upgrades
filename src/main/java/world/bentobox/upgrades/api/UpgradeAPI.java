@@ -120,6 +120,7 @@ public abstract class UpgradeAPI {
 
         UpgradesData data = this.upgradesAddon.getUpgradesLevels(island.getUniqueId());
         data.setUpgradeLevel(this.name, data.getUpgradeLevel(this.name) + 1);
+        this.upgradesAddon.getDatabase().saveObjectAsync(data);
 
         return true;
     }

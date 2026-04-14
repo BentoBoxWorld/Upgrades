@@ -140,6 +140,7 @@ public class CommandReward extends Reward {
         private PanelItem.ClickHandler onToggle() {
             return (panel, client, click, slot) -> {
                 this.saved.setConsole(!this.saved.isConsole());
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild().build();
                 return true;
@@ -153,6 +154,7 @@ public class CommandReward extends Reward {
                             List<String> cmds = new ArrayList<>(this.saved.getCommands());
                             cmds.add(cmd);
                             this.saved.setCommands(cmds);
+                            this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                             this.createInterface();
                             this.getBuild().build();
                         },
@@ -166,6 +168,7 @@ public class CommandReward extends Reward {
         private PanelItem.ClickHandler onClearCommands() {
             return (panel, client, click, slot) -> {
                 this.saved.setCommands(new ArrayList<>());
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild().build();
                 return true;

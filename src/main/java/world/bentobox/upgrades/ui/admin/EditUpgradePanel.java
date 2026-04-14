@@ -129,12 +129,17 @@ public class EditUpgradePanel extends AbPanel {
 		return true;
 	};
 	
-	private Consumer<String> doSetName = (name) -> {
+	protected void applySetName(String name) {
 		this.upgrade.setName(name);
+		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
+	}
+
+	private Consumer<String> doSetName = (name) -> {
+		applySetName(name);
 		this.setButton();
 		this.getBuild().build();
 	};
-	
+
 	private ClickHandler onSetDescription = (panel, client, click, slot) -> {
 		this.getAddon().getChatInput().askMultiLine(this.doSetDescription,
 			input -> true,
@@ -144,24 +149,31 @@ public class EditUpgradePanel extends AbPanel {
 			this.getUser());
 		return true;
 	};
-	
-	private Consumer<List<String>> doSetDescription = (descrip) -> {
-		if (descrip == null)
-			return;
+
+	protected void applySetDescription(List<String> descrip) {
+		if (descrip == null) return;
 		this.upgrade.setDescription(descrip);
-		this.setButton();
-		this.getBuild().build();
+		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
+	}
+
+	private Consumer<List<String>> doSetDescription = (descrip) -> {
+		applySetDescription(descrip);
+		if (descrip != null) {
+			this.setButton();
+			this.getBuild().build();
+		}
 	};
 	
 	private ClickHandler onSetIcon = (panel, client, click, slot) -> {
 		ItemStack inHand = client.getInventory().getItemInMainHand();
-		
+
 		if (inHand == null || BADICON.contains(inHand.getType())) {
 			client.sendMessage("upgrades.error.noiteminhand");
 			client.closeInventory();
 			return true;
 		}
 		upgrade.setIcon(new ItemStack(inHand.getType()));
+		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
 		this.setButton();
 		this.getBuild().build();
 		return true;
@@ -251,8 +263,13 @@ public class EditUpgradePanel extends AbPanel {
 		return true;
 	};
 	
+	protected void applySetOrder(int order) {
+		this.upgrade.setOrder(order);
+		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
+	}
+
 	private Consumer<Number> doSetOrder = (order) -> {
-		this.upgrade.setOrder(order.intValue());
+		applySetOrder(order.intValue());
 		this.setButton();
 		this.getBuild().build();
 	};

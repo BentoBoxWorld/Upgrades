@@ -177,6 +177,7 @@ public class RangeReward extends Reward {
         private Consumer<String> doSetRule() {
             return (rule) -> {
                 this.saved.setRangeUpgradeEquation(rule);
+                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();
                 this.getBuild()
                         .build();

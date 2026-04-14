@@ -152,6 +152,7 @@ public class ItemPrice extends Price {
                     client.sendMessage(client.getTranslation("upgrades.error.noiteminhand"));
                 } else {
                     this.saved.setMaterial(inHand.getType().name());
+                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                     this.createInterface();
                     this.getBuild().build();
                 }
@@ -167,6 +168,7 @@ public class ItemPrice extends Price {
                                 int amt = Integer.parseInt(input);
                                 if (amt > 0) {
                                     this.saved.setAmount(amt);
+                                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                                     this.createInterface();
                                     this.getBuild().build();
                                 }
