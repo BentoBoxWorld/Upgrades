@@ -1,29 +1,351 @@
-upgrades: 
-  commands: 
-    main: 
-      description: "打开升级商店界面"
-  error: 
-    costwithdraw: "&c 无法付款. 请将此问题告诉管理员"
-    increasenolimits: "&c 您不能给一个不受限制的内容加上限制. 请将此问题告诉管理员"
-    notonisland: "&c 必须要在自己的岛屿上才能这么做"
-    rangeovermax: "&c 尝试将岛屿边界扩大到最大值以上? 请将此问题告诉管理员"
-    placeblock: "&c 在购买此升级之前, 您至少需要放置/破坏一个方块"
-  ui: 
-    upgradepanel: 
-      islandneed: "岛屿最低等级: [islandlevel]"
-      limitsupgrade: "[block] limits upgrade of [level]"
-      limitsupgradedone: "&a 您岛屿的 [block] 限制已升级到 [level]"
-      maxlevel: "已达到最大等级"
-      moneycost: "需花费: [cost]"
-      nolimitsupgrade: "&7升级 [block] 限制"
-      norangeupgrade: "&7 边界升级"
-      rangeupgrade: "Range upgrade of [rangelevel]"
-      rangeupgradedone: "&a 您的岛屿边界已扩大 [rangelevel] 个方块"
-      tiernameandlevel: "&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)"
-      title: "岛屿升级商店"
-      tryreloadlevel: "不要忘了通过岛屿升级指令升级您的岛屿"
-protection: 
-  flags: 
-    UPGRADES_RANK_RIGHT: 
-      description: "切换可升级的玩家"
-      name: "升级等级"
+upgrades:
+  commands:
+    main:
+      parameters: ''
+      description: '&R打开 升级商店 菜单'
+    admin:
+      description: '&R编辑 升级 菜单'
+  error:
+    costwithdraw: '&c Couldn''t withdraw money. You should talk about this to an administrator'
+    increasenolimits: '&c You can''t increase the limits of something not limited.
+      You should talk about this to an administrator'
+    notonisland: |-
+      &R &R
+      &C仅 自己 岛屿&R
+    rangeovermax: '&c You tried to upgrade you island range over the max? You should
+      talk about this to an administrator'
+    placeblock: '&c Before buying this upgrade, you need to place/break at least one
+      block'
+    loaderror: '&c [what] faild to load. You should look at the consol for error'
+    upgradeinvalid: '&c Upgrade [what] [upgradeId] not valid. It will be ignored'
+    unknownerror: '&c An error happened. You should look at the consol for error'
+    noiteminhand: |-
+      &R &R
+      &R你 &C主手&R 为 空
+  message:
+    skipupgradeload: '&c Upgrade [what] [upgradeId] was already loaded'
+    upgradeload: |-
+      &R &R
+      &R[what]
+      &R[upgradeId]
+      &R已创建
+  chatinput:
+    admin:
+      question:
+        getupgradeid: |-
+          &R &R
+          &R输入 新升级 &C唯一&R名
+        gettierid: |-
+          &R &R
+          &R输入 新一层 &C唯一&R名
+        getupgradedataname: |-
+          &R &R
+          &R输入 此升级 新 显示名
+          &R[name]
+        getupgradedatadesc: |-
+          &R &R
+          &R输入 管理员 描述
+          &R直接结束 为 清空
+          &R每条消息为一行
+          &R区分大小写 结束输入
+          &R[end]
+        getupgradedataorder: |-
+          &R &R
+          &R输入管理员菜单排位顺序
+          &R默认 -1 表示最后一位
+          &R同一顺序按A-Z排序
+          &R区分大小写 取消输入 END
+        getupgradetiername: |-
+          Write shown name
+          Actual is '[name]'
+        getupgradetierdesc: |-
+          Write the tier description. Each message will be a new line in description
+          Write '[end]' to end prompt
+      invalid:
+        getupgradeid: '&c This name is already taken. Choose another one'
+        gettierid: '&c This name is already taken. Choose another one'
+        getupgradedataorder: |-
+          &R &R
+          &C序号必须大于 -1&R
+  ui:
+    upgradepanel:
+      islandneed: 'Island Min Level: [islandlevel]'
+      limitsupgrade: '[block] limits upgrade of [level]'
+      limitsupgradedone: '&a Your island [block] limits was upgraded by [level]'
+      maxlevel: |-
+        &R &R
+        &F已满级&R
+      moneycost: 'Money cost: [cost]'
+      nolimitsupgrade: '&7[block] limits upgrade'
+      norangeupgrade: '&7 Range upgrade'
+      rangeupgrade: Range upgrade of [rangelevel]
+      rangeupgradedone: |-
+        &R &R
+        &R岛屿大小 购买完成
+        &A+[rangelevel]&R
+        &R格
+      tiernameandlevel: '&e&o&l[name]&e &7(&a[current] &7/ &2[max]&7)'
+      title: '&R岛屿 升级商店 菜单'
+      tryreloadlevel: Don't forget to update your island level with the level command
+      previous:
+        name: '&7Previous page'
+        description: '&7Go to previous page'
+        tooltip: Click to go to previous page
+      next:
+        name: '&7Next page'
+        description: '&7Go to next page'
+        tooltip: Click to go to next page
+      upgrade:
+        tooltip: Click to purchase upgrade
+    editupgradepanel:
+      active: '&A可购买&R'
+      activedesc: |-
+        &R &R
+        &F点击切换为&R &C不可购买&R
+      inactive: '&C不可购买&R'
+      inactivedesc: |-
+        &R &R
+        &F点击切换为&R &A可购买&R
+      description: '&B输入&R描述 仅此处可见'
+      namedesc: |-
+        &R &R
+        &F点击&R&B输入&F此升级&R
+        &F显示名&R
+      icon: '&R升级图标'
+      icondesc: |-
+        &R &R
+        &C点击更改&R&F此升级&R
+        &F图标 为 你&R &C主手&R &F物品&R
+      tieradd: '&R添加升级层'
+      tieredit: '&R编辑升级层'
+      tierdelete: '&R删除升级层'
+      tierrequired: |-
+        &R &R
+        &F没有层级&R
+        &F添加 层级 可 编辑 与 删除&R
+      order: '&R当前排序 [order]'
+      orderdesc: |-
+        &R &R
+        &R管理员菜单排位顺序
+        &C点击&R&B输入&R&F排序&R
+        &F同一顺序按A-Z排序&R
+    edittierpanel:
+      namedesc: |-
+        &R &R
+        &C点击&R&B输入&F此层&R
+        &F显示名&R
+      description: '&C点击&R &B输入&R 此层 描述'
+      icon: '&R层级 图标'
+      icondesc: |-
+        &R &R
+        &C点击更改&F此层&R
+        &F图标 为 你&R &C主手&R &F物品&R
+      nblevel: '&R此层 可升级次数'
+      nbleveldesc: |-
+        &R &R
+        &F当前 [actual]/满级&R
+        &F左键 降低&R
+        &F右键 增加&R
+      order: '&R调整此层排序'
+      orderdesc: |-
+        &R &R
+        &F当前 [actual]&R
+        &F左键 降低&R
+        &F右键 增加&R
+      prices: '&R打开条件菜单'
+      rewards: '&R打开奖励菜单'
+    listadmintierpricepanel:
+      title: '&R条件 菜单'
+      create: '&R添加新条件'
+      leftdesc: |-
+        &R &R
+        &F左键 编辑 条件&R
+      rightdesc: |-
+        &R &R
+        &C右键 删除 条件&R
+    listadminpricepanel:
+      title: '&R可用 条件 菜单'
+    listadmintierrewardpanel:
+      title: '&R奖励 菜单'
+      create: '&R添加新奖励'
+      leftdesc: |-
+        &R &R
+        &F左键 编辑 奖励&R
+      rightdesc: |-
+        &R &R
+        &C右键 删除 奖励&R
+    listadminrewardpanel:
+      title: '&R可用 奖励 菜单'
+    islandlevelpricepanel:
+      title: Island level price
+    buttons:
+      return: '&R返回'
+      exit: '&R退出'
+      yesbutton: '&R是 &C确认删除&R'
+      nobutton: '&R否 &A点错&R'
+      addupgrade: '&R添加升级'
+      deleteupgrade: Delete upgrade
+      editupgrade: Edit upgrade
+      active: Active
+      validconf: '&A配置 当前 有效&R'
+      invalidconf: '&C配置 当前 无效&R'
+      noupgrades: No upgrades yet — click 'Add upgrade' to create one
+      leftclickedit: '&A左 编辑&R'
+      rightclickdelete: '&C右 删除&R'
+    titles:
+      adminupgrade: '&R升级商店 管理员菜单'
+      delete: '&R删除配置 [name]'
+      editlist: '&R编辑层级'
+      deletelist: '&R删除层级'
+      listupgradetier: List tier for upgrade [upgradedata]
+      listupgradeprices: List of price for this tier
+  prices:
+    item:
+      name: '&R要求 物品'
+      description: |-
+        &R &R
+        &F[amount]&R
+        &F[item]&R
+      admindescription: |-
+        &R &R
+        &F设置 物品 购买 升级&R
+      paneltitle: '&R物品要求 条件编辑菜单'
+    islandlevel:
+      name: '&R要求 岛屿等级'
+      description: |-
+        &R &R
+        &F最少&R &C[level]&R&F级 岛屿&R
+      admindescription: |-
+        &R &R
+        &F设置 最少 多少级 岛屿 可 升级&R
+      paneltitle: '&R岛屿等级要求 条件编辑菜单'
+      rulequestion: |-
+        &R &R
+        &R输入 最低要求岛屿等级
+        &R当前 [actual]
+    money:
+      name: '&R要求 基础货币'
+      description: |-
+        &R &R
+        &C[amount]&R
+        &F基础货币&R
+      admindescription: |-
+        &R &R
+        &F设置 基础货币 购买 升级&R
+      paneltitle: 基础货币要求 条件编辑菜单
+      rulequestion: |-
+        &R &R
+        &R输入 升级扣款公式 例子 100*[level]
+        &R[level]为次数 也就是说 第二次升级是2百 第三次3百 以此类推
+        &R当前
+        &R[actual]
+    permission:
+      name: '&R权限 要求'
+      description: |-
+        &R &R
+        &F需权限&R &C[permission]&R
+      admindescription: |-
+        &R &R
+        &F设置 拥有 权限 可 升级&R
+      paneltitle: 权限要求 条件编辑菜单
+      rulequestion: |-
+        &R &R
+        &R输入 需什么权限升级
+        &R当前
+        &R[actual]
+  rewards:
+    spawner:
+      name: '&R刷怪笼 加成'
+      description: |-
+        &R &R
+        &F每刷怪笼额外&R
+        &A+[amount]&R
+        &F刷新量&R
+      admindescription: |-
+        &R &R
+        &F每刷怪笼额外刷新量&R
+      paneltitle: '&R刷怪笼加成 奖励编辑菜单'
+      rulequestion: |-
+        &R &R
+        &R输入 刷怪笼奖励 公式
+        &R例子 0.5 或 0.1*[level]
+        &R也就是 每个刷怪笼多刷.5个生物 或 每升级一次+.1个
+        &R当前 [actual]
+      invalidrule: |-
+        &R &R
+        &R无效公式. 数字 或 数学表达式 0.5 0.1*[level]
+      setformula: '&R点击输入 刷怪笼奖励 公式'
+      formulastatus: '&R刷怪笼奖励 公式正确'
+      formulaneeded: Formula needed
+      formulaneededdesc: Click the paper icon to set a spawn bonus formula
+    rangeupgrade:
+      name: '&R范围升级 奖励'
+      description: |-
+        &R &R
+        &F边界&R
+        &A+[rangelevel]&R
+        &F格&R
+      admindescription: |-
+        &R &R
+        &F边界外扩&R
+      paneltitle: '&R范围升级 奖励编辑菜单'
+      rulequestion: |-
+        &R &R
+        &R输入 范围奖励 公式
+        &R例子 5 或 2*[level]
+        &R当前 [actual]
+      invalidrule: |-
+        &R &R
+        &R无效公式. 数字 或 数学表达式 5 2*[level]
+      setformula: '&R设置 范围 公式'
+      formulastatus: '&R范围升级 公式正确'
+      formulaneeded: Formula needed
+      formulaneededdesc: Click the paper icon to set a range formula
+    command:
+      name: '&R执行 命令'
+      description: |-
+        &R &R
+        &F在升级过程中运行命令&R
+      admindescription: |-
+        &R &R
+        &F执行 命令&R
+      paneltitle: '&R执行命令 奖励编辑菜单'
+    limits:
+      name: '&R限制 奖励'
+      description: |-
+        &R &R
+        &F[type]&R
+        &F[target]&R
+        &A+[amount]&R
+      admindescription: |-
+        &R &R
+        &F可额外拥有 方块/实体&R
+        &C需&R &E限制&R &F附属&R
+        &ELimits Addon&R
+      paneltitle: '&R限制放宽 奖励编辑菜单'
+    cropgrowth:
+      name: '&R作物生长 加成'
+      description: |-
+        &R &R
+        &F每生长等级&R &A+[amount]&R &F生长速度&R
+      admindescription: |-
+        &R &R
+        &F增加 作物 生长 速度 每岛&R
+      paneltitle: '&R作物速度 奖励编辑菜单'
+      rulequestion: |-
+        &R &R
+        &R输入 作物奖励 公式
+        &R例子 0.5 或 0.1*[level]
+        &R当前 [actual]
+      invalidrule: |-
+        &R &R
+        &R无效公式. 数字 或 数学表达式 0.5 0.1*[level]
+      setformula: '&R点击输入 作物速度 公式'
+      formulastatus: '&R作物速度 公式正确'
+      formulaneeded: Formula needed
+      formulaneededdesc: Click the paper icon to set a growth bonus formula
+protection:
+  flags:
+    UPGRADES_RANK_RIGHT:
+      description: Switch who can upgrade
+      name: Upgrade Rank
