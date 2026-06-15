@@ -300,11 +300,12 @@ public class UpgradesDataManager {
 	 * Unload the tier if not
 	 */
 	private void validateUpgradeTier() {
-		this.upgradeTierCache.values().forEach(tier -> {
-			if (!this.upgradeDataCache.containsKey(tier.getUpgrade())) {
-				this.addon.logWarning("Upgrade tier " + tier.getUniqueId() + " has a reference to an unknow upgrade data. It will be skiped");
-				this.upgradeTierCache.remove(tier.getUniqueId());
+		this.upgradeTierCache.entrySet().removeIf(entry -> {
+			if (!this.upgradeDataCache.containsKey(entry.getValue().getUpgrade())) {
+				this.addon.logWarning("Upgrade tier " + entry.getValue().getUniqueId() + " has a reference to an unknown upgrade data. It will be skipped");
+				return true;
 			}
+			return false;
 		});
 	}
 	

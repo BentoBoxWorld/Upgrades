@@ -51,7 +51,7 @@
         <!-- Testing dependencies -->
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
-        <mock-bukkit.version>v1.21-SNAPSHOT</mock-bukkit.version>
+        <mock-bukkit.version>4.110.0</mock-bukkit.version>
 
         <paper.version>1.21.11-R0.1-SNAPSHOT</paper.version>
         <bentobox.version>3.14.0</bentobox.version>
@@ -62,7 +62,7 @@
         <revision>${build.version}-SNAPSHOT</revision>
 
         <!-- This allows to change between versions. -->
-        <build.version>1.0.2</build.version>
+        <build.version>1.0.3</build.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->
@@ -138,8 +138,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.MockBukkit</groupId>
-            <artifactId>MockBukkit</artifactId>
+            <groupId>org.mockbukkit.mockbukkit</groupId>
+            <artifactId>mockbukkit-v1.21</artifactId>
             <version>${mock-bukkit.version}</version>
             <scope>test</scope>
         </dependency>
@@ -251,6 +251,7 @@
                 <!--suppress MavenModelInspection -->
                 <configuration>
                     <argLine>
+                        @{argLine}
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.math=ALL-UNNAMED
                         --add-opens java.base/java.io=ALL-UNNAMED
@@ -293,7 +294,7 @@
              <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>0.8.13</version>
                 <configuration>
                     <append>true</append>
                     <excludes>
