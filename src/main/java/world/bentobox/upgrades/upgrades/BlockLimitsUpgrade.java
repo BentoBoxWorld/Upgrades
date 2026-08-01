@@ -2,24 +2,19 @@ package world.bentobox.upgrades.upgrades;
 
 import java.util.Map;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
 
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 
-import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
-import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
 
-public class BlockLimitsUpgrade extends UpgradeAPI {
+public class BlockLimitsUpgrade extends LimitsUpgrade {
 
-    private static final String BLOCK = "[block]";
-    private static final String LEVEL = "[level]";
     private Material block;
 
     public BlockLimitsUpgrade(UpgradesAddon addon, Material block) {
@@ -72,82 +67,19 @@ public class BlockLimitsUpgrade extends UpgradeAPI {
     }
 
     @Override
-    public boolean isShowed(User user, Island island) {
-        // Get the addon
-        UpgradesAddon upgradesAddon = this.getUpgradesAddon();
-        // Get the data from upgrades
-        UpgradesData islandData = upgradesAddon.getUpgradesLevels(island.getUniqueId());
-        // Get level of the upgrade
-        int upgradeLevel = islandData.getUpgradeLevel(this.getName());
-        // Permission level required
-        int permissionLevel = upgradesAddon.getUpgradesManager().getBlockLimitsPermissionLevel(this.block, upgradeLevel,
-                island.getWorld());
-
-        // If default permission, then true
-        if (permissionLevel == 0)
-            return true;
-
-        Player player = user.getPlayer();
-        String gamemode = island.getGameMode();
-        String permissionStart = gamemode + ".upgrades." + this.getName() + ".";
-        permissionStart = permissionStart.toLowerCase();
-
-        // For each permission of the player
-        for (PermissionAttachmentInfo perms : player.getEffectivePermissions()) {
-
-            // If permission is the one we search
-            if (!perms.getValue() || !perms.getPermission().startsWith(permissionStart))
-                continue;
-
-            if (perms.getPermission().contains(permissionStart + "*")) {
-                this.logError(player.getName(), perms.getPermission(), "Wildcards are not allowed.");
-                return false;
-            }
-
-            String[] split = perms.getPermission().split("\\.");
-            if (split.length != 4) {
-                logError(player.getName(), perms.getPermission(), "format must be '" + permissionStart + "LEVEL'");
-                return false;
-            }
-
-            if (!NumberUtils.isDigits(split[3])) {
-                logError(player.getName(), perms.getPermission(), "The last part must be a number");
-                return false;
-            }
-
-            if (permissionLevel <= Integer.parseInt(split[3]))
-                return true;
-        }
-
-        return false;
-    }
-
-    private void logError(String name, String perm, String error) {
-        this.getUpgradesAddon()
-        .logError("Player " + name + " has permission: '" + perm + "' but " + error + " Ignoring...");
+    protected int getPermissionLevel(int upgradeLevel, World world) {
+        return this.getUpgradesAddon().getUpgradesManager().getBlockLimitsPermissionLevel(this.block, upgradeLevel,
+                world);
     }
 
     @Override
-    public boolean doUpgrade(User user, Island island) {
-        UpgradesAddon islandAddon = this.getUpgradesAddon();
+    protected void applyOffset(IslandBlockCount isb, Environment env, int amount) {
+        isb.setBlockLimitsOffset(env, block.getKey(), isb.getBlockLimitOffset(env, block.getKey()) + amount);
+    }
 
-        if (!islandAddon.isLimitsProvided())
-            return false;
-
-        BlockLimitsListener bLListener = islandAddon.getLimitsAddon().getBlockLimitListener();
-        IslandBlockCount isb = bLListener.getIsland(island);
-
-        if (!super.doUpgrade(user, island))
-            return false;
-
-        int oldCount = isb.getBlockLimitsOffset().getOrDefault(block.getKey(), 0);
-        int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
-        isb.setBlockLimitsOffset(block.getKey(), newCount);
-
-        user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK, this.block.toString(), LEVEL,
-                Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
-
-        return true;
+    @Override
+    protected String getTargetName() {
+        return this.block.toString();
     }
 
 }
