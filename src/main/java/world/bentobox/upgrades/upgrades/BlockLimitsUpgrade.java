@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -140,9 +141,11 @@ public class BlockLimitsUpgrade extends UpgradeAPI {
         if (!super.doUpgrade(user, island))
             return false;
 
-        int oldCount = isb.getBlockLimitsOffset().getOrDefault(block.getKey(), 0);
-        int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
-        isb.setBlockLimitsOffset(block.getKey(), newCount);
+        // Upgrades are island-wide, so raise the offset in every environment
+        int amount = this.getUpgradeValues(user).getUpgradeValue();
+        for (Environment env : Environment.values()) {
+            isb.setBlockLimitsOffset(env, block.getKey(), isb.getBlockLimitOffset(env, block.getKey()) + amount);
+        }
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK, this.block.toString(), LEVEL,
                 Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

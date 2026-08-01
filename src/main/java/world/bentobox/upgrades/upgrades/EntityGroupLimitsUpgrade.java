@@ -3,6 +3,7 @@ package world.bentobox.upgrades.upgrades;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -175,10 +176,11 @@ public class EntityGroupLimitsUpgrade extends UpgradeAPI {
         if (!super.doUpgrade(user, island))
             return false;
 
-        int oldCount = isb.getEntityGroupLimitsOffset().getOrDefault(this.group,  0);
-        int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
-
-        isb.setEntityGroupLimitsOffset(this.group, newCount);
+        // Upgrades are island-wide, so raise the offset in every environment
+        int amount = this.getUpgradeValues(user).getUpgradeValue();
+        for (Environment env : Environment.values()) {
+            isb.setEntityGroupLimitsOffset(env, this.group, isb.getEntityGroupLimitOffset(env, this.group) + amount);
+        }
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone",
                 "[block]", this.group, "[level]", Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

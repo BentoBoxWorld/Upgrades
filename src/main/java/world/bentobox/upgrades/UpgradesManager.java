@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.EntityType;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
@@ -640,13 +641,14 @@ public class UpgradesManager {
         if (!this.addon.isLimitsProvided())
             return Collections.emptyMap();
 
+        Environment env = island.getWorld().getEnvironment();
         Map<EntityType, Integer> entityLimits = new HashMap<>(this.addon.getLimitsAddon()
                 .getSettings()
-                .getLimits());
+                .getLimits(env));
         IslandBlockCount ibc = this.addon.getLimitsAddon()
                 .getBlockLimitListener()
                 .getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityLimits()
+        if (ibc != null) ibc.getEntityLimits(env)
                 .forEach(entityLimits::put);
         return entityLimits;
     }
@@ -666,7 +668,7 @@ public class UpgradesManager {
         IslandBlockCount ibc = this.addon.getLimitsAddon()
                 .getBlockLimitListener()
                 .getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityGroupLimits()
+        if (ibc != null) ibc.getEntityGroupLimits(island.getWorld().getEnvironment())
                 .forEach(entityGroupLimits::put);
         return entityGroupLimits;
     }

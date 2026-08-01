@@ -3,6 +3,7 @@ package world.bentobox.upgrades.upgrades;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -177,10 +178,11 @@ public class EntityLimitsUpgrade extends UpgradeAPI {
         IslandBlockCount isb = bLListener.getIsland(island);
         if (!super.doUpgrade(user, island))
             return false;
-        int oldCount = isb.getEntityLimitsOffset().getOrDefault(entity, 0);
-        int newCount = oldCount + this.getUpgradeValues(user).getUpgradeValue();
-
-        isb.setEntityLimitsOffset(this.entity, newCount);
+        // Upgrades are island-wide, so raise the offset in every environment
+        int amount = this.getUpgradeValues(user).getUpgradeValue();
+        for (Environment env : Environment.values()) {
+            isb.setEntityLimitsOffset(env, this.entity, isb.getEntityLimitOffset(env, this.entity) + amount);
+        }
 
         user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", "[block]", this.entity.toString(), "[level]",
                 Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));
