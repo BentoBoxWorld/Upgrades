@@ -590,4 +590,252 @@ class SettingsEvaluateTest {
         });
         assertNotNull(ex.getMessage());
     }
+
+    // ============= Additional Edge Cases =============
+
+    @Test
+    void testFunctionCaseSensitivity() {
+        // Function names are case-sensitive. "Sqrt" is not recognized as sqrt.
+        // It will be treated as a variable instead.
+        Expression expr = Settings.parse("Sqrt", Map.of("Sqrt", 99.0));
+        assertEquals(99.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testUnknownFunctionNameAsVariable() {
+        // "power" is not in the function list, so it's treated as a variable
+        Expression expr = Settings.parse("power", Map.of("power", 42.0));
+        assertEquals(42.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testLargeNumbers() {
+        Expression expr = Settings.parse("1000000 + 2000000", Map.of());
+        assertEquals(3000000.0, expr.eval(), 0.1);
+    }
+
+    @Test
+    void testVerySmallNumbers() {
+        Expression expr = Settings.parse("0.000001 + 0.000002", Map.of());
+        assertEquals(0.000003, expr.eval(), 0.0000001);
+    }
+
+    @Test
+    void testLargeExponent() {
+        Expression expr = Settings.parse("2 ^ 10", Map.of());
+        assertEquals(1024.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testZeroRaisedToPositivePower() {
+        Expression expr = Settings.parse("0 ^ 5", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testOneRaisedToAnyPower() {
+        Expression expr = Settings.parse("1 ^ 999", Map.of());
+        assertEquals(1.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testVariableInComplexExpression() {
+        // Demonstrates that variables work anywhere in expressions
+        Expression expr = Settings.parse("[a] * [b] + [c] / [d]",
+                Map.of("[a]", 2.0, "[b]", 3.0, "[c]", 10.0, "[d]", 2.0));
+        assertEquals(11.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testMultipleVariableReferences() {
+        // Same variable referenced multiple times
+        Expression expr = Settings.parse("[x] + [x] * [x]",
+                Map.of("[x]", 3.0));
+        assertEquals(12.0, expr.eval(), 0.0001); // 3 + 3*3 = 3 + 9 = 12
+    }
+
+    @Test
+    void testSqrtOfZero() {
+        Expression expr = Settings.parse("sqrt(0)", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testSqrtOfOne() {
+        Expression expr = Settings.parse("sqrt(1)", Map.of());
+        assertEquals(1.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testSqrtOfDecimal() {
+        Expression expr = Settings.parse("sqrt(0.25)", Map.of());
+        assertEquals(0.5, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testMultiplicationByZero() {
+        Expression expr = Settings.parse("99999 * 0", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testDivisionOfZeroByNumber() {
+        Expression expr = Settings.parse("0 / 5", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testParenthesesChangingPrecedenceMultiple() {
+        Expression expr = Settings.parse("2 * 3 + 4 * 5", Map.of());
+        Expression expr2 = Settings.parse("(2 * 3 + 4) * 5", Map.of());
+        assertEquals(26.0, expr.eval(), 0.0001);
+        assertEquals(50.0, expr2.eval(), 0.0001);
+    }
+
+    @Test
+    void testFunctionWithDecimalResult() {
+        Expression expr = Settings.parse("sqrt(2)", Map.of());
+        double result = expr.eval();
+        assertEquals(Math.sqrt(2), result, 0.0001);
+    }
+
+    @Test
+    void testCosine90Degrees() {
+        // cos(90 degrees) should be approximately 0
+        Expression expr = Settings.parse("cos(90)", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testTangent0Degrees() {
+        // tan(0 degrees) should be 0
+        Expression expr = Settings.parse("tan(0)", Map.of());
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testFunctionWithVariableArgument() {
+        Expression expr = Settings.parse("sin([angle])", Map.of("[angle]", 0.0));
+        assertEquals(0.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testComplexFormulaWithAllFeatures() {
+        // Combines multiple features: parentheses, functions, variables, operators
+        Expression expr = Settings.parse("sqrt([base] * [base] + [height] * [height])",
+                Map.of("[base]", 3.0, "[height]", 4.0));
+        // sqrt(3*3 + 4*4) = sqrt(9 + 16) = sqrt(25) = 5
+        assertEquals(5.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testDivisionPrecedenceOverAddition() {
+        Expression expr = Settings.parse("10 + 20 / 5", Map.of());
+        assertEquals(14.0, expr.eval(), 0.0001); // 10 + 4, not (10 + 20) / 5
+    }
+
+    @Test
+    void testSubtractionLeftAssociative() {
+        Expression expr = Settings.parse("20 - 5 - 3", Map.of());
+        assertEquals(12.0, expr.eval(), 0.0001); // (20 - 5) - 3 = 15 - 3 = 12
+    }
+
+    @Test
+    void testDivisionLeftAssociative() {
+        Expression expr = Settings.parse("16 / 4 / 2", Map.of());
+        assertEquals(2.0, expr.eval(), 0.0001); // (16 / 4) / 2 = 4 / 2 = 2
+    }
+
+    @Test
+    void testExponentiationAllowsDecimals() {
+        Expression expr = Settings.parse("9 ^ 0.5", Map.of());
+        assertEquals(3.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testUnknownVariableInExpressionThrowsNPE() {
+        Expression expr = Settings.parse("5 + [unknown]", Map.of());
+        // The expression parses fine, but eval() throws NPE when trying to unbox null
+        assertThrows(NullPointerException.class, expr::eval);
+    }
+
+    @Test
+    void testWhitespaceBeforeFunctionArgument() {
+        Expression expr = Settings.parse("sqrt( 4 )", Map.of());
+        assertEquals(2.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testDoubleDotInNumber() {
+        // "1.2.3" would parse all dots as part of the number token,
+        // then Double.parseDouble("1.2.3") throws a NumberFormatException
+        assertThrows(NumberFormatException.class, () -> {
+            Settings.parse("1.2.3", Map.of()).eval();
+        });
+    }
+
+    @Test
+    void testBracketNotInVariableName() {
+        // A bracket outside a variable context should cause an error
+        FormulaParseException ex = assertThrows(FormulaParseException.class, () -> {
+            Settings.parse("] 2", Map.of());
+        });
+        assertTrue(ex.getMessage().contains("Unexpected"));
+    }
+
+    @Test
+    void testMultipleParenthesesLevels() {
+        Expression expr = Settings.parse("((((2 + 3))))", Map.of());
+        assertEquals(5.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testFunctionWithExpressionInsideParentheses() {
+        Expression expr = Settings.parse("sqrt((2 + 2))", Map.of());
+        assertEquals(2.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testProjectConfigExampleRange() {
+        // Real example from config: cost formula
+        Expression expr = Settings.parse("100 * [level]", Map.of("[level]", 5.0));
+        assertEquals(500.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testProjectConfigExampleWithIslandLevel() {
+        // Real example using both level and islandLevel
+        Expression expr = Settings.parse("[level] * 10 + [islandLevel] * 5",
+                Map.of("[level]", 2.0, "[islandLevel]", 10.0));
+        assertEquals(70.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testProjectConfigExampleWithNumberPlayer() {
+        // Real example using numberPlayer
+        Expression expr = Settings.parse("500 + [numberPlayer] * 50",
+                Map.of("[numberPlayer]", 3.0));
+        assertEquals(650.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testNegativeNumberViaSubtraction() {
+        // Demonstrates workaround for lack of unary minus
+        Expression expr = Settings.parse("0 - 10", Map.of());
+        assertEquals(-10.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testExponentiationRightAssociativityProof() {
+        // 2^3^2 should equal 512 (2^9), not 64 ((2^3)^2)
+        Expression expr = Settings.parse("2 ^ 3 ^ 2", Map.of());
+        assertEquals(512.0, expr.eval(), 0.0001);
+    }
+
+    @Test
+    void testNegativeNumberViaVariable() {
+        // Variables can hold negative values
+        Expression expr = Settings.parse("[value] * 2", Map.of("[value]", -5.0));
+        assertEquals(-10.0, expr.eval(), 0.0001);
+    }
 }
