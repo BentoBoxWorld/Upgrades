@@ -1,6 +1,8 @@
 package world.bentobox.upgrades;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -67,7 +69,7 @@ import world.bentobox.upgrades.api.UpgradeAPI;
 /**
  * @author tastybento
  */
-public class UpgradesAddonTest {
+class UpgradesAddonTest {
 
     private static File jFile;
     @Mock
@@ -112,7 +114,7 @@ public class UpgradesAddonTest {
     private MockedStatic<IslandsManager> mockIslandsManager;
 
     @BeforeAll
-    public static void beforeClass() throws IOException {
+    static void beforeClass() throws IOException {
         // Make the addon jar
         jFile = new File("addon.jar");
         // Copy over config file from src folder
@@ -144,7 +146,7 @@ public class UpgradesAddonTest {
      */
     @SuppressWarnings("deprecation")
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
         mockBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
@@ -187,7 +189,8 @@ public class UpgradesAddonTest {
         Server server = mock(Server.class);
         when(Bukkit.getServer()).thenReturn(server);
         when(Bukkit.getLogger()).thenReturn(Logger.getAnonymousLogger());
-        when(Bukkit.getPluginManager()).thenReturn(mock(PluginManager.class));
+        PluginManager pluginManagerMock = mock(PluginManager.class);
+        when(Bukkit.getPluginManager()).thenReturn(pluginManagerMock);
 
         // Addon
         addon = new UpgradesAddon();
@@ -247,7 +250,7 @@ public class UpgradesAddonTest {
      * @throws java.lang.Exception
      */
     @AfterEach
-    public void tearDown() throws Exception {
+    void tearDown() throws Exception {
         MockBukkit.unmock();
         mockBukkit.closeOnDemand();
         mockIslandsManager.closeOnDemand();
@@ -255,7 +258,7 @@ public class UpgradesAddonTest {
     }
 
     @AfterAll
-    public static void cleanUp() throws Exception {
+    static void cleanUp() throws Exception {
         new File("addon.jar").delete();
         new File("config.yml").delete();
         deleteAll(new File("addons"));
@@ -271,7 +274,7 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#onEnable()}.
      */
     @Test
-    public void testOnEnableDisabled() {
+    void testOnEnableDisabled() {
         addon.onLoad();
         addon.setState(State.DISABLED);
         addon.onEnable();
@@ -282,7 +285,7 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#onEnable()}.
      */
     @Test
-    public void testOnEnableNoAddons() {
+    void testOnEnableNoAddons() {
         addon.onLoad();
         addon.setState(State.ENABLED);
         addon.onEnable();
@@ -295,97 +298,101 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#onDisable()}.
      */
     @Test
-    public void testOnDisable() {
-        addon.onDisable();
+    void testOnDisable() {
+        assertDoesNotThrow(() -> addon.onDisable());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#onLoad()}.
      */
     @Test
-    public void testOnLoad() {
-        addon.onLoad();
+    void testOnLoad() {
+        assertDoesNotThrow(() -> addon.onLoad());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#onReload()}.
      */
     @Test
-    public void testOnReload() {
-        addon.onReload();
+    void testOnReload() {
+        assertDoesNotThrow(() -> addon.onReload());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getSettings()}.
      */
     @Test
-    public void testGetSettings() {
-        addon.getSettings();
+    void testGetSettings() {
+        addon.onLoad();
+        assertNotNull(addon.getSettings());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getUpgradesManager()}.
      */
     @Test
-    public void testGetUpgradesManager() {
-        addon.getUpgradesManager();
+    void testGetUpgradesManager() {
+        addon.onLoad();
+        addon.setState(State.ENABLED);
+        addon.onEnable();
+        assertNotNull(addon.getUpgradesManager());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getDatabase()}.
      */
     @Test
-    public void testGetDatabase() {
-        addon.getDatabase();
+    void testGetDatabase() {
+        assertNotNull(addon.getDatabase());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getUpgradesLevels(java.lang.String)}.
      */
     @Test
-    public void testGetUpgradesLevels() {
+    void testGetUpgradesLevels() {
         addon.onLoad();
         addon.onEnable();
-        addon.getUpgradesLevels(targetIslandId);
+        assertNotNull(addon.getUpgradesLevels(targetIslandId));
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#uncacheIsland(java.lang.String, boolean)}.
      */
     @Test
-    public void testUncacheIsland() {
-        addon.uncacheIsland(targetIslandId, false);
+    void testUncacheIsland() {
+        assertDoesNotThrow(() -> addon.uncacheIsland(targetIslandId, false));
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getLevelAddon()}.
      */
     @Test
-    public void testGetLevelAddon() {
-        addon.getLevelAddon();
+    void testGetLevelAddon() {
+        assertDoesNotThrow(() -> addon.getLevelAddon());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getLimitsAddon()}.
      */
     @Test
-    public void testGetLimitsAddon() {
-        addon.getLimitsAddon();
+    void testGetLimitsAddon() {
+        assertDoesNotThrow(() -> addon.getLimitsAddon());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getVaultHook()}.
      */
     @Test
-    public void testGetVaultHook() {
-        addon.getVaultHook();
+    void testGetVaultHook() {
+        assertDoesNotThrow(() -> addon.getVaultHook());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#isLevelProvided()}.
      */
     @Test
-    public void testIsLevelProvided() {
+    void testIsLevelProvided() {
         assertFalse(addon.isLevelProvided());
     }
 
@@ -393,7 +400,7 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#isLimitsProvided()}.
      */
     @Test
-    public void testIsLimitsProvided() {
+    void testIsLimitsProvided() {
         assertFalse(addon.isLimitsProvided());
     }
 
@@ -401,7 +408,7 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#isVaultProvided()}.
      */
     @Test
-    public void testIsVaultProvided() {
+    void testIsVaultProvided() {
         assertFalse(addon.isVaultProvided());
     }
 
@@ -409,17 +416,17 @@ public class UpgradesAddonTest {
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#getAvailableUpgrades()}.
      */
     @Test
-    public void testGetAvailableUpgrades() {
-        addon.getAvailableUpgrades();
+    void testGetAvailableUpgrades() {
+        assertNotNull(addon.getAvailableUpgrades());
     }
 
     /**
      * Test method for {@link world.bentobox.upgrades.UpgradesAddon#registerUpgrade(world.bentobox.upgrades.api.Upgrade)}.
      */
     @Test
-    public void testRegisterUpgrade() {
+    void testRegisterUpgrade() {
         UpgradeAPI upgrade = new TestUpgrade(addon, "name", "Name", Material.ACACIA_BOAT);
-        addon.registerUpgrade(upgrade);
+        assertDoesNotThrow(() -> addon.registerUpgrade(upgrade));
     }
 
     private static class TestUpgrade extends UpgradeAPI {

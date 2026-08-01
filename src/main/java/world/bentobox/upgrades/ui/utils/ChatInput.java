@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationContext;
@@ -56,7 +55,7 @@ public class ChatInput {
 	 * @param invalidText Showed to the user when it's input is invalid
 	 * @param user User to converse with
 	 */
-	public void askOneInput(Consumer<String> consumer, Function<String, Boolean> validation, String question, String invalidText, User user, boolean sanitize) {
+	public void askOneInput(Consumer<String> consumer, java.util.function.Predicate<String> validation, String question, String invalidText, User user, boolean sanitize) {
 		// Track whether the consumer was already called with valid input
 		final boolean[] consumerCalled = {false};
 		// Create conversation
@@ -88,7 +87,7 @@ public class ChatInput {
 						input = sanitizeInput(input);
 					}
 					// Check if input is valid
-					return validation.apply(input);
+					return validation.test(input);
 				}
 				
 				@Override
@@ -115,14 +114,11 @@ public class ChatInput {
 		conv.begin();
 	}
 	
-	public void askMultiLine(Consumer<List<String>> consumer, Function<String, Boolean> validation, String question, String invalidText, User user) {
+	public void askMultiLine(Consumer<List<String>> consumer, java.util.function.Predicate<String> validation, String question, String invalidText, User user) {
 		List<String> list = new ArrayList<String>();
-		UpgradesAddon addon = this.addon;
-		Conversation conv = new ConversationFactory(addon.getPlugin())
-			.withEscapeSequence(addon.getSettings().getChatInputEscape())
-			.addConversationAbandonedListener(abandoned -> {
-				consumer.accept(list);
-			})
+		Conversation conv = new ConversationFactory(this.addon.getPlugin())
+			.withEscapeSequence(this.addon.getSettings().getChatInputEscape())
+			.addConversationAbandonedListener(abandoned -> consumer.accept(list))
 			.withFirstPrompt(new ValidatingPrompt() {
 				
 				boolean sayMessage = true;
@@ -137,7 +133,7 @@ public class ChatInput {
 				
 				@Override
 				protected boolean isInputValid(ConversationContext context, String input) {
-					return validation.apply(input);
+					return validation.test(input);
 				}
 				
 				@Override
@@ -151,7 +147,7 @@ public class ChatInput {
 		conv.begin();
 	}
 	
-	public void askOneNumber(Consumer<Number> consumer, Function<Number, Boolean> validation, String question, String invalidText, User user) {
+	public void askOneNumber(Consumer<Number> consumer, java.util.function.Predicate<Number> validation, String question, String invalidText, User user) {
 		Conversation conv = new ConversationFactory(this.addon.getPlugin())
 			.withEscapeSequence(this.addon.getSettings().getChatInputEscape())
 			.addConversationAbandonedListener(abandoned -> {
@@ -172,7 +168,7 @@ public class ChatInput {
 				
 				@Override
 				protected boolean isNumberValid(ConversationContext context, Number input) {
-					return super.isNumberValid(context, input) && validation.apply(input);
+					return super.isNumberValid(context, input) && validation.test(input);
 				}
 				
 				@Override

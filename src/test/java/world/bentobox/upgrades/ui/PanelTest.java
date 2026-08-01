@@ -40,7 +40,7 @@ import world.bentobox.upgrades.WhiteBox;
 /**
  * @author tastybento
  */
-public class PanelTest {
+class PanelTest {
 
     @Mock
     private UpgradesAddon addon;
@@ -68,7 +68,7 @@ public class PanelTest {
     /**
      */
     @BeforeEach
-    public void setUp() throws IOException {
+    void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
 
@@ -110,7 +110,7 @@ public class PanelTest {
     /**
      */
     @AfterEach
-    public void tearDown() throws IOException {
+    void tearDown() throws IOException {
         User.clearUsers();
         WhiteBox.setInternalState(BentoBox.class, "instance", null);
         mockBukkit.closeOnDemand();
@@ -127,7 +127,7 @@ public class PanelTest {
      * Test method for {@link world.bentobox.upgrades.ui.Panel#Panel(world.bentobox.upgrades.UpgradesAddon, world.bentobox.bentobox.database.objects.Island)}.
      */
     @Test
-    public void testPanel() {
+    void testPanel() {
         assertNotNull(panel);
     }
 
@@ -135,7 +135,7 @@ public class PanelTest {
      * Test method for {@link world.bentobox.upgrades.ui.Panel#showPanel(world.bentobox.bentobox.api.user.User)}.
      */
     @Test
-    public void testShowPanel() {
+    void testShowPanel() {
         panel.showPanel(user);
         verify(p).openInventory(any(Inventory.class));
     }

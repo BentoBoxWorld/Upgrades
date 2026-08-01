@@ -2,16 +2,15 @@ package world.bentobox.upgrades.listeners;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Function;
 
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.api.UpgradeAPI;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
-import world.bentobox.upgrades.dataobjects.rewards.Reward;
 import world.bentobox.upgrades.dataobjects.rewards.RewardDB;
 import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
 
@@ -27,22 +26,25 @@ final class BonusCalculator {
     static <R extends RewardDB> double sum(UpgradesAddon addon, Island island,
                                            Class<R> rewardType,
                                            Function<R, String> equationExtractor) {
+        if (island == null) {
+            return 0.0;
+        }
+
         double total = 0.0;
         long islandLevel = addon.getUpgradesManager().getIslandLevel(island);
         int memberCount = island.getMemberSet().size();
         UpgradesData data = addon.getUpgradesLevels(island.getUniqueId());
 
         for (UpgradeAPI upgradeAPI : addon.getAvailableUpgrades()) {
-            if (!(upgradeAPI instanceof DatabaseUpgrade dbUpgrade)) continue;
-
-            int currentLevel = data.getUpgradeLevel(dbUpgrade.getName());
-            if (currentLevel <= 0) continue;
-
-            UpgradeTier activeTier = findActiveTier(addon, dbUpgrade, currentLevel);
-            if (activeTier == null) continue;
-
-            total += sumTierRewards(activeTier, rewardType, equationExtractor,
-                    currentLevel, islandLevel, memberCount);
+            if (upgradeAPI instanceof DatabaseUpgrade dbUpgrade) {
+                int currentLevel = data.getUpgradeLevel(dbUpgrade.getName());
+                UpgradeTier activeTier = currentLevel <= 0 ? null
+                        : findActiveTier(addon, dbUpgrade, currentLevel);
+                if (activeTier != null) {
+                    total += sumTierRewards(activeTier, rewardType, equationExtractor,
+                            currentLevel, islandLevel, memberCount);
+                }
+            }
         }
         return total;
     }
@@ -63,10 +65,7 @@ final class BonusCalculator {
                                                               Function<R, String> equationExtractor,
                                                               int currentLevel, long islandLevel,
                                                               int memberCount) {
-        Map<String, Double> vars = new TreeMap<>();
-        vars.put(Reward.LEVEL_VAR, (double) currentLevel);
-        vars.put(Reward.ISLAND_LEVEL_VAR, (double) islandLevel);
-        vars.put(Reward.NUMBER_PLAYER_VAR, (double) memberCount);
+        Map<String, Double> vars = FormulaVariables.of(currentLevel, islandLevel, memberCount);
 
         double subtotal = 0.0;
         for (RewardDB rewardDB : tier.getRewards()) {

@@ -6,11 +6,11 @@ import world.bentobox.bentobox.api.user.User;
 
 public interface PanelAdminItem {
 
-	abstract public Material getIcon();
+	public abstract Material getIcon();
 
-	abstract public String getName();
+	public abstract String getName();
 
-	abstract public String getAdminName(User user);
+	public abstract String getAdminName(User user);
 
-	abstract public String getAdminDescription(User user);
+	public abstract String getAdminDescription(User user);
 }

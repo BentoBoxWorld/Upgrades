@@ -14,16 +14,19 @@ import world.bentobox.limits.listeners.BlockLimitsListener;
 import world.bentobox.limits.objects.IslandBlockCount;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Consumer;
 
 public class LimitsReward extends Reward {
+
+    private static final String TYPE_BLOCK = "BLOCK";
+    private static final String TYPE_ENTITY = "ENTITY";
+    private static final String TYPE_ENTITY_GROUP = "ENTITY_GROUP";
 
     public LimitsReward() {
         super("limits_reward", Material.BARRIER);
@@ -67,23 +70,15 @@ public class LimitsReward extends Reward {
         }
 
         LimitsRewardDB db = (LimitsRewardDB) rewardDB;
-        Map<String, Double> variables = new TreeMap<>();
-        variables.put(LEVEL_VAR, (double) currentLevel);
-        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
+        Map<String, Double> variables = FormulaVariables.of(addon, island, currentLevel);
         int amount = (int) Settings.evaluate(db.getAmountEquation(), variables);
 
         BlockLimitsListener bLListener = addon.getLimitsAddon().getBlockLimitListener();
         IslandBlockCount isb = bLListener.getIsland(island);
 
-        if (isb == null) {
-            addon.logWarning("LimitsReward: IslandBlockCount not found for island " + island.getUniqueId());
-            return;
-        }
-
         // Upgrades are island-wide, so raise the offset in every environment
         switch (db.getLimitType().toUpperCase()) {
-            case "BLOCK" -> {
+            case TYPE_BLOCK -> {
                 try {
                     Material mat = Material.valueOf(db.getTarget().toUpperCase());
                     for (Environment env : Environment.values()) {
@@ -94,7 +89,7 @@ public class LimitsReward extends Reward {
                     addon.logWarning("LimitsReward: invalid material '" + db.getTarget() + "'");
                 }
             }
-            case "ENTITY" -> {
+            case TYPE_ENTITY -> {
                 try {
                     EntityType et = EntityType.valueOf(db.getTarget().toUpperCase());
                     for (Environment env : Environment.values()) {
@@ -104,7 +99,7 @@ public class LimitsReward extends Reward {
                     addon.logWarning("LimitsReward: invalid entity type '" + db.getTarget() + "'");
                 }
             }
-            case "ENTITY_GROUP" -> {
+            case TYPE_ENTITY_GROUP -> {
                 for (Environment env : Environment.values()) {
                     isb.setEntityGroupLimitsOffset(env, db.getTarget(),
                             isb.getEntityGroupLimitOffset(env, db.getTarget()) + amount);
@@ -124,8 +119,8 @@ public class LimitsReward extends Reward {
             List<RewardDB> rewards = tier.getRewards();
             rewards.add(dbObject);
             tier.setRewards(rewards);
-        } else if (saved instanceof LimitsRewardDB) {
-            dbObject = (LimitsRewardDB) saved;
+        } else if (saved instanceof LimitsRewardDB limitsRewardDB) {
+            dbObject = limitsRewardDB;
         } else {
             throw new InvalidParameterException("DB object in LimitsReward which is not a LimitsRewardDB");
         }
@@ -188,9 +183,9 @@ public class LimitsReward extends Reward {
         private PanelItem.ClickHandler onCycleType() {
             return (panel, client, click, slot) -> {
                 switch (this.saved.getLimitType()) {
-                    case "BLOCK" -> this.saved.setLimitType("ENTITY");
-                    case "ENTITY" -> this.saved.setLimitType("ENTITY_GROUP");
-                    default -> this.saved.setLimitType("BLOCK");
+                    case TYPE_BLOCK -> this.saved.setLimitType(TYPE_ENTITY);
+                    case TYPE_ENTITY -> this.saved.setLimitType(TYPE_ENTITY_GROUP);
+                    default -> this.saved.setLimitType(TYPE_BLOCK);
                 }
                 this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();

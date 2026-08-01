@@ -1,6 +1,5 @@
 package world.bentobox.upgrades.dataobjects.rewards;
 
-import com.google.gson.annotations.Expose;
 import org.bukkit.Material;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -12,13 +11,13 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class RangeReward extends Reward {
@@ -58,10 +57,7 @@ public class RangeReward extends Reward {
     @Override
     public void apply(UpgradesAddon addon, User user, Island island, RewardDB rewardDB, int currentLevel) {
         RangeRewardDB db = (RangeRewardDB) rewardDB;
-        Map<String, Double> variables = new TreeMap<>();
-        variables.put(LEVEL_VAR, (double) currentLevel);
-        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
+        Map<String, Double> variables = FormulaVariables.of(addon, island, currentLevel);
         int amount = (int) Settings.evaluate(db.getRangeUpgradeEquation(), variables);
 
         int newRange = island.getProtectionRange() + amount;
@@ -91,8 +87,8 @@ public class RangeReward extends Reward {
 
             rewards.add(dbObject);
             tier.setRewards(rewards);
-        } else if (saved instanceof RangeRewardDB) {
-            dbObject = (RangeRewardDB) saved;
+        } else if (saved instanceof RangeRewardDB rangeRewardDB) {
+            dbObject = rangeRewardDB;
         } else {
             throw new InvalidParameterException(
                     "DB object in RangeReward which is not an RangeRewardDB");
@@ -156,10 +152,7 @@ public class RangeReward extends Reward {
                                 input -> {
                                     // Validate that input is a parseable math expression (#70 item 8)
                                     try {
-                                        Map<String, Double> vars = new TreeMap<>();
-                                        vars.put(LEVEL_VAR, 1.0);
-                                        vars.put(ISLAND_LEVEL_VAR, 1.0);
-                                        vars.put(NUMBER_PLAYER_VAR, 1.0);
+                                        Map<String, Double> vars = FormulaVariables.of(1, 1, 1);
                                         Settings.evaluate(input, vars);
                                         return true;
                                     } catch (Exception e) {
@@ -175,7 +168,7 @@ public class RangeReward extends Reward {
         }
 
         private Consumer<String> doSetRule() {
-            return (rule) -> {
+            return rule -> {
                 this.saved.setRangeUpgradeEquation(rule);
                 this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();

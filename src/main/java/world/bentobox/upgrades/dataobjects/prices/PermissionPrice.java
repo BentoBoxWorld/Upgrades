@@ -70,8 +70,8 @@ public class PermissionPrice extends Price {
             List<PriceDB> prices = tier.getPrices();
             prices.add(dbObject);
             tier.setPrices(prices);
-        } else if (saved instanceof PermissionPriceDB) {
-            dbObject = (PermissionPriceDB) saved;
+        } else if (saved instanceof PermissionPriceDB permissionPriceDB) {
+            dbObject = permissionPriceDB;
         } else {
             throw new InvalidParameterException("DB object in PermissionPrice which is not a PermissionPriceDB");
         }
@@ -126,7 +126,7 @@ public class PermissionPrice extends Price {
         }
 
         private Consumer<String> doSetRule() {
-            return (rule) -> {
+            return rule -> {
                 this.saved.setPermission(rule);
                 this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();

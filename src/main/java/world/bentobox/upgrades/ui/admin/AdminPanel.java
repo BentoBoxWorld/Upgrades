@@ -134,7 +134,7 @@ public class AdminPanel extends AbPanel {
 						client.getTranslation("upgrades.ui.titles.delete",
 								"[name]", upgrade.getName()),
 						this, delete -> {
-							if (delete) {
+							if (Boolean.TRUE.equals(delete)) {
 								this.getAddon().getUpgradeDataManager().deleteUpgradeData(upgrade);
 								this.getAddon().refreshDatabaseUpgrades();
 							}

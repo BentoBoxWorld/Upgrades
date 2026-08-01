@@ -17,7 +17,7 @@ public class PriceDBAdapter implements JsonSerializer<List<PriceDB>>, JsonDeseri
         List<PriceDB> list = new ArrayList<>();
         JsonArray jsonArray = json.getAsJsonArray();
 
-        jsonArray.forEach((entry) -> {
+        jsonArray.forEach(entry -> {
             JsonObject obj = entry.getAsJsonObject();
             String type = obj.get("class")
                     .getAsString();
@@ -37,7 +37,7 @@ public class PriceDBAdapter implements JsonSerializer<List<PriceDB>>, JsonDeseri
     public JsonElement serialize(List<PriceDB> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonArray jsonArray = new JsonArray();
 
-        src.forEach((obj) -> {
+        src.forEach(obj -> {
             JsonObject result = new JsonObject();
 
             result.add("class", new JsonPrimitive(obj.getClass()

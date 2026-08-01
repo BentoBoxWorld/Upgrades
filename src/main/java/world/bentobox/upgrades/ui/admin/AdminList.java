@@ -18,17 +18,17 @@ import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.ui.PanelAdminItem;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
-public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
+public final class AdminList<T extends PanelAdminItem> extends AbPanel {
 
     private static final String CREATE = "create";
 
     @NonNull
-    private final List<Item> items;
+    private final List<T> items;
 
     @Nullable
-    private final Consumer<Item> onLeftClick;
+    private final Consumer<T> onLeftClick;
     @Nullable
-    private final Consumer<Item> onRightClick;
+    private final Consumer<T> onRightClick;
     @Nullable
     private Runnable createButton;
 
@@ -41,8 +41,8 @@ public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
 
     public AdminList(UpgradesAddon addon, GameModeAddon gamemode, User user, String title,
                      AbPanel parent,
-                     @NonNull List<Item> items, @Nullable Consumer<Item> onLeftClick,
-                     @Nullable Consumer<Item> onRightClick, @Nullable Runnable createButton,
+                     @NonNull List<T> items, @Nullable Consumer<T> onLeftClick,
+                     @Nullable Consumer<T> onRightClick, @Nullable Runnable createButton,
                      @Nullable String createName, @Nullable String leftClickDesc,
                      @Nullable String rightClickDesc) {
         super(addon, gamemode, user, title, parent);
@@ -72,7 +72,7 @@ public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
 
         IntStream.range(0, this.items.size())
                 .forEach(idx -> {
-                    Item item = this.items.get(idx);
+                    T item = this.items.get(idx);
                     int pos = ((idx / 7) * 9) + (idx % 7) + 10;
                     List<String> desc = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public final class AdminList<Item extends PanelAdminItem> extends AbPanel {
         return true;
     };
 
-    private ClickHandler onClickItem(Item item) {
+    private ClickHandler onClickItem(T item) {
         return (panel, client, click, slot) -> {
             if (click.isLeftClick() && this.onLeftClick != null) {
                 this.onLeftClick.accept(item);

@@ -7,6 +7,7 @@ import world.bentobox.bentobox.api.addons.GameModeAddon;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.PanelAdminItem;
 import world.bentobox.upgrades.ui.PanelPublicItem;
@@ -14,14 +15,14 @@ import world.bentobox.upgrades.ui.utils.AbPanel;
 
 public abstract class Price implements PanelAdminItem, PanelPublicItem {
 
-    public static final String LEVEL_VAR = "[level]";
-    public static final String ISLAND_LEVEL_VAR = "[islandLevel]";
-    public static final String NUMBER_PLAYER_VAR = "[numberPlayer]";
+    public static final String LEVEL_VAR = FormulaVariables.LEVEL_VAR;
+    public static final String ISLAND_LEVEL_VAR = FormulaVariables.ISLAND_LEVEL_VAR;
+    public static final String NUMBER_PLAYER_VAR = FormulaVariables.NUMBER_PLAYER_VAR;
 
     private final String name;
     private final Material icon;
 
-    public Price(String name, Material icon) {
+    protected Price(String name, Material icon) {
         this.name = name;
         this.icon = icon;
     }

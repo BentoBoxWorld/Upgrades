@@ -48,7 +48,7 @@ import world.bentobox.upgrades.dataobjects.rewards.RewardDB;
  *  - canUpgrade() delegates to each Price.canPay().
  *  - doUpgrade() calls Price.pay(), Reward.apply(), and increments the level.
  */
-public class DatabaseUpgradeTest {
+class DatabaseUpgradeTest {
 
     @Mock private UpgradesAddon addon;
     @Mock private BentoBox plugin;
@@ -331,7 +331,7 @@ public class DatabaseUpgradeTest {
         PriceDB priceDB = mock(PriceDB.class);
         Price price = mock(Price.class);
         when(upgradesManager.searchPrice(any())).thenReturn(price);
-        when(price.getPublicDescription(eq(user), eq(priceDB))).thenReturn("Costs 100 money");
+        when(price.getPublicDescription(user, priceDB)).thenReturn("Costs 100 money");
         tier.setPrices(List.of(priceDB));
 
         databaseUpgrade.updateUpgradeValue(user, island);

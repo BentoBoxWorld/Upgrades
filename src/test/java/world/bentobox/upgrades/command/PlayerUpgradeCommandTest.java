@@ -49,7 +49,7 @@ import world.bentobox.upgrades.config.Settings;
 /**
  * @author tastybento
  */
-public class PlayerUpgradeCommandTest {
+class PlayerUpgradeCommandTest {
 
     @Mock
     private UpgradesAddon addon;
@@ -84,7 +84,7 @@ public class PlayerUpgradeCommandTest {
      * @throws java.lang.Exception
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
         // Config
@@ -106,7 +106,7 @@ public class PlayerUpgradeCommandTest {
         when(rm.getRank(anyInt())).thenReturn(RanksManager.MEMBER_RANK_REF);
         when(plugin.getRanksManager()).thenReturn(rm);
         ranksManagerStatic = Mockito.mockStatic(RanksManager.class);
-        ranksManagerStatic.when(() -> RanksManager.getInstance()).thenReturn(rm);
+        ranksManagerStatic.when(RanksManager::getInstance).thenReturn(rm);
 
         // Command manager
         CommandsManager cm = mock(CommandsManager.class);
@@ -166,7 +166,7 @@ public class PlayerUpgradeCommandTest {
     /**
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
         User.clearUsers();
         bukkitMock.closeOnDemand();
@@ -178,7 +178,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#PlayerUpgradeCommand(world.bentobox.upgrades.UpgradesAddon, world.bentobox.bentobox.api.commands.CompositeCommand)}.
      */
     @Test
-    public void testPlayerUpgradeCommand() {
+    void testPlayerUpgradeCommand() {
         assertEquals("upgrade", puc.getLabel());
     }
 
@@ -186,7 +186,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#setup()}.
      */
     @Test
-    public void testSetup() {
+    void testSetup() {
         assertEquals("", puc.getPermission());
         assertEquals("upgrades.commands.main.description", puc.getDescription());
         assertTrue(puc.isOnlyPlayer());
@@ -196,7 +196,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#canExecute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testCanExecuteNoIsland() {
+    void testCanExecuteNoIsland() {
         assertFalse(puc.canExecute(user, "", List.of()));
         verify(user).sendMessage("general.errors.no-island");
     }
@@ -205,7 +205,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#canExecute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testCanExecuteNotOnIsland() {
+    void testCanExecuteNotOnIsland() {
         when(im.getIsland(world, user)).thenReturn(island);
         assertFalse(puc.canExecute(user, "", List.of()));
         verify(user).sendMessage("upgrades.error.notonisland");
@@ -215,7 +215,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#canExecute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testCanExecuteInsufficientRank() {
+    void testCanExecuteInsufficientRank() {
         when(im.getIsland(world, user)).thenReturn(island);
         when(island.onIsland(location)).thenReturn(true);
         assertFalse(puc.canExecute(user, "", List.of()));
@@ -226,7 +226,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#canExecute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testCanExecuteSuccess() {
+    void testCanExecuteSuccess() {
         when(im.getIsland(world, user)).thenReturn(island);
         when(island.onIsland(location)).thenReturn(true);
         when(island.isAllowed(eq(user), any())).thenReturn(true);
@@ -237,7 +237,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testExecuteUserStringListOfStringNoIsland() {
+    void testExecuteUserStringListOfStringNoIsland() {
         assertFalse(puc.execute(user, "", List.of()));
         verify(user).sendMessage("general.errors.no-island");
 
@@ -247,7 +247,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testExecuteUserStringListOfStringShowHelp() {
+    void testExecuteUserStringListOfStringShowHelp() {
         assertFalse(puc.execute(user, "", List.of("random")));
         verify(user).sendMessage("commands.help.header", "[label]", "BSkyBlock");
 
@@ -257,7 +257,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testExecuteNotOnIsland() {
+    void testExecuteNotOnIsland() {
         when(im.getIsland(world, user)).thenReturn(island);
         assertFalse(puc.execute(user, "", List.of()));
         verify(user).sendMessage("upgrades.error.notonisland");
@@ -267,7 +267,7 @@ public class PlayerUpgradeCommandTest {
      * Test method for {@link world.bentobox.upgrades.command.PlayerUpgradeCommand#canExecute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
      */
     @Test
-    public void testExecuteSuccess() {
+    void testExecuteSuccess() {
         when(im.getIsland(world, user)).thenReturn(island);
         when(island.onIsland(location)).thenReturn(true);
         when(island.isAllowed(eq(user), any())).thenReturn(true);

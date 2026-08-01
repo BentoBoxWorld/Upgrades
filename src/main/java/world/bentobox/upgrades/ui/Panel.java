@@ -3,7 +3,7 @@ package world.bentobox.upgrades.ui;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -20,6 +20,7 @@ import world.bentobox.upgrades.api.UpgradeAPI;
  */
 public class Panel {
 
+    private static final String UPGRADE = "UPGRADE";
     private final UpgradesAddon addon;
     private final Island island;
     private int page;
@@ -41,22 +42,26 @@ public class Panel {
      * @param user user
      */
     public void showPanel(User user) {
-        List<UpgradeAPI> visible = addon.getAvailableUpgrades().stream()
-                .peek(u -> u.updateUpgradeValue(user, island))
+        // Every registered upgrade refreshes its cached values on each panel open,
+        // including the ones that end up hidden.
+        Set<UpgradeAPI> upgrades = addon.getAvailableUpgrades();
+        upgrades.forEach(u -> u.updateUpgradeValue(user, island));
+
+        List<UpgradeAPI> visible = upgrades.stream()
                 .filter(u -> u.isShowed(user, island))
-                .collect(Collectors.toList());
+                .toList();
 
         new TemplatedPanelBuilder()
                 .user(user)
                 .world(island.getWorld())
                 .template("upgrades_panel", new File(addon.getDataFolder(), "panels"))
-                .registerTypeBuilder("UPGRADE", (t, s) -> createUpgradeButton(t, s, user, visible))
-                .registerTypeBuilder("NEXT", (t, s) -> createNextButton(t, s, user, visible))
-                .registerTypeBuilder("PREVIOUS", (t, s) -> createPreviousButton(t, s, user))
+                .registerTypeBuilder(UPGRADE, (t, s) -> createUpgradeButton(s, user, visible))
+                .registerTypeBuilder("NEXT", (t, s) -> createNextButton(t, s, visible))
+                .registerTypeBuilder("PREVIOUS", (t, s) -> createPreviousButton(t))
                 .build();
     }
 
-    private PanelItem createUpgradeButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot slot,
+    private PanelItem createUpgradeButton(TemplatedPanel.ItemSlot slot,
             User user, List<UpgradeAPI> visible) {
         int upgradesPerPage = slot.amount("UPGRADE");
         int index = slot.slot() + page * upgradesPerPage;
@@ -89,7 +94,7 @@ public class Panel {
     }
 
     private PanelItem createNextButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot slot,
-            User user, List<UpgradeAPI> visible) {
+            List<UpgradeAPI> visible) {
         if ((page + 1) * slot.amount("UPGRADE") >= visible.size()) {
             return null;
         }
@@ -106,8 +111,7 @@ public class Panel {
                 .build();
     }
 
-    private PanelItem createPreviousButton(ItemTemplateRecord template, TemplatedPanel.ItemSlot slot,
-            User user) {
+    private PanelItem createPreviousButton(ItemTemplateRecord template) {
         if (page == 0) {
             return null;
         }

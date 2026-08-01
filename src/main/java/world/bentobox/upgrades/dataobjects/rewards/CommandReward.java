@@ -1,6 +1,7 @@
 package world.bentobox.upgrades.dataobjects.rewards;
 
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import world.bentobox.bentobox.api.addons.GameModeAddon;
@@ -47,18 +48,19 @@ public class CommandReward extends Reward {
         CommandRewardDB db = (CommandRewardDB) rewardDB;
         String playerName = user.getName();
         String ownerName = island.getPlugin().getPlayers().getName(island.getOwner());
-        if (ownerName == null) ownerName = "";
+
+        CommandSender sender = db.isConsole() ? addon.getServer().getConsoleSender() : user.getSender();
+        if (sender == null) {
+            addon.logWarning("CommandReward: no sender available for user " + playerName + ", skipping commands");
+            return;
+        }
 
         for (String cmd : db.getCommands()) {
             String formatted = cmd
                     .replace("[player]", playerName)
                     .replace("[owner]", ownerName);
 
-            if (db.isConsole()) {
-                addon.getServer().dispatchCommand(addon.getServer().getConsoleSender(), formatted);
-            } else {
-                addon.getServer().dispatchCommand(user.getSender(), formatted);
-            }
+            addon.getServer().dispatchCommand(sender, formatted);
         }
     }
 
@@ -72,8 +74,8 @@ public class CommandReward extends Reward {
             List<RewardDB> rewards = tier.getRewards();
             rewards.add(dbObject);
             tier.setRewards(rewards);
-        } else if (saved instanceof CommandRewardDB) {
-            dbObject = (CommandRewardDB) saved;
+        } else if (saved instanceof CommandRewardDB commandRewardDB) {
+            dbObject = commandRewardDB;
         } else {
             throw new InvalidParameterException("DB object in CommandReward which is not a CommandRewardDB");
         }

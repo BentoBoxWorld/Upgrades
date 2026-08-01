@@ -31,7 +31,7 @@ public abstract class UpgradeAPI {
      * @param displayName This is the name that is shown to the user
      * @param icon        This is the icon shown to the user
      */
-    public UpgradeAPI(UpgradesAddon addon, String name, String displayName, Material icon) {
+    protected UpgradeAPI(UpgradesAddon addon, String name, String displayName, Material icon) {
         this.name = name;
         this.displayName = displayName;
         this.icon = icon;
@@ -197,18 +197,20 @@ public abstract class UpgradeAPI {
     }
 
     /**
-     * You shouldn't override this function
+     * Upgrades are identified solely by their database name, which subclasses derive
+     * from whatever they target (block, entity, group). Subclass fields therefore add
+     * no identity of their own, so this is final.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(name);
     }
 
     /**
-     * You shouldn't override this function
+     * @see #hashCode()
      */
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }

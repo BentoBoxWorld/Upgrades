@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -143,7 +142,7 @@ public final class EditTierPanel extends AbPanel {
         this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
     }
 
-    private final Consumer<String> doSetName = (name) -> {
+    private final Consumer<String> doSetName = name -> {
         applySetName(name);
         this.setButton();
         this.getBuild()
@@ -170,7 +169,7 @@ public final class EditTierPanel extends AbPanel {
         this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
     }
 
-    private final Consumer<List<String>> doSetDescription = (description) -> {
+    private final Consumer<List<String>> doSetDescription = description -> {
         applySetDescription(description);
         if (description != null) {
             this.setButton();
@@ -255,7 +254,7 @@ public final class EditTierPanel extends AbPanel {
                                 .getUpgradesManager()
                                 .searchPrice(p.getPriceType())
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         new AdminList<>(this.getAddon(), this.getGamemode(), client,
                 title, this, prices,
@@ -277,7 +276,7 @@ public final class EditTierPanel extends AbPanel {
                                 .getUpgradesManager()
                                 .searchReward(reward.getRewardType())
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         new AdminList<>(this.getAddon(), this.getGamemode(), client, title, this, rewards,
                 this.onSelectReward, this.onDeleteReward,
@@ -286,10 +285,10 @@ public final class EditTierPanel extends AbPanel {
         return true;
     };
 
-    private final Consumer<Price> onSelectPrice = (price) -> {
+    private final Consumer<Price> onSelectPrice = price -> {
         PriceDB selected = this.tier.getPrices()
                 .stream()
-                .filter((p) -> p.getPriceType() == price.getClass())
+                .filter(p -> p.getPriceType() == price.getClass())
                 .findFirst()
                 .orElse(null);
 
@@ -299,10 +298,10 @@ public final class EditTierPanel extends AbPanel {
                 .build();
     };
 
-    private final Consumer<Reward> onSelectReward = (reward) -> {
+    private final Consumer<Reward> onSelectReward = reward -> {
         RewardDB selected = this.tier.getRewards()
                 .stream()
-                .filter((r) -> r.getRewardType() == reward.getClass())
+                .filter(r -> r.getRewardType() == reward.getClass())
                 .findFirst()
                 .orElse(null);
 
@@ -312,16 +311,14 @@ public final class EditTierPanel extends AbPanel {
                 .build();
     };
 
-    private final Consumer<Price> onDeletePrice = (price) ->
+    private final Consumer<Price> onDeletePrice = price ->
             new YesNoPanel(this.getAddon(), this.getGamemode(), this.getUser(),
                     this.getUser()
                             .getTranslation("upgrades.ui.titles.delete"), this, delete -> {
-                if (delete) {
-                    List<PriceDB> prices = this.tier.getPrices();
-                    prices = prices.stream()
-                            .filter(p -> p.getPriceType() != price.getClass())
-                            .collect(
-                                    Collectors.toList());
+                if (Boolean.TRUE.equals(delete)) {
+                    // Must stay mutable: prices are later appended to when a price is added
+                    List<PriceDB> prices = new ArrayList<>(this.tier.getPrices());
+                    prices.removeIf(p -> p.getPriceType() == price.getClass());
                     this.tier.setPrices(prices);
                     this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 }
@@ -329,15 +326,13 @@ public final class EditTierPanel extends AbPanel {
                         .build();
             }).getBuild().build();
 
-    private final Consumer<Reward> onDeleteReward = (reward) ->
+    private final Consumer<Reward> onDeleteReward = reward ->
             new YesNoPanel(this.getAddon(), this.getGamemode(), this.getUser(), this.getUser()
                     .getTranslation("upgrades.ui.titles.delete"), this, delete -> {
-                if (delete) {
-                    List<RewardDB> rewards = this.tier.getRewards();
-                    rewards = rewards.stream()
-                            .filter(r -> r.getRewardType() != reward.getClass())
-                            .collect(
-                                    Collectors.toList());
+                if (Boolean.TRUE.equals(delete)) {
+                    // Must stay mutable: rewards are later appended to when a reward is added
+                    List<RewardDB> rewards = new ArrayList<>(this.tier.getRewards());
+                    rewards.removeIf(r -> r.getRewardType() == reward.getClass());
                     this.tier.setRewards(rewards);
                     this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 }
@@ -370,13 +365,13 @@ public final class EditTierPanel extends AbPanel {
                 .build();
     };
 
-    private final Consumer<Price> onSelectNewPrice = (price) ->
+    private final Consumer<Price> onSelectNewPrice = price ->
             price.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
                             null)
                     .getBuild()
                     .build();
 
-    private final Consumer<Reward> onSelectNewReward = (reward) ->
+    private final Consumer<Reward> onSelectNewReward = reward ->
             reward.getAdminPanel(this.getAddon(), this.getGamemode(), this.getUser(), this, this.tier,
                             null)
                     .getBuild()
@@ -385,8 +380,8 @@ public final class EditTierPanel extends AbPanel {
     private List<Integer> computeTierLength(List<UpgradeTier> tiers) {
         List<Integer> lengths = new ArrayList<>();
 
-        tiers.forEach(tier ->
-                lengths.add(tier.getEndLevel() - tier.getStartLevel() + 1)
+        tiers.forEach(t ->
+                lengths.add(t.getEndLevel() - t.getStartLevel() + 1)
         );
 
         return lengths;
