@@ -10,13 +10,13 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class MoneyPrice extends Price {
@@ -56,10 +56,7 @@ public class MoneyPrice extends Price {
     public boolean canPay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         if (!addon.isVaultProvided()) return true;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
-        Map<String, Double> variables = new TreeMap<>();
-        variables.put(LEVEL_VAR, (double) currentLevel);
-        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
+        Map<String, Double> variables = FormulaVariables.of(addon, island, currentLevel);
         double amount = Settings.evaluate(db.getAmountEquation(), variables);
         return addon.getVaultHook().has(user, amount);
     }
@@ -68,10 +65,7 @@ public class MoneyPrice extends Price {
     public void pay(UpgradesAddon addon, User user, Island island, PriceDB priceDB, int currentLevel) {
         if (!addon.isVaultProvided()) return;
         MoneyPriceDB db = (MoneyPriceDB) priceDB;
-        Map<String, Double> variables = new TreeMap<>();
-        variables.put(LEVEL_VAR, (double) currentLevel);
-        variables.put(ISLAND_LEVEL_VAR, (double) addon.getUpgradesManager().getIslandLevel(island));
-        variables.put(NUMBER_PLAYER_VAR, (double) island.getMemberSet().size());
+        Map<String, Double> variables = FormulaVariables.of(addon, island, currentLevel);
         double amount = Settings.evaluate(db.getAmountEquation(), variables);
         var response = addon.getVaultHook().withdraw(user, amount);
         if (!response.transactionSuccess()) {
@@ -89,8 +83,8 @@ public class MoneyPrice extends Price {
             List<PriceDB> prices = tier.getPrices();
             prices.add(dbObject);
             tier.setPrices(prices);
-        } else if (saved instanceof MoneyPriceDB) {
-            dbObject = (MoneyPriceDB) saved;
+        } else if (saved instanceof MoneyPriceDB moneyPriceDB) {
+            dbObject = moneyPriceDB;
         } else {
             throw new InvalidParameterException("DB object in MoneyPrice which is not a MoneyPriceDB");
         }
@@ -145,7 +139,7 @@ public class MoneyPrice extends Price {
         }
 
         private Consumer<String> doSetRule() {
-            return (rule) -> {
+            return rule -> {
                 this.saved.setAmountEquation(rule);
                 this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();

@@ -22,8 +22,8 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
  */
 public abstract class LimitsUpgrade extends UpgradeAPI {
 
-    protected static final String BLOCK = "[block]";
-    protected static final String LEVEL = "[level]";
+    protected static final String BLOCK_PLACEHOLDER = "[block]";
+    protected static final String LEVEL_PLACEHOLDER = "[level]";
 
     protected LimitsUpgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
         super(addon, name, displayName, icon);
@@ -146,7 +146,7 @@ public abstract class LimitsUpgrade extends UpgradeAPI {
             this.applyOffset(isb, env, amount);
         }
 
-        user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK, this.getTargetName(), LEVEL,
+        user.sendMessage("upgrades.ui.upgradepanel.limitsupgradedone", BLOCK_PLACEHOLDER, this.getTargetName(), LEVEL_PLACEHOLDER,
                 Integer.toString(amount));
 
         return true;

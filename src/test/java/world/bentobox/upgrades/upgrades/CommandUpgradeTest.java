@@ -2,8 +2,7 @@ package world.bentobox.upgrades.upgrades;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -31,7 +30,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
 /**
  * Test for CommandUpgrade
  */
-public class CommandUpgradeTest {
+class CommandUpgradeTest {
 
     @Mock
     private UpgradesAddon addon;
@@ -55,7 +54,7 @@ public class CommandUpgradeTest {
     private String islandId;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockBukkit.mock();
 
         MockitoAnnotations.openMocks(this);
@@ -78,7 +77,7 @@ public class CommandUpgradeTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
@@ -86,7 +85,7 @@ public class CommandUpgradeTest {
      * Test that isShowed returns true when permission level is 0 (no permission required)
      */
     @Test
-    public void testIsShowed_NoPermissionRequired() {
+    void testIsShowed_NoPermissionRequired() {
         // Set up the mock to return permission level 0
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(0);
         when(um.getCommandPermissionLevel("coal-upgrade", 0, world)).thenReturn(0);
@@ -103,7 +102,7 @@ public class CommandUpgradeTest {
      * while updateUpgradeValue() and doUpgrade() were correctly using this.getName().
      */
     @Test
-    public void testIsShowed_UsesCorrectUpgradeKey() {
+    void testIsShowed_UsesCorrectUpgradeKey() {
         // The upgrade data is stored with the key "command-coal-upgrade" (this.getName())
         // not "coal-upgrade" (this.cmdId)
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(1);
@@ -123,7 +122,7 @@ public class CommandUpgradeTest {
      * Test that isShowed returns false when player doesn't have required permission
      */
     @Test
-    public void testIsShowed_NoPermission() {
+    void testIsShowed_NoPermission() {
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(0);
         when(um.getCommandPermissionLevel("coal-upgrade", 0, world)).thenReturn(1);
 
@@ -139,7 +138,7 @@ public class CommandUpgradeTest {
      * Test that isShowed returns true when player has sufficient permission level
      */
     @Test
-    public void testIsShowed_WithSufficientPermission() {
+    void testIsShowed_WithSufficientPermission() {
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(0);
         when(um.getCommandPermissionLevel("coal-upgrade", 0, world)).thenReturn(1);
 
@@ -157,7 +156,7 @@ public class CommandUpgradeTest {
      * Test that isShowed returns false when player has insufficient permission level
      */
     @Test
-    public void testIsShowed_WithInsufficientPermission() {
+    void testIsShowed_WithInsufficientPermission() {
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(0);
         when(um.getCommandPermissionLevel("coal-upgrade", 0, world)).thenReturn(2);
 
@@ -175,7 +174,7 @@ public class CommandUpgradeTest {
      * Test that isShowed returns false for wildcard permissions
      */
     @Test
-    public void testIsShowed_WildcardNotAllowed() {
+    void testIsShowed_WildcardNotAllowed() {
         when(upgradesData.getUpgradeLevel("command-coal-upgrade")).thenReturn(0);
         when(um.getCommandPermissionLevel("coal-upgrade", 0, world)).thenReturn(1);
 
@@ -193,7 +192,7 @@ public class CommandUpgradeTest {
      * Helper method to create a mock PermissionAttachmentInfo
      */
     private PermissionAttachmentInfo createMockPermission(String permission, boolean value) {
-        PermissionAttachmentInfo info = org.mockito.Mockito.mock(PermissionAttachmentInfo.class);
+        PermissionAttachmentInfo info = mock(PermissionAttachmentInfo.class);
         when(info.getPermission()).thenReturn(permission);
         when(info.getValue()).thenReturn(value);
         return info;

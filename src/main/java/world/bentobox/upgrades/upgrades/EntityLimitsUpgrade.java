@@ -51,7 +51,7 @@ public class EntityLimitsUpgrade extends LimitsUpgrade {
                 upgradeLevel, islandLevel, numberPeople, island.getWorld());
         UpgradeValues upgrade;
 
-        if (upgradeInfos == null) {
+        if (upgradeInfos.isEmpty()) {
             upgrade = null;
             this.setOwnDescription(user, null);
         } else {
@@ -72,11 +72,11 @@ public class EntityLimitsUpgrade extends LimitsUpgrade {
         String newDisplayName;
 
         if (upgrade == null) {
-            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", BLOCK,
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade", BLOCK_PLACEHOLDER,
                     this.entity.toString());
         } else {
-            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade", BLOCK,
-                    this.entity.toString(), LEVEL, Integer.toString(upgrade.getUpgradeValue()));
+            newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade", BLOCK_PLACEHOLDER,
+                    this.entity.toString(), LEVEL_PLACEHOLDER, Integer.toString(upgrade.getUpgradeValue()));
         }
 
         this.setDisplayName(newDisplayName);

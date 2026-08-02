@@ -34,7 +34,7 @@ public class CommandUpgrade extends UpgradeAPI {
         Map<String, Integer> upgradeInfos = upgradesAddon.getUpgradesManager().getCommandUpgradeInfos(this.cmdId, upgradeLevel, islandLevel, numberPeople, island.getWorld());
         UpgradeValues upgrade;
 
-        if (upgradeInfos == null) {
+        if (upgradeInfos.isEmpty()) {
             upgrade = null;
             this.setOwnDescription(user, null);
         } else {

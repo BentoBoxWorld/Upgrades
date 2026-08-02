@@ -50,7 +50,7 @@ public class EntityGroupLimitsUpgrade extends LimitsUpgrade {
         Map<String, Integer> upgradeInfos = upgradeAddon.getUpgradesManager().getEntityGroupLimitsUpgradeInfos(this.group, upgradeLevel, islandLevel, numberPeople, island.getWorld());
         UpgradeValues upgrade;
 
-        if (upgradeInfos == null) {
+        if (upgradeInfos.isEmpty()) {
             upgrade = null;
             this.setOwnDescription(user, null);
         } else {
@@ -72,10 +72,10 @@ public class EntityGroupLimitsUpgrade extends LimitsUpgrade {
 
         if (upgrade == null) {
             newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.nolimitsupgrade",
-                    BLOCK, this.group);
+                    BLOCK_PLACEHOLDER, this.group);
         } else {
             newDisplayName = user.getTranslation("upgrades.ui.upgradepanel.limitsupgrade",
-                    BLOCK, this.group, LEVEL, Integer.toString(upgrade.getUpgradeValue()));
+                    BLOCK_PLACEHOLDER, this.group, LEVEL_PLACEHOLDER, Integer.toString(upgrade.getUpgradeValue()));
         }
 
         this.setDisplayName(newDisplayName);

@@ -15,7 +15,6 @@ import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ItemPrice extends Price {
 
@@ -84,8 +83,8 @@ public class ItemPrice extends Price {
             List<PriceDB> prices = tier.getPrices();
             prices.add(dbObject);
             tier.setPrices(prices);
-        } else if (saved instanceof ItemPriceDB) {
-            dbObject = (ItemPriceDB) saved;
+        } else if (saved instanceof ItemPriceDB itemPriceDB) {
+            dbObject = itemPriceDB;
         } else {
             throw new InvalidParameterException("DB object in ItemPrice which is not an ItemPriceDB");
         }
@@ -129,7 +128,9 @@ public class ItemPrice extends Price {
             if (!this.saved.getMaterial().isEmpty()) {
                 try {
                     iconMat = Material.valueOf(this.saved.getMaterial().toUpperCase());
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                    // Configured material is no longer valid; fall back to the default icon
+                }
             }
 
             this.setItems(SET_ITEM, new PanelItemBuilder()
@@ -172,7 +173,9 @@ public class ItemPrice extends Price {
                                     this.createInterface();
                                     this.getBuild().build();
                                 }
-                            } catch (NumberFormatException ignored) {}
+                            } catch (NumberFormatException ignored) {
+                                // Non-numeric input is rejected by the validator below
+                            }
                         },
                         input -> {
                             try {

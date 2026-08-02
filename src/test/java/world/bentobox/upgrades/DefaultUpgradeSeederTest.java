@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,13 +25,10 @@ import world.bentobox.upgrades.dataobjects.prices.IslandLevelPriceDB;
 import world.bentobox.upgrades.dataobjects.prices.ItemPriceDB;
 import world.bentobox.upgrades.dataobjects.prices.MoneyPriceDB;
 import world.bentobox.upgrades.dataobjects.prices.PermissionPriceDB;
-import world.bentobox.upgrades.dataobjects.prices.PriceDB;
 import world.bentobox.upgrades.dataobjects.rewards.CommandRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.CropGrowthRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.LimitsRewardDB;
 import world.bentobox.upgrades.dataobjects.rewards.RangeRewardDB;
-import world.bentobox.upgrades.dataobjects.rewards.RewardDB;
-import world.bentobox.upgrades.dataobjects.rewards.SpawnerRewardDB;
 
 /**
  * Verifies that DefaultUpgradeSeeder correctly persists all upgrade definitions
@@ -105,7 +100,7 @@ class DefaultUpgradeSeederTest {
 
         List<String> names = captor.getAllValues().stream()
                 .map(UpgradeData::getName)
-                .collect(Collectors.toList());
+                .toList();
         assertTrue(names.contains("Border Expansion I"));
         assertTrue(names.contains("Border Expansion II"));
         assertTrue(names.contains("Hopper Limit"));
@@ -158,16 +153,16 @@ class DefaultUpgradeSeederTest {
         UpgradeTier tier = capturedTierFor("BSkyBlock_example_range1_t1");
         assertNotNull(tier, "Tier for Border Expansion I must be saved");
 
-        assertTrue(tier.getPrices().stream().anyMatch(p -> p instanceof MoneyPriceDB),
+        assertTrue(tier.getPrices().stream().anyMatch(MoneyPriceDB.class::isInstance),
                 "Border Expansion I must have a MoneyPrice");
         MoneyPriceDB money = (MoneyPriceDB) tier.getPrices().stream()
-                .filter(p -> p instanceof MoneyPriceDB).findFirst().orElseThrow();
+                .filter(MoneyPriceDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("500", money.getAmountEquation());
 
-        assertTrue(tier.getRewards().stream().anyMatch(r -> r instanceof RangeRewardDB),
+        assertTrue(tier.getRewards().stream().anyMatch(RangeRewardDB.class::isInstance),
                 "Border Expansion I must have a RangeReward");
         RangeRewardDB range = (RangeRewardDB) tier.getRewards().stream()
-                .filter(r -> r instanceof RangeRewardDB).findFirst().orElseThrow();
+                .filter(RangeRewardDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("5", range.getRangeUpgradeEquation());
     }
 
@@ -180,13 +175,13 @@ class DefaultUpgradeSeederTest {
         UpgradeTier tier = capturedTierFor("BSkyBlock_example_range2_t1");
         assertNotNull(tier, "Tier for Border Expansion II must be saved");
 
-        assertTrue(tier.getPrices().stream().anyMatch(p -> p instanceof IslandLevelPriceDB),
+        assertTrue(tier.getPrices().stream().anyMatch(IslandLevelPriceDB.class::isInstance),
                 "Border Expansion II must have an IslandLevelPrice");
         IslandLevelPriceDB levelPrice = (IslandLevelPriceDB) tier.getPrices().stream()
-                .filter(p -> p instanceof IslandLevelPriceDB).findFirst().orElseThrow();
+                .filter(IslandLevelPriceDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("100", levelPrice.getLevelNeededEquation());
 
-        assertTrue(tier.getPrices().stream().anyMatch(p -> p instanceof MoneyPriceDB),
+        assertTrue(tier.getPrices().stream().anyMatch(MoneyPriceDB.class::isInstance),
                 "Border Expansion II must also have a MoneyPrice");
     }
 
@@ -199,14 +194,14 @@ class DefaultUpgradeSeederTest {
         UpgradeTier tier = capturedTierFor("BSkyBlock_example_diamond_t1");
         assertNotNull(tier, "Tier for Diamond Border must be saved");
 
-        assertTrue(tier.getPrices().stream().anyMatch(p -> p instanceof ItemPriceDB),
+        assertTrue(tier.getPrices().stream().anyMatch(ItemPriceDB.class::isInstance),
                 "Diamond Border must have an ItemPrice");
         ItemPriceDB item = (ItemPriceDB) tier.getPrices().stream()
-                .filter(p -> p instanceof ItemPriceDB).findFirst().orElseThrow();
+                .filter(ItemPriceDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("DIAMOND", item.getMaterial());
         assertEquals(10, item.getAmount());
 
-        assertTrue(tier.getRewards().stream().anyMatch(r -> r instanceof RangeRewardDB),
+        assertTrue(tier.getRewards().stream().anyMatch(RangeRewardDB.class::isInstance),
                 "Diamond Border must have a RangeReward");
     }
 
@@ -219,16 +214,16 @@ class DefaultUpgradeSeederTest {
         UpgradeTier tier = capturedTierFor("BSkyBlock_example_donor_t1");
         assertNotNull(tier, "Tier for Donor Perk must be saved");
 
-        assertTrue(tier.getPrices().stream().anyMatch(p -> p instanceof PermissionPriceDB),
+        assertTrue(tier.getPrices().stream().anyMatch(PermissionPriceDB.class::isInstance),
                 "Donor Perk must have a PermissionPrice");
         PermissionPriceDB perm = (PermissionPriceDB) tier.getPrices().stream()
-                .filter(p -> p instanceof PermissionPriceDB).findFirst().orElseThrow();
+                .filter(PermissionPriceDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("upgrades.example.donor", perm.getPermission());
 
-        assertTrue(tier.getRewards().stream().anyMatch(r -> r instanceof CommandRewardDB),
+        assertTrue(tier.getRewards().stream().anyMatch(CommandRewardDB.class::isInstance),
                 "Donor Perk must have a CommandReward");
         CommandRewardDB cmd = (CommandRewardDB) tier.getRewards().stream()
-                .filter(r -> r instanceof CommandRewardDB).findFirst().orElseThrow();
+                .filter(CommandRewardDB.class::isInstance).findFirst().orElseThrow();
         assertFalse(cmd.getCommands().isEmpty(), "CommandReward must have at least one command");
         assertTrue(cmd.isConsole(), "Donor Perk command must be run as console");
     }
@@ -242,10 +237,10 @@ class DefaultUpgradeSeederTest {
         UpgradeTier tier = capturedTierFor("BSkyBlock_example_hopper_t1");
         assertNotNull(tier, "Tier for Hopper Limit must be saved");
 
-        assertTrue(tier.getRewards().stream().anyMatch(r -> r instanceof LimitsRewardDB),
+        assertTrue(tier.getRewards().stream().anyMatch(LimitsRewardDB.class::isInstance),
                 "Hopper Limit must have a LimitsReward");
         LimitsRewardDB limits = (LimitsRewardDB) tier.getRewards().stream()
-                .filter(r -> r instanceof LimitsRewardDB).findFirst().orElseThrow();
+                .filter(LimitsRewardDB.class::isInstance).findFirst().orElseThrow();
         assertEquals("BLOCK", limits.getLimitType());
         assertEquals("HOPPER", limits.getTarget());
         assertEquals("2", limits.getAmountEquation());
@@ -259,7 +254,7 @@ class DefaultUpgradeSeederTest {
         assertNotNull(tier, "Tier for Cow Limit must be saved");
 
         LimitsRewardDB limits = (LimitsRewardDB) tier.getRewards().stream()
-                .filter(r -> r instanceof LimitsRewardDB).findFirst().orElse(null);
+                .filter(LimitsRewardDB.class::isInstance).findFirst().orElse(null);
         assertNotNull(limits);
         assertEquals("ENTITY", limits.getLimitType());
         assertEquals("COW", limits.getTarget());
@@ -292,9 +287,9 @@ class DefaultUpgradeSeederTest {
         assertNotNull(tier);
 
         assertTrue(tier.getRewards().stream()
-                .anyMatch(r -> r instanceof CropGrowthRewardDB));
+                .anyMatch(CropGrowthRewardDB.class::isInstance));
         CropGrowthRewardDB crop = (CropGrowthRewardDB) tier.getRewards().stream()
-                .filter(r -> r instanceof CropGrowthRewardDB)
+                .filter(CropGrowthRewardDB.class::isInstance)
                 .findFirst().orElseThrow();
         assertEquals("0.5", crop.getGrowthBonusEquation());
     }

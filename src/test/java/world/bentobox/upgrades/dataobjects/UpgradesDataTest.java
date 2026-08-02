@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  * old default of 1, it would see currentLevel=1 and 0<=1<=0 is false —
  * causing every DB upgrade to appear permanently maxed on a fresh island.
  */
-public class UpgradesDataTest {
+class UpgradesDataTest {
 
     private static final String KEY = "BSkyBlock_diamond";
     private static final String ISLAND_ID = "island-uuid-1234";

@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 
 /**
  * Represents the settings and configurations for the UpgradesAddon.
@@ -25,6 +26,18 @@ import world.bentobox.upgrades.UpgradesAddon;
  * managing limits for various game aspects like blocks, entities, and commands.
  */
 public class Settings {
+
+    private static final String RANGE_UPGRADE = "range-upgrade";
+    private static final String BLOCK_LIMITS_UPGRADE = "block-limits-upgrade";
+    private static final String ENTITY_LIMITS_UPGRADE = "entity-limits-upgrade";
+    private static final String ENTITY_GROUP_LIMITS_UPGRADE = "entity-group-limits-upgrade";
+    private static final String COMMAND_UPGRADE = "command-upgrade";
+    private static final String ISLAND_MIN_LEVEL = "island-min-level";
+    private static final String VAULT_COST = "vault-cost";
+    private static final String PERMISSION_LEVEL = "permission-level";
+    private static final String CONSOLE = "console";
+    private static final String CONFIG_MATERIAL = "Config: Material ";
+    private static final String NOT_VALID_MATERIAL = " is not a valid material";
 
     /**
      * The UpgradesAddon instance associated with this settings object.
@@ -182,11 +195,23 @@ public class Settings {
         this.hasRangeUpgrade = false;
 
         this.disabledGameModes = new HashSet<>(this.addon.getConfig().getStringList("disabled-gamemodes"));
-        
+
         this.chatInputEscape = this.addon.getConfig().getString("chat-input-escape", "END");
 
-        if (this.addon.getConfig().isSet("range-upgrade")) {
-            ConfigurationSection section = this.addon.getConfig().getConfigurationSection("range-upgrade");
+        loadRangeUpgrades();
+        loadBlockLimitsUpgrades();
+        loadEntityIcons();
+        loadEntityGroupIcons();
+        loadEntityLimitsUpgrades();
+        loadEntityGroupLimitsUpgrades();
+        loadCommandIcons();
+        loadCommandUpgrades();
+        loadGameModeOverrides();
+    }
+
+    private void loadRangeUpgrades() {
+        if (this.addon.getConfig().isSet(RANGE_UPGRADE)) {
+            ConfigurationSection section = this.addon.getConfig().getConfigurationSection(RANGE_UPGRADE);
             for (String key : Objects.requireNonNull(section).getKeys(false)) {
                 UpgradeTier newUpgrade = addUpgradeSection(section, key);
 
@@ -197,12 +222,16 @@ public class Settings {
                 this.rangeUpgradeTierMap.put(key, newUpgrade);
             }
         }
+    }
 
-        if (this.addon.getConfig().isSet("block-limits-upgrade")) {
-            ConfigurationSection section = this.addon.getConfig().getConfigurationSection("block-limits-upgrade");
+    private void loadBlockLimitsUpgrades() {
+        if (this.addon.getConfig().isSet(BLOCK_LIMITS_UPGRADE)) {
+            ConfigurationSection section = this.addon.getConfig().getConfigurationSection(BLOCK_LIMITS_UPGRADE);
             this.blockLimitsUpgradeTierMap = this.loadBlockLimits(section, null);
         }
+    }
 
+    private void loadEntityIcons() {
         if (this.addon.getConfig().isSet("entity-icon")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-icon");
             for (String entity : Objects.requireNonNull(section).getKeys(false)) {
@@ -212,98 +241,125 @@ public class Settings {
                 if (ent == null)
                     this.addon.logError("Config: EntityType " + entity + " is not valid in icon");
                 else if (mat == null)
-                    this.addon.logError("Config: Material " + material + " is not a valid material");
+                    this.addon.logError(CONFIG_MATERIAL + material + NOT_VALID_MATERIAL);
                 else
                     this.entityIcon.put(ent, mat);
             }
         }
+    }
 
+    private void loadEntityGroupIcons() {
         if (this.addon.getConfig().isSet("entity-group-icon")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-group-icon");
             for (String group : Objects.requireNonNull(section).getKeys(false)) {
                 String material = section.getString(group);
                 Material mat = Material.getMaterial(material);
                 if (mat == null)
-                    this.addon.logError("Config: Material " + material + " is not a valid material");
+                    this.addon.logError(CONFIG_MATERIAL + material + NOT_VALID_MATERIAL);
                 else
                     this.entityGroupIcon.put(group, mat);
             }
         }
+    }
 
-        if (this.addon.getConfig().isSet("entity-limits-upgrade")) {
-            ConfigurationSection section = this.addon.getConfig().getConfigurationSection("entity-limits-upgrade");
+    private void loadEntityLimitsUpgrades() {
+        if (this.addon.getConfig().isSet(ENTITY_LIMITS_UPGRADE)) {
+            ConfigurationSection section = this.addon.getConfig().getConfigurationSection(ENTITY_LIMITS_UPGRADE);
             this.entityLimitsUpgradeTierMap = this.loadEntityLimits(section, null);
         }
+    }
 
-        if (this.addon.getConfig().isSet("entity-group-limits-upgrade")) {
+    private void loadEntityGroupLimitsUpgrades() {
+        if (this.addon.getConfig().isSet(ENTITY_GROUP_LIMITS_UPGRADE)) {
             ConfigurationSection section = this.addon.getConfig()
-                    .getConfigurationSection("entity-group-limits-upgrade");
+                    .getConfigurationSection(ENTITY_GROUP_LIMITS_UPGRADE);
             this.entityGroupLimitsUpgradeTierMap = this.loadEntityGroupLimits(section, null);
         }
+    }
 
+    private void loadCommandIcons() {
         if (this.addon.getConfig().isSet("command-icon")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("command-icon");
             for (String commandId : Objects.requireNonNull(section).getKeys(false)) {
                 String material = section.getString(commandId);
                 Material mat = Material.getMaterial(material);
                 if (mat == null)
-                    this.addon.logError("Config: Material " + material + " is not a valid material");
+                    this.addon.logError(CONFIG_MATERIAL + material + NOT_VALID_MATERIAL);
                 else
                     this.commandIcon.put(commandId, mat);
             }
         }
+    }
 
-        if (this.addon.getConfig().isSet("command-upgrade")) {
-            ConfigurationSection section = this.addon.getConfig().getConfigurationSection("command-upgrade");
+    private void loadCommandUpgrades() {
+        if (this.addon.getConfig().isSet(COMMAND_UPGRADE)) {
+            ConfigurationSection section = this.addon.getConfig().getConfigurationSection(COMMAND_UPGRADE);
             this.commandUpgradeTierMap = this.loadCommand(section, null);
         }
+    }
 
+    private void loadGameModeOverrides() {
         if (this.addon.getConfig().isSet("gamemodes")) {
             ConfigurationSection section = this.addon.getConfig().getConfigurationSection("gamemodes");
 
             for (String gameMode : Objects.requireNonNull(section).getKeys(false)) {
                 ConfigurationSection gameModeSection = section.getConfigurationSection(gameMode);
-
-                if (gameModeSection.isSet("range-upgrade")) {
-                    ConfigurationSection lowSection = gameModeSection.getConfigurationSection("range-upgrade");
-                    for (String key : Objects.requireNonNull(lowSection).getKeys(false)) {
-                        UpgradeTier newUpgrade = addUpgradeSection(lowSection, key);
-
-                        if (this.customMaxRangeUpgrade.get(gameMode) == null
-                                || this.customMaxRangeUpgrade.get(gameMode) < newUpgrade.getMaxLevel())
-                            this.customMaxRangeUpgrade.put(gameMode, newUpgrade.getMaxLevel());
-
-                        this.hasRangeUpgrade = true;
-
-                        this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new TreeMap<>()).put(key,
-                                newUpgrade);
-                    }
-                }
-
-                if (gameModeSection.isSet("block-limits-upgrade")) {
-                    ConfigurationSection lowSection = gameModeSection.getConfigurationSection("block-limits-upgrade");
-                    this.customBlockLimitsUpgradeTierMap.computeIfAbsent(gameMode,
-                            k -> loadBlockLimits(lowSection, gameMode));
-                }
-
-                if (gameModeSection.isSet("entity-limits-upgrade")) {
-                    ConfigurationSection lowSection = gameModeSection.getConfigurationSection("entity-limits-upgrade");
-                    this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode,
-                            k -> loadEntityLimits(lowSection, gameMode));
-                }
-
-                if (gameModeSection.isSet("entity-group-limits-upgrade")) {
-                    ConfigurationSection lowSection = gameModeSection
-                            .getConfigurationSection("entity-group-limits-upgrade");
-                    this.customEntityGroupLimitsUpgradeTierMap.computeIfAbsent(gameMode,
-                            k -> loadEntityGroupLimits(lowSection, gameMode));
-                }
-
-                if (gameModeSection.isSet("command-upgrade")) {
-                    ConfigurationSection lowSection = gameModeSection.getConfigurationSection("command-upgrade");
-                    this.customCommandUpgradeTierMap.computeIfAbsent(gameMode, k -> loadCommand(lowSection, gameMode));
-                }
+                loadGameModeRangeUpgrades(gameMode, gameModeSection);
+                loadGameModeBlockLimitsUpgrades(gameMode, gameModeSection);
+                loadGameModeEntityLimitsUpgrades(gameMode, gameModeSection);
+                loadGameModeEntityGroupLimitsUpgrades(gameMode, gameModeSection);
+                loadGameModeCommandUpgrades(gameMode, gameModeSection);
             }
+        }
+    }
+
+    private void loadGameModeRangeUpgrades(String gameMode, ConfigurationSection gameModeSection) {
+        if (gameModeSection.isSet(RANGE_UPGRADE)) {
+            ConfigurationSection lowSection = gameModeSection.getConfigurationSection(RANGE_UPGRADE);
+            for (String key : Objects.requireNonNull(lowSection).getKeys(false)) {
+                UpgradeTier newUpgrade = addUpgradeSection(lowSection, key);
+
+                if (this.customMaxRangeUpgrade.get(gameMode) == null
+                        || this.customMaxRangeUpgrade.get(gameMode) < newUpgrade.getMaxLevel())
+                    this.customMaxRangeUpgrade.put(gameMode, newUpgrade.getMaxLevel());
+
+                this.hasRangeUpgrade = true;
+
+                this.customRangeUpgradeTierMap.computeIfAbsent(gameMode, k -> new TreeMap<>()).put(key,
+                        newUpgrade);
+            }
+        }
+    }
+
+    private void loadGameModeBlockLimitsUpgrades(String gameMode, ConfigurationSection gameModeSection) {
+        if (gameModeSection.isSet(BLOCK_LIMITS_UPGRADE)) {
+            ConfigurationSection lowSection = gameModeSection.getConfigurationSection(BLOCK_LIMITS_UPGRADE);
+            this.customBlockLimitsUpgradeTierMap.computeIfAbsent(gameMode,
+                    k -> loadBlockLimits(lowSection, gameMode));
+        }
+    }
+
+    private void loadGameModeEntityLimitsUpgrades(String gameMode, ConfigurationSection gameModeSection) {
+        if (gameModeSection.isSet(ENTITY_LIMITS_UPGRADE)) {
+            ConfigurationSection lowSection = gameModeSection.getConfigurationSection(ENTITY_LIMITS_UPGRADE);
+            this.customEntityLimitsUpgradeTierMap.computeIfAbsent(gameMode,
+                    k -> loadEntityLimits(lowSection, gameMode));
+        }
+    }
+
+    private void loadGameModeEntityGroupLimitsUpgrades(String gameMode, ConfigurationSection gameModeSection) {
+        if (gameModeSection.isSet(ENTITY_GROUP_LIMITS_UPGRADE)) {
+            ConfigurationSection lowSection = gameModeSection
+                    .getConfigurationSection(ENTITY_GROUP_LIMITS_UPGRADE);
+            this.customEntityGroupLimitsUpgradeTierMap.computeIfAbsent(gameMode,
+                    k -> loadEntityGroupLimits(lowSection, gameMode));
+        }
+    }
+
+    private void loadGameModeCommandUpgrades(String gameMode, ConfigurationSection gameModeSection) {
+        if (gameModeSection.isSet(COMMAND_UPGRADE)) {
+            ConfigurationSection lowSection = gameModeSection.getConfigurationSection(COMMAND_UPGRADE);
+            this.customCommandUpgradeTierMap.computeIfAbsent(gameMode, k -> loadCommand(lowSection, gameMode));
         }
     }
 
@@ -316,24 +372,7 @@ public class Settings {
                 ConfigurationSection matSection = section.getConfigurationSection(material);
                 for (String key : Objects.requireNonNull(matSection).getKeys(false)) {
                     UpgradeTier newUpgrade = addUpgradeSection(matSection, key);
-
-                    if (gameMode == null) {
-                        if (this.maxBlockLimitsUpgrade.get(mat) == null
-                                || this.maxBlockLimitsUpgrade.get(mat) < newUpgrade.getMaxLevel())
-                            this.maxBlockLimitsUpgrade.put(mat, newUpgrade.getMaxLevel());
-                    } else {
-                        if (this.customMaxBlockLimitsUpgrade.get(gameMode) == null) {
-                            Map<Material, Integer> newMap = new EnumMap<>(Material.class);
-                            newMap.put(mat, newUpgrade.getMaxLevel());
-                            this.customMaxBlockLimitsUpgrade.put(gameMode, newMap);
-                        } else {
-                            if (this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) == null
-                                    || this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) < newUpgrade
-                                            .getMaxLevel())
-                                this.customMaxBlockLimitsUpgrade.get(gameMode).put(mat, newUpgrade.getMaxLevel());
-                        }
-                    }
-
+                    updateMaxBlockLimitsUpgrade(mat, newUpgrade, gameMode);
                     tier.put(key, newUpgrade);
                 }
                 mats.put(mat, tier);
@@ -342,6 +381,24 @@ public class Settings {
             }
         }
         return mats;
+    }
+
+    private void updateMaxBlockLimitsUpgrade(Material mat, UpgradeTier upgrade, String gameMode) {
+        if (gameMode == null) {
+            if (this.maxBlockLimitsUpgrade.get(mat) == null
+                    || this.maxBlockLimitsUpgrade.get(mat) < upgrade.getMaxLevel())
+                this.maxBlockLimitsUpgrade.put(mat, upgrade.getMaxLevel());
+        } else {
+            if (this.customMaxBlockLimitsUpgrade.get(gameMode) == null) {
+                Map<Material, Integer> newMap = new EnumMap<>(Material.class);
+                newMap.put(mat, upgrade.getMaxLevel());
+                this.customMaxBlockLimitsUpgrade.put(gameMode, newMap);
+            } else {
+                if (this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) == null
+                        || this.customMaxBlockLimitsUpgrade.get(gameMode).get(mat) < upgrade.getMaxLevel())
+                    this.customMaxBlockLimitsUpgrade.get(gameMode).put(mat, upgrade.getMaxLevel());
+            }
+        }
     }
 
     private Map<EntityType, Map<String, UpgradeTier>> loadEntityLimits(ConfigurationSection section, String gameMode) {
@@ -353,24 +410,7 @@ public class Settings {
                 ConfigurationSection entSection = section.getConfigurationSection(entity);
                 for (String key : Objects.requireNonNull(entSection).getKeys(false)) {
                     UpgradeTier newUpgrade = addUpgradeSection(entSection, key);
-
-                    if (gameMode == null) {
-                        if (this.maxEntityLimitsUpgrade.get(ent) == null
-                                || this.maxEntityLimitsUpgrade.get(ent) < newUpgrade.getMaxLevel())
-                            this.maxEntityLimitsUpgrade.put(ent, newUpgrade.getMaxLevel());
-                    } else {
-                        if (this.customMaxEntityLimitsUpgrade.get(gameMode) == null) {
-                            Map<EntityType, Integer> newMap = new EnumMap<>(EntityType.class);
-                            newMap.put(ent, newUpgrade.getMaxLevel());
-                            this.customMaxEntityLimitsUpgrade.put(gameMode, newMap);
-                        } else {
-                            if (this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) == null
-                                    || this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) < newUpgrade
-                                            .getMaxLevel())
-                                this.customMaxEntityLimitsUpgrade.get(gameMode).put(ent, newUpgrade.getMaxLevel());
-                        }
-                    }
-
+                    updateMaxEntityLimitsUpgrade(ent, newUpgrade, gameMode);
                     tier.put(key, newUpgrade);
                 }
                 ents.put(ent, tier);
@@ -384,6 +424,24 @@ public class Settings {
         return ents;
     }
 
+    private void updateMaxEntityLimitsUpgrade(EntityType ent, UpgradeTier upgrade, String gameMode) {
+        if (gameMode == null) {
+            if (this.maxEntityLimitsUpgrade.get(ent) == null
+                    || this.maxEntityLimitsUpgrade.get(ent) < upgrade.getMaxLevel())
+                this.maxEntityLimitsUpgrade.put(ent, upgrade.getMaxLevel());
+        } else {
+            if (this.customMaxEntityLimitsUpgrade.get(gameMode) == null) {
+                Map<EntityType, Integer> newMap = new EnumMap<>(EntityType.class);
+                newMap.put(ent, upgrade.getMaxLevel());
+                this.customMaxEntityLimitsUpgrade.put(gameMode, newMap);
+            } else {
+                if (this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) == null
+                        || this.customMaxEntityLimitsUpgrade.get(gameMode).get(ent) < upgrade.getMaxLevel())
+                    this.customMaxEntityLimitsUpgrade.get(gameMode).put(ent, upgrade.getMaxLevel());
+            }
+        }
+    }
+
     private Map<String, Map<String, UpgradeTier>> loadEntityGroupLimits(ConfigurationSection section, String gameMode) {
         Map<String, Map<String, UpgradeTier>> ents = new TreeMap<>();
         for (String entitygroup : Objects.requireNonNull(section).getKeys(false)) {
@@ -391,30 +449,30 @@ public class Settings {
             ConfigurationSection entSection = section.getConfigurationSection(entitygroup);
             for (String key : Objects.requireNonNull(entSection).getKeys(false)) {
                 UpgradeTier newUpgrade = addUpgradeSection(entSection, key);
-
-                if (gameMode == null) {
-                    if (this.maxEntityGroupLimitsUpgrade.get(entitygroup) == null
-                            || this.maxEntityGroupLimitsUpgrade.get(entitygroup) < newUpgrade.getMaxLevel())
-                        this.maxEntityGroupLimitsUpgrade.put(entitygroup, newUpgrade.getMaxLevel());
-                } else {
-                    if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode) == null) {
-                        Map<String, Integer> newMap = new TreeMap<>();
-                        newMap.put(entitygroup, newUpgrade.getMaxLevel());
-                        this.customMaxEntityGroupLimitsUpgrade.put(gameMode, newMap);
-                    } else {
-                        if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) == null
-                                || this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) < newUpgrade
-                                        .getMaxLevel())
-                            this.customMaxEntityGroupLimitsUpgrade.get(gameMode).put(entitygroup,
-                                    newUpgrade.getMaxLevel());
-                    }
-                }
-
+                updateMaxEntityGroupLimitsUpgrade(entitygroup, newUpgrade, gameMode);
                 tier.put(key, newUpgrade);
             }
             ents.put(entitygroup, tier);
         }
         return ents;
+    }
+
+    private void updateMaxEntityGroupLimitsUpgrade(String entitygroup, UpgradeTier upgrade, String gameMode) {
+        if (gameMode == null) {
+            if (this.maxEntityGroupLimitsUpgrade.get(entitygroup) == null
+                    || this.maxEntityGroupLimitsUpgrade.get(entitygroup) < upgrade.getMaxLevel())
+                this.maxEntityGroupLimitsUpgrade.put(entitygroup, upgrade.getMaxLevel());
+        } else {
+            if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode) == null) {
+                Map<String, Integer> newMap = new TreeMap<>();
+                newMap.put(entitygroup, upgrade.getMaxLevel());
+                this.customMaxEntityGroupLimitsUpgrade.put(gameMode, newMap);
+            } else {
+                if (this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) == null
+                        || this.customMaxEntityGroupLimitsUpgrade.get(gameMode).get(entitygroup) < upgrade.getMaxLevel())
+                    this.customMaxEntityGroupLimitsUpgrade.get(gameMode).put(entitygroup, upgrade.getMaxLevel());
+            }
+        }
     }
 
     private Map<String, Map<String, CommandUpgradeTier>> loadCommand(ConfigurationSection section, String gamemode) {
@@ -430,25 +488,7 @@ public class Settings {
                         name = cmdSection.getString(key);
                     } else {
                         CommandUpgradeTier newUpgrade = addCommandUpgradeSection(cmdSection, key);
-
-                        if (gamemode == null) {
-                            if (this.maxCommandUpgrade.get(commandId) == null
-                                    || this.maxCommandUpgrade.get(commandId) < newUpgrade.getMaxLevel()) {
-                                this.maxCommandUpgrade.put(commandId, newUpgrade.getMaxLevel());
-                            }
-                        } else {
-                            if (this.customMaxCommandUpgrade.get(gamemode) == null) {
-                                Map<String, Integer> newMap = new TreeMap<>();
-                                newMap.put(commandId, newUpgrade.getMaxLevel());
-                                this.customMaxCommandUpgrade.put(gamemode, newMap);
-                            } else {
-                                if (this.customMaxCommandUpgrade.get(gamemode).get(commandId) == null
-                                        || this.customMaxCommandUpgrade.get(gamemode).get(commandId) < newUpgrade
-                                                .getMaxLevel())
-                                    this.customMaxCommandUpgrade.get(gamemode).put(commandId, newUpgrade.getMaxLevel());
-                            }
-                        }
-
+                        updateMaxCommandUpgrade(commandId, newUpgrade, gamemode);
                         tier.put(key, newUpgrade);
                     }
                 }
@@ -463,6 +503,25 @@ public class Settings {
         return commands;
     }
 
+    private void updateMaxCommandUpgrade(String commandId, CommandUpgradeTier upgrade, String gamemode) {
+        if (gamemode == null) {
+            if (this.maxCommandUpgrade.get(commandId) == null
+                    || this.maxCommandUpgrade.get(commandId) < upgrade.getMaxLevel()) {
+                this.maxCommandUpgrade.put(commandId, upgrade.getMaxLevel());
+            }
+        } else {
+            if (this.customMaxCommandUpgrade.get(gamemode) == null) {
+                Map<String, Integer> newMap = new TreeMap<>();
+                newMap.put(commandId, upgrade.getMaxLevel());
+                this.customMaxCommandUpgrade.put(gamemode, newMap);
+            } else {
+                if (this.customMaxCommandUpgrade.get(gamemode).get(commandId) == null
+                        || this.customMaxCommandUpgrade.get(gamemode).get(commandId) < upgrade.getMaxLevel())
+                    this.customMaxCommandUpgrade.get(gamemode).put(commandId, upgrade.getMaxLevel());
+            }
+        }
+    }
+
     @NonNull
     private UpgradeTier addUpgradeSection(ConfigurationSection section, String key) {
         ConfigurationSection tierSection = section.getConfigurationSection(key);
@@ -471,19 +530,19 @@ public class Settings {
         upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
         upgradeTier.setUpgrade(parse(tierSection.getString("upgrade"), upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("island-min-level"))
+        if (tierSection.isSet(ISLAND_MIN_LEVEL))
             upgradeTier.setIslandMinLevel(
-                    parse(tierSection.getString("island-min-level"), upgradeTier.getExpressionVariable()));
+                    parse(tierSection.getString(ISLAND_MIN_LEVEL), upgradeTier.getExpressionVariable()));
         else
             upgradeTier.setIslandMinLevel(parse("0", upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("vault-cost"))
-            upgradeTier.setVaultCost(parse(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
+        if (tierSection.isSet(VAULT_COST))
+            upgradeTier.setVaultCost(parse(tierSection.getString(VAULT_COST), upgradeTier.getExpressionVariable()));
         else
             upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("permission-level"))
-            upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
+        if (tierSection.isSet(PERMISSION_LEVEL))
+            upgradeTier.setPermissionLevel(tierSection.getInt(PERMISSION_LEVEL));
         else
             upgradeTier.setPermissionLevel(0);
 
@@ -499,24 +558,24 @@ public class Settings {
         upgradeTier.setMaxLevel(tierSection.getInt("max-level"));
         upgradeTier.setUpgrade(parse("0", upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("island-min-level"))
+        if (tierSection.isSet(ISLAND_MIN_LEVEL))
             upgradeTier.setIslandMinLevel(
-                    parse(tierSection.getString("island-min-level"), upgradeTier.getExpressionVariable()));
+                    parse(tierSection.getString(ISLAND_MIN_LEVEL), upgradeTier.getExpressionVariable()));
         else
             upgradeTier.setIslandMinLevel(parse("0", upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("vault-cost"))
-            upgradeTier.setVaultCost(parse(tierSection.getString("vault-cost"), upgradeTier.getExpressionVariable()));
+        if (tierSection.isSet(VAULT_COST))
+            upgradeTier.setVaultCost(parse(tierSection.getString(VAULT_COST), upgradeTier.getExpressionVariable()));
         else
             upgradeTier.setVaultCost(parse("0", upgradeTier.getExpressionVariable()));
 
-        if (tierSection.isSet("permission-level"))
-            upgradeTier.setPermissionLevel(tierSection.getInt("permission-level"));
+        if (tierSection.isSet(PERMISSION_LEVEL))
+            upgradeTier.setPermissionLevel(tierSection.getInt(PERMISSION_LEVEL));
         else
             upgradeTier.setPermissionLevel(0);
 
-        if (tierSection.isSet("console") && tierSection.isBoolean("console"))
-            upgradeTier.setConsole(tierSection.getBoolean("console"));
+        if (tierSection.isSet(CONSOLE) && tierSection.isBoolean(CONSOLE))
+            upgradeTier.setConsole(tierSection.getBoolean(CONSOLE));
         else
             upgradeTier.setConsole(false);
 
@@ -616,7 +675,7 @@ public class Settings {
     public Set<Material> getMaterialsLimitsUpgrade() {
         Set<Material> materials = new HashSet<>();
 
-        customBlockLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> materials.addAll(addonUpgrade.keySet()));
+        customBlockLimitsUpgradeTierMap.forEach((gameMode, addonUpgrade) -> materials.addAll(addonUpgrade.keySet()));
         materials.addAll(blockLimitsUpgradeTierMap.keySet());
 
         return materials;
@@ -711,7 +770,7 @@ public class Settings {
     public Set<EntityType> getEntityLimitsUpgrade() {
         Set<EntityType> entity = new HashSet<>();
 
-        customEntityLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> entity.addAll(addonUpgrade.keySet()));
+        customEntityLimitsUpgradeTierMap.forEach((gameMode, addonUpgrade) -> entity.addAll(addonUpgrade.keySet()));
         entity.addAll(entityLimitsUpgradeTierMap.keySet());
 
         return entity;
@@ -725,7 +784,7 @@ public class Settings {
     public Set<String> getEntityGroupLimitsUpgrade() {
         Set<String> groups = new HashSet<>();
 
-        customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> groups.addAll(addonUpgrade.keySet()));
+        customEntityGroupLimitsUpgradeTierMap.forEach((gameMode, addonUpgrade) -> groups.addAll(addonUpgrade.keySet()));
         groups.addAll(entityGroupLimitsUpgradeTierMap.keySet());
 
         return groups;
@@ -739,10 +798,9 @@ public class Settings {
      * @return The maximum upgrade limit for the command.
      */
     public int getMaxCommandUpgrade(String commandUpgrade, String addon) {
-        if (customMaxCommandUpgrade.containsKey(addon)) {
-            if (customMaxCommandUpgrade.get(addon).containsKey(commandUpgrade)) {
-                return customMaxCommandUpgrade.get(addon).get(commandUpgrade);
-            }
+        if (customMaxCommandUpgrade.containsKey(addon)
+                && customMaxCommandUpgrade.get(addon).containsKey(commandUpgrade)) {
+            return customMaxCommandUpgrade.get(addon).get(commandUpgrade);
         }
         return maxCommandUpgrade.getOrDefault(commandUpgrade, 0);
     }
@@ -774,7 +832,7 @@ public class Settings {
     public Set<String> getCommandUpgrade() {
         Set<String> command = new HashSet<>();
 
-        customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> command.addAll(addonUpgrade.keySet()));
+        customCommandUpgradeTierMap.forEach((gameMode, addonUpgrade) -> command.addAll(addonUpgrade.keySet()));
         command.addAll(commandUpgradeTierMap.keySet());
 
         return command;
@@ -852,9 +910,9 @@ public class Settings {
         public UpgradeTier(String id) {
             this.id = id;
             this.expressionVariables = new TreeMap<>();
-            this.expressionVariables.put("[level]", 0.0);
-            this.expressionVariables.put("[islandLevel]", 0.0);
-            this.expressionVariables.put("[numberPlayer]", 0.0);
+            this.expressionVariables.put(FormulaVariables.LEVEL_VAR, 0.0);
+            this.expressionVariables.put(FormulaVariables.ISLAND_LEVEL_VAR, 0.0);
+            this.expressionVariables.put(FormulaVariables.NUMBER_PLAYER_VAR, 0.0);
         }
 
         /**
@@ -1129,7 +1187,8 @@ public class Settings {
 
     public static Expression parse(final String str, Map<String, Double> variables) {
         return new Object() {
-            int pos = -1, ch;
+            int pos = -1;
+            int ch;
 
             void nextChar() {
                 ch = (++pos < str.length()) ? str.charAt(pos) : -1;
@@ -1149,7 +1208,7 @@ public class Settings {
                 nextChar();
                 Expression x = parseExpression();
                 if (pos < str.length())
-                    throw new RuntimeException("Unexpected: " + (char) ch);
+                    throw new FormulaParseException("Unexpected: " + (char) ch);
                 return x;
             }
 
@@ -1163,10 +1222,12 @@ public class Settings {
                 Expression x = parseTerm();
                 for (;;) {
                     if (eat('+')) {
-                        Expression a = x, b = parseTerm();
+                        Expression a = x;
+                        Expression b = parseTerm();
                         x = (() -> a.eval() + b.eval());
                     } else if (eat('-')) {
-                        Expression a = x, b = parseTerm();
+                        Expression a = x;
+                        Expression b = parseTerm();
                         x = (() -> a.eval() - b.eval());
                     } else
                         return x;
@@ -1177,10 +1238,12 @@ public class Settings {
                 Expression x = parseFactor();
                 for (;;) {
                     if (eat('*')) {
-                        Expression a = x, b = parseFactor();
+                        Expression a = x;
+                        Expression b = parseFactor();
                         x = (() -> a.eval() * b.eval());
                     } else if (eat('/')) {
-                        Expression a = x, b = parseFactor();
+                        Expression a = x;
+                        Expression b = parseFactor();
                         x = (() -> a.eval() / b.eval());
                     } else
                         return x;
@@ -1199,37 +1262,58 @@ public class Settings {
                 if (eat('(')) { // parentheses
                     x = parseExpression();
                     eat(')');
-                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
-                    while ((ch >= '0' && ch <= '9') || ch == '.')
-                        nextChar();
-                    final int innerPos = this.pos;
-                    x = (() -> Double.parseDouble(str.substring(startPos, innerPos)));
-                } else if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']') { // functions
-                    while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']')
-                        nextChar();
-                    String func = str.substring(startPos, this.pos);
-                    if (funct.contains(func)) {
-                        Expression a = parseFactor();
-                        x = switch (func) {
-                            case "sqrt" -> (() -> Math.sqrt(a.eval()));
-                            case "sin" -> (() -> Math.sin(Math.toRadians(a.eval())));
-                            case "cos" -> (() -> Math.cos(Math.toRadians(a.eval())));
-                            case "tan" -> (() -> Math.tan(Math.toRadians(a.eval())));
-                            default -> throw new RuntimeException("Unknown function: " + func);
-                        };
-                    } else {
-                        x = (() -> variables.get(func));
-                    }
+                } else if (isNumberChar(ch)) { // numbers
+                    x = parseNumber(startPos);
+                } else if (isIdentifierStart(ch)) { // functions and variables
+                    x = parseFunctionOrVariable(startPos);
                 } else {
-                    throw new RuntimeException("Unexpected: " + (char) ch);
+                    throw new FormulaParseException("Unexpected: " + (char) ch);
                 }
 
                 if (eat('^')) {
-                    Expression a = x, b = parseFactor();
+                    Expression a = x;
+                    Expression b = parseFactor();
                     x = (() -> Math.pow(a.eval(), b.eval())); // exponentiation
                 }
 
                 return x;
+            }
+
+            boolean isNumberChar(int c) {
+                return (c >= '0' && c <= '9') || c == '.';
+            }
+
+            boolean isIdentifierStart(int c) {
+                return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '[' || c == ']';
+            }
+
+            Expression parseNumber(int startPos) {
+                while ((ch >= '0' && ch <= '9') || ch == '.')
+                    nextChar();
+                final int innerPos = this.pos;
+                return (() -> Double.parseDouble(str.substring(startPos, innerPos)));
+            }
+
+            Expression parseFunctionOrVariable(int startPos) {
+                while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '[' || ch == ']')
+                    nextChar();
+                String func = str.substring(startPos, this.pos);
+                if (funct.contains(func)) {
+                    return parseBuiltInFunction(func);
+                } else {
+                    return (() -> variables.get(func));
+                }
+            }
+
+            Expression parseBuiltInFunction(String func) {
+                Expression a = parseFactor();
+                return switch (func) {
+                    case "sqrt" -> (() -> Math.sqrt(a.eval()));
+                    case "sin" -> (() -> Math.sin(Math.toRadians(a.eval())));
+                    case "cos" -> (() -> Math.cos(Math.toRadians(a.eval())));
+                    case "tan" -> (() -> Math.tan(Math.toRadians(a.eval())));
+                    default -> throw new FormulaParseException("Unknown function: " + func);
+                };
             }
         }.parse();
     }

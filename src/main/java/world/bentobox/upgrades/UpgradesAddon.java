@@ -35,7 +35,6 @@ import world.bentobox.upgrades.dataobjects.rewards.CropGrowthReward;
 import world.bentobox.upgrades.dataobjects.rewards.LimitsReward;
 import world.bentobox.upgrades.dataobjects.rewards.RangeReward;
 import world.bentobox.upgrades.dataobjects.rewards.SpawnerReward;
-import world.bentobox.upgrades.DefaultUpgradeSeeder;
 import world.bentobox.upgrades.upgrades.DatabaseUpgrade;
 import world.bentobox.upgrades.listeners.CropGrowthListener;
 import world.bentobox.upgrades.listeners.IslandChangeListener;
@@ -252,7 +251,7 @@ public class UpgradesAddon extends Addon {
     }
 
     public void refreshDatabaseUpgrades() {
-        this.upgrade.removeIf(u -> u instanceof DatabaseUpgrade);
+        this.upgrade.removeIf(DatabaseUpgrade.class::isInstance);
         this.hookedGameModes.forEach(gameModeName ->
                 this.upgradesDataManager.getUpgradeDataByGameMode(gameModeName).forEach(data -> {
                     if (data.isActive()) this.registerUpgrade(new DatabaseUpgrade(this, data));

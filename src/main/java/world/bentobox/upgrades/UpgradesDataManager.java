@@ -134,9 +134,8 @@ public class UpgradesDataManager {
 	 * Comparator used to sort the upgradeTier
 	 * Compare the startLevel, from lowest to highest
 	 */
-	private final Comparator<UpgradeTier> upgradeTierComparator = (upgrade1, upgrade2) -> {
-		return Integer.compare(upgrade1.getStartLevel(), upgrade2.getStartLevel());
-	};
+	private final Comparator<UpgradeTier> upgradeTierComparator = (upgrade1, upgrade2) ->
+		Integer.compare(upgrade1.getStartLevel(), upgrade2.getStartLevel());
 	
 	// ------------------------------------------------------------
 	// Section: Loading
@@ -196,15 +195,13 @@ public class UpgradesDataManager {
 		}
 		
 		// Check if uniqueId is already in cache and if it can overwrite it
-		if (this.upgradeDataCache.containsKey(upgrade.getUniqueId())) {
-			if (!overwrite) {
-				if (user != null)
-					user.sendMessage("upgrades.message.skipupgradeload",
-							UPGRADEID, upgrade.getUniqueId(),
-							WHAT, "data");
-				this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
-				return false;
-			}
+		if (this.upgradeDataCache.containsKey(upgrade.getUniqueId()) && !overwrite) {
+			if (user != null)
+				user.sendMessage("upgrades.message.skipupgradeload",
+						UPGRADEID, upgrade.getUniqueId(),
+						WHAT, "data");
+			this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
+			return false;
 		}
 		
 		// Add to cache
@@ -262,15 +259,13 @@ public class UpgradesDataManager {
 		}
 		
 		// Check if uniqueId is already in cache and if it can overwrite it
-		if (this.upgradeTierCache.containsKey(upgrade.getUniqueId())) {
-			if (!overwrite) {
-				if (user != null)
-					user.sendMessage("upgrades.message.skipupgradeload",
-							UPGRADEID, upgrade.getUniqueId(),
-							WHAT, "tier");
-				this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
-				return false;
-			}
+		if (this.upgradeTierCache.containsKey(upgrade.getUniqueId()) && !overwrite) {
+			if (user != null)
+				user.sendMessage("upgrades.message.skipupgradeload",
+						UPGRADEID, upgrade.getUniqueId(),
+						WHAT, "tier");
+			this.addon.logWarning("Tried to load " + upgrade.getUniqueId() + " but it was already loaded");
+			return false;
 		}
 		
 		// Add to cache
@@ -379,7 +374,7 @@ public class UpgradesDataManager {
 		return this.upgradeDataCache.values().stream()
 				.filter(upgrade -> upgrade.getWorld().equals(world))
 				.sorted(this.upgradeDataComparator)
-				.collect(Collectors.toList());
+				.toList();
 	}
 	
 	/**
@@ -418,7 +413,7 @@ public class UpgradesDataManager {
 		return this.upgradeTierCache.values().stream()
 				.filter(upgrade -> upgrade.getUpgrade().equals(upgradeDataId))
 				.sorted(this.upgradeTierComparator)
-				.collect(Collectors.toList());
+				.toList();
 	}
 	
 	/**

@@ -66,7 +66,7 @@ public class RangeUpgrade extends UpgradeAPI {
         UpgradeValues upgrade;
 
         // If null -> no next upgrades
-        if (upgradeInfos == null) {
+        if (upgradeInfos.isEmpty()) {
             upgrade = null;
             this.setOwnDescription(user, null);
         } else {

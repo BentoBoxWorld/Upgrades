@@ -10,13 +10,13 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.dataobjects.FormulaVariables;
 import world.bentobox.upgrades.dataobjects.UpgradeTier;
 import world.bentobox.upgrades.ui.utils.AbPanel;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class SpawnerReward extends Reward {
@@ -67,8 +67,8 @@ public class SpawnerReward extends Reward {
             List<RewardDB> rewards = tier.getRewards();
             rewards.add(dbObject);
             tier.setRewards(rewards);
-        } else if (saved instanceof SpawnerRewardDB) {
-            dbObject = (SpawnerRewardDB) saved;
+        } else if (saved instanceof SpawnerRewardDB spawnerRewardDB) {
+            dbObject = spawnerRewardDB;
         } else {
             throw new InvalidParameterException(
                     "DB object in SpawnerReward which is not a SpawnerRewardDB");
@@ -130,10 +130,7 @@ public class SpawnerReward extends Reward {
                         .askOneInput(this.doSetRule(),
                                 input -> {
                                     try {
-                                        Map<String, Double> vars = new TreeMap<>();
-                                        vars.put(LEVEL_VAR, 1.0);
-                                        vars.put(ISLAND_LEVEL_VAR, 1.0);
-                                        vars.put(NUMBER_PLAYER_VAR, 1.0);
+                                        Map<String, Double> vars = FormulaVariables.of(1, 1, 1);
                                         Settings.evaluate(input, vars);
                                         return true;
                                     } catch (Exception e) {
@@ -149,7 +146,7 @@ public class SpawnerReward extends Reward {
         }
 
         private Consumer<String> doSetRule() {
-            return (rule) -> {
+            return rule -> {
                 this.saved.setSpawnBonusEquation(rule);
                 this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
                 this.createInterface();

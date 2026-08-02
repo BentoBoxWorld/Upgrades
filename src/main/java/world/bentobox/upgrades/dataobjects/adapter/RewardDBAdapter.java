@@ -18,7 +18,7 @@ public class RewardDBAdapter
         List<RewardDB> list = new ArrayList<>();
         JsonArray jsonArray = json.getAsJsonArray();
 
-        jsonArray.forEach((entry) -> {
+        jsonArray.forEach(entry -> {
             JsonObject obj = entry.getAsJsonObject();
             String type = obj.get("class")
                     .getAsString();
@@ -38,7 +38,7 @@ public class RewardDBAdapter
     public JsonElement serialize(List<RewardDB> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonArray jsonArray = new JsonArray();
 
-        src.forEach((obj) -> {
+        src.forEach(obj -> {
             JsonObject result = new JsonObject();
 
             result.add("class", new JsonPrimitive(obj.getClass()

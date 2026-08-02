@@ -5,11 +5,11 @@ import org.bukkit.Material;
 import world.bentobox.bentobox.api.user.User;
 
 public interface PanelPublicItem {
-	abstract public Material getIcon();
+	public abstract Material getIcon();
 
-	abstract public String getName();
+	public abstract String getName();
 
-	abstract public String getPublicName(User user);
+	public abstract String getPublicName(User user);
 
-	abstract public String getPublicDescription(User user);
+	public abstract String getPublicDescription(User user);
 }

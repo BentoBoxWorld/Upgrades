@@ -32,7 +32,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
 /**
  * @author tastybento
  */
-public class UpgradeTest {
+class UpgradeTest {
 
     @Mock
     private UpgradesAddon addon;
@@ -53,7 +53,7 @@ public class UpgradeTest {
     private TestUpgrade testUpgrade;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockBukkit.mock();
 
         MockitoAnnotations.openMocks(this);
@@ -82,7 +82,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testUpgradeInitialization() {
+    void testUpgradeInitialization() {
         assertNotNull(testUpgrade.getUpgradesAddon());
         assertEquals("test_upgrade", testUpgrade.getName());
         assertEquals("Test Upgrade", testUpgrade.getDisplayName());
@@ -90,7 +90,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testCanUpgrade_WithSufficientResources() {
+    void testCanUpgrade_WithSufficientResources() {
         UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
@@ -103,7 +103,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testCanUpgrade_WithInsufficientResources() {
+    void testCanUpgrade_WithInsufficientResources() {
         UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(10, 200, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
@@ -116,7 +116,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testDoUpgrade_SuccessfulTransaction() {
+    void testDoUpgrade_SuccessfulTransaction() {
         UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
@@ -129,7 +129,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testDoUpgrade_FailedTransaction() {
+    void testDoUpgrade_FailedTransaction() {
         UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
@@ -141,7 +141,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testGetAndSetDescription() {
+    void testGetAndSetDescription() {
         String description = "Upgrade description";
         testUpgrade.setOwnDescription(user, description);
 
@@ -149,7 +149,7 @@ public class UpgradeTest {
     }
 
     @Test
-    public void testGetAndSetUpgradeValues() {
+    void testGetAndSetUpgradeValues() {
         UpgradeAPI.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 

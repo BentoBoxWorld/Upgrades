@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 
@@ -78,7 +77,9 @@ public class AbPanel {
 	 * Hook called at the start of getBuild() before building the panel.
 	 * Override in subclasses to refresh panel content dynamically.
 	 */
-	protected void onBuildHook() {}
+	protected void onBuildHook() {
+		// Intentionally empty; subclasses override to add custom logic
+	}
 	
 	/**
 	 * Clears all named panel items (but not the border).
@@ -95,13 +96,9 @@ public class AbPanel {
 		builder.user(this.user);
 		builder.name(this.title);
 		
-		this.border.forEach((PanelSlot item) -> {
-			builder.item(item.getSlot(), item.getItem());
-		});
-		
-		this.items.forEach((String name, PanelSlot item) -> {
-			builder.item(item.getSlot(), item.getItem());
-		});
+		this.border.forEach((PanelSlot item) -> builder.item(item.getSlot(), item.getItem()));
+
+		this.items.forEach((String name, PanelSlot item) -> builder.item(item.getSlot(), item.getItem()));
 		
 		return builder;
 	}
@@ -184,7 +181,7 @@ public class AbPanel {
 		List<String> lines = new ArrayList<>();
 		StringBuilder current = new StringBuilder();
 		for (String word : text.split(" ")) {
-			if (current.length() == 0) {
+			if (current.isEmpty()) {
 				current.append(word);
 			} else if (current.length() + 1 + word.length() <= maxWidth) {
 				current.append(' ').append(word);
@@ -193,7 +190,7 @@ public class AbPanel {
 				current = new StringBuilder(word);
 			}
 		}
-		if (current.length() > 0) lines.add(current.toString());
+		if (!current.isEmpty()) lines.add(current.toString());
 		return lines;
 	}
 
@@ -208,7 +205,7 @@ public class AbPanel {
 		if (lore == null) return Collections.emptyList();
 		return lore.stream()
 				.flatMap(line -> wrapText(line, LORE_MAX_WIDTH).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	protected void setItems(String name, PanelItem item, int slot) {

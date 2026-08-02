@@ -26,7 +26,7 @@ import world.bentobox.upgrades.config.Settings.Expression;
 /**
  * @author tastybento
  */
-public class SettingsTest {
+class SettingsTest {
 
     @Mock
     private UpgradesAddon addon;
@@ -37,7 +37,7 @@ public class SettingsTest {
      * @throws java.lang.Exception
      */
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         MockBukkit.mock();
         // Config
@@ -52,7 +52,7 @@ public class SettingsTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
@@ -60,7 +60,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#Settings(world.bentobox.upgrades.UpgradesAddon)}.
      */
     @Test
-    public void testSettings() {
+    void testSettings() {
         assertNotNull(settings);
     }
 
@@ -68,7 +68,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDisabledGameModes()}.
      */
     @Test
-    public void testGetDisabledGameModes() {
+    void testGetDisabledGameModes() {
         assertTrue(settings.getDisabledGameModes().isEmpty());
     }
 
@@ -76,7 +76,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getHasRangeUpgrade()}.
      */
     @Test
-    public void testGetHasRangeUpgrade() {
+    void testGetHasRangeUpgrade() {
         assertTrue(settings.getHasRangeUpgrade());
     }
 
@@ -84,7 +84,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxRangeUpgrade(java.lang.String)}.
      */
     @Test
-    public void testGetMaxRangeUpgrade() {
+    void testGetMaxRangeUpgrade() {
         assertEquals(10, settings.getMaxRangeUpgrade(""));
     }
 
@@ -92,7 +92,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultRangeUpgradeTierMap()}.
      */
     @Test
-    public void testGetDefaultRangeUpgradeTierMap() {
+    void testGetDefaultRangeUpgradeTierMap() {
         assertFalse(settings.getDefaultRangeUpgradeTierMap().isEmpty());
     }
 
@@ -100,7 +100,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonRangeUpgradeTierMap(java.lang.String)}.
      */
     @Test
-    public void testGetAddonRangeUpgradeTierMap() {
+    void testGetAddonRangeUpgradeTierMap() {
         assertTrue(settings.getAddonRangeUpgradeTierMap("").isEmpty());
     }
 
@@ -108,7 +108,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxBlockLimitsUpgrade(org.bukkit.Material, java.lang.String)}.
      */
     @Test
-    public void testGetMaxBlockLimitsUpgrade() {
+    void testGetMaxBlockLimitsUpgrade() {
         assertEquals(0, settings.getMaxBlockLimitsUpgrade(Material.STONE, ""));
     }
 
@@ -116,7 +116,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultBlockLimitsUpgradeTierMap()}.
      */
     @Test
-    public void testGetDefaultBlockLimitsUpgradeTierMap() {
+    void testGetDefaultBlockLimitsUpgradeTierMap() {
         assertFalse(settings.getDefaultBlockLimitsUpgradeTierMap().isEmpty());
 
     }
@@ -125,7 +125,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonBlockLimitsUpgradeTierMap(java.lang.String)}.
      */
     @Test
-    public void testGetAddonBlockLimitsUpgradeTierMap() {
+    void testGetAddonBlockLimitsUpgradeTierMap() {
         assertTrue(settings.getAddonBlockLimitsUpgradeTierMap("").isEmpty());
     }
 
@@ -133,7 +133,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaterialsLimitsUpgrade()}.
      */
     @Test
-    public void testGetMaterialsLimitsUpgrade() {
+    void testGetMaterialsLimitsUpgrade() {
         assertFalse(settings.getMaterialsLimitsUpgrade().isEmpty());
     }
 
@@ -141,7 +141,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityIcon(org.bukkit.entity.EntityType)}.
      */
     @Test
-    public void testGetEntityIcon() {
+    void testGetEntityIcon() {
         assertNull(settings.getEntityIcon(EntityType.CAT));
     }
 
@@ -149,7 +149,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityGroupIcon(java.lang.String)}.
      */
     @Test
-    public void testGetEntityGroupIcon() {
+    void testGetEntityGroupIcon() {
         assertNull(settings.getEntityGroupIcon(""));
     }
 
@@ -157,7 +157,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxEntityLimitsUpgrade(org.bukkit.entity.EntityType, java.lang.String)}.
      */
     @Test
-    public void testGetMaxEntityLimitsUpgrade() {
+    void testGetMaxEntityLimitsUpgrade() {
         assertEquals(0, settings.getMaxEntityLimitsUpgrade(EntityType.HOPPER_MINECART, ""));
     }
 
@@ -165,7 +165,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxEntityGroupLimitsUpgrade(java.lang.String, java.lang.String)}.
      */
     @Test
-    public void testGetMaxEntityGroupLimitsUpgrade() {
+    void testGetMaxEntityGroupLimitsUpgrade() {
         assertEquals(0, settings.getMaxEntityGroupLimitsUpgrade("", ""));
     }
 
@@ -173,7 +173,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultEntityLimitsUpgradeTierMap()}.
      */
     @Test
-    public void testGetDefaultEntityLimitsUpgradeTierMap() {
+    void testGetDefaultEntityLimitsUpgradeTierMap() {
         assertFalse(settings.getDefaultEntityLimitsUpgradeTierMap().isEmpty());
     }
 
@@ -181,7 +181,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultEntityGroupLimitsUpgradeTierMap()}.
      */
     @Test
-    public void testGetDefaultEntityGroupLimitsUpgradeTierMap() {
+    void testGetDefaultEntityGroupLimitsUpgradeTierMap() {
         assertFalse(settings.getDefaultEntityGroupLimitsUpgradeTierMap().isEmpty());
     }
 
@@ -189,7 +189,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonEntityLimitsUpgradeTierMap(java.lang.String)}.
      */
     @Test
-    public void testGetAddonEntityLimitsUpgradeTierMap() {
+    void testGetAddonEntityLimitsUpgradeTierMap() {
         assertTrue(settings.getAddonEntityLimitsUpgradeTierMap("").isEmpty());
     }
 
@@ -197,7 +197,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonEntityGroupLimitsUpgradeTierMap(java.lang.String)}.
      */
     @Test
-    public void testGetAddonEntityGroupLimitsUpgradeTierMap() {
+    void testGetAddonEntityGroupLimitsUpgradeTierMap() {
         assertTrue(settings.getAddonEntityGroupLimitsUpgradeTierMap("").isEmpty());
     }
 
@@ -205,7 +205,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityLimitsUpgrade()}.
      */
     @Test
-    public void testGetEntityLimitsUpgrade() {
+    void testGetEntityLimitsUpgrade() {
         assertFalse(settings.getEntityLimitsUpgrade().isEmpty());
     }
 
@@ -213,7 +213,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityGroupLimitsUpgrade()}.
      */
     @Test
-    public void testGetEntityGroupLimitsUpgrade() {
+    void testGetEntityGroupLimitsUpgrade() {
         assertFalse(settings.getEntityGroupLimitsUpgrade().isEmpty());
     }
 
@@ -221,7 +221,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxCommandUpgrade(java.lang.String, java.lang.String)}.
      */
     @Test
-    public void testGetMaxCommandUpgrade() {
+    void testGetMaxCommandUpgrade() {
         assertEquals(0, settings.getMaxCommandUpgrade("", ""));
     }
 
@@ -229,7 +229,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultCommandUpgradeTierMap()}.
      */
     @Test
-    public void testGetDefaultCommandUpgradeTierMap() {
+    void testGetDefaultCommandUpgradeTierMap() {
         assertFalse(settings.getDefaultCommandUpgradeTierMap().isEmpty());
     }
 
@@ -237,7 +237,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonCommandUpgradeTierMap(java.lang.String)}.
      */
     @Test
-    public void testGetAddonCommandUpgradeTierMap() {
+    void testGetAddonCommandUpgradeTierMap() {
         assertTrue(settings.getAddonCommandUpgradeTierMap("").isEmpty());
     }
 
@@ -245,7 +245,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandUpgrade()}.
      */
     @Test
-    public void testGetCommandUpgrade() {
+    void testGetCommandUpgrade() {
         assertFalse(settings.getCommandUpgrade().isEmpty());
     }
 
@@ -253,7 +253,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandIcon(java.lang.String)}.
      */
     @Test
-    public void testGetCommandIcon() {
+    void testGetCommandIcon() {
         assertNull(settings.getCommandIcon(""));
     }
 
@@ -261,7 +261,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandName(java.lang.String)}.
      */
     @Test
-    public void testGetCommandName() {
+    void testGetCommandName() {
         assertNull(settings.getCommandName(""));
     }
 
@@ -269,7 +269,7 @@ public class SettingsTest {
      * Test method for {@link world.bentobox.upgrades.config.Settings#parse(java.lang.String, java.util.Map)}.
      */
     @Test
-    public void testParse() {
+    void testParse() {
         Expression expression = Settings.parse("40*200", Map.of());
         assertEquals(8000D, expression.eval(), 0.1D);
     }

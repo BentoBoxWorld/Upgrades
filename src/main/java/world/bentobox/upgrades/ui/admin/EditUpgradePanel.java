@@ -134,7 +134,7 @@ public class EditUpgradePanel extends AbPanel {
 		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
 	}
 
-	private Consumer<String> doSetName = (name) -> {
+	private Consumer<String> doSetName = name -> {
 		applySetName(name);
 		this.setButton();
 		this.getBuild().build();
@@ -156,7 +156,7 @@ public class EditUpgradePanel extends AbPanel {
 		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
 	}
 
-	private Consumer<List<String>> doSetDescription = (descrip) -> {
+	private Consumer<List<String>> doSetDescription = descrip -> {
 		applySetDescription(descrip);
 		if (descrip != null) {
 			this.setButton();
@@ -194,7 +194,7 @@ public class EditUpgradePanel extends AbPanel {
 	private Consumer<String> doTierAdd = input -> {
 		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
 		List<UpgradeTier> tiers = this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade);
-		int lastpos = tiers.size() > 0 ? tiers.get(tiers.size() - 1).getEndLevel() + 1 : 0;
+		int lastpos = !tiers.isEmpty() ? tiers.get(tiers.size() - 1).getEndLevel() + 1 : 0;
 
 		UpgradeTier newTier = this.getAddon().getUpgradeDataManager()
 				.createUpgradeTier(uniqueId, this.upgrade, lastpos, lastpos, this.getUser());
@@ -221,13 +221,11 @@ public class EditUpgradePanel extends AbPanel {
 				this.getGamemode(), client, this.upgrade,
 				client.getTranslation("upgrades.ui.titles.editlist"),
 				this,
-				tier -> {
-					new EditTierPanel(this.getAddon(),
+				tier -> new EditTierPanel(this.getAddon(),
 							this.getGamemode(), client, tier,
 							this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade),
 							this)
-						.getBuild().build();
-				})
+						.getBuild().build())
 			.getBuild().build();
 		return true;
 	};
@@ -241,18 +239,16 @@ public class EditUpgradePanel extends AbPanel {
 		return true;
 	};
 	
-	private Consumer<UpgradeTier> doTierDelete = tier -> {
-		new YesNoPanel(this.getAddon(),
-				this.getGamemode(), this.getUser(),
-				this.getUser().getTranslation("upgrades.ui.titles.delete",
-						"[name]", tier.getUniqueId()),
-				this, delete -> {
-					if (delete) {
-						this.getAddon().getUpgradeDataManager().deleteUpgradeTier(tier);
-					}
-					this.getBuild().build();
-				}).getBuild().build();
-	};
+	private Consumer<UpgradeTier> doTierDelete = tier -> new YesNoPanel(this.getAddon(),
+			this.getGamemode(), this.getUser(),
+			this.getUser().getTranslation("upgrades.ui.titles.delete",
+					"[name]", tier.getUniqueId()),
+			this, delete -> {
+				if (Boolean.TRUE.equals(delete)) {
+					this.getAddon().getUpgradeDataManager().deleteUpgradeTier(tier);
+				}
+				this.getBuild().build();
+			}).getBuild().build();
 	
 	private ClickHandler onSetOrder = (panel, client, click, slot) -> {
 		this.getAddon().getChatInput().askOneNumber(this.doSetOrder,
@@ -268,7 +264,7 @@ public class EditUpgradePanel extends AbPanel {
 		this.getAddon().getUpgradeDataManager().saveUpgradeData(this.upgrade);
 	}
 
-	private Consumer<Number> doSetOrder = (order) -> {
+	private Consumer<Number> doSetOrder = order -> {
 		applySetOrder(order.intValue());
 		this.setButton();
 		this.getBuild().build();
