@@ -72,45 +72,6 @@ class SettingsTest {
         assertTrue(settings.getDisabledGameModes().isEmpty());
     }
 
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getHasRangeUpgrade()}.
-     */
-    @Test
-    void testGetHasRangeUpgrade() {
-        assertTrue(settings.getHasRangeUpgrade());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxRangeUpgrade(java.lang.String)}.
-     */
-    @Test
-    void testGetMaxRangeUpgrade() {
-        assertEquals(10, settings.getMaxRangeUpgrade(""));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultRangeUpgradeTierMap()}.
-     */
-    @Test
-    void testGetDefaultRangeUpgradeTierMap() {
-        assertFalse(settings.getDefaultRangeUpgradeTierMap().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonRangeUpgradeTierMap(java.lang.String)}.
-     */
-    @Test
-    void testGetAddonRangeUpgradeTierMap() {
-        assertTrue(settings.getAddonRangeUpgradeTierMap("").isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxBlockLimitsUpgrade(org.bukkit.Material, java.lang.String)}.
-     */
-    @Test
-    void testGetMaxBlockLimitsUpgrade() {
-        assertEquals(0, settings.getMaxBlockLimitsUpgrade(Material.STONE, ""));
-    }
 
     /**
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultBlockLimitsUpgradeTierMap()}.
@@ -122,6 +83,35 @@ class SettingsTest {
     }
 
     /**
+     * The limits sections are the only part of config.yml still read at runtime: the
+     * perm-check listeners use these key sets to decide which Limits permission checks
+     * to suppress. Pin the shipped keys so a config edit cannot silently break that.
+     */
+    @Test
+    void testShippedConfigDeclaresLimitsKeysUsedByPermCheckListeners() {
+        assertTrue(settings.getDefaultBlockLimitsUpgradeTierMap().containsKey(Material.HOPPER));
+        assertTrue(settings.getDefaultEntityLimitsUpgradeTierMap().containsKey(EntityType.CHICKEN));
+        assertTrue(settings.getDefaultEntityGroupLimitsUpgradeTierMap().containsKey("group1"));
+    }
+
+    /**
+     * Entity limits used to require a matching entry in the removed entity-icon section.
+     * CHICKEN must still parse now that no icons are configured.
+     */
+    @Test
+    void testEntityLimitsParseWithoutIconSection() {
+        assertFalse(settings.getDefaultEntityLimitsUpgradeTierMap().isEmpty());
+        assertTrue(settings.getDefaultEntityLimitsUpgradeTierMap().containsKey(EntityType.CHICKEN));
+    }
+
+    @Test
+    void testGameModeOverridesDeclareLimitsKeys() {
+        assertTrue(settings.getAddonBlockLimitsUpgradeTierMap("BSkyBlock").containsKey(Material.HOPPER));
+        assertTrue(settings.getAddonEntityLimitsUpgradeTierMap("BSkyBlock").containsKey(EntityType.CHICKEN));
+        assertTrue(settings.getAddonEntityGroupLimitsUpgradeTierMap("BSkyBlock").containsKey("group1"));
+    }
+
+    /**
      * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonBlockLimitsUpgradeTierMap(java.lang.String)}.
      */
     @Test
@@ -129,45 +119,6 @@ class SettingsTest {
         assertTrue(settings.getAddonBlockLimitsUpgradeTierMap("").isEmpty());
     }
 
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaterialsLimitsUpgrade()}.
-     */
-    @Test
-    void testGetMaterialsLimitsUpgrade() {
-        assertFalse(settings.getMaterialsLimitsUpgrade().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityIcon(org.bukkit.entity.EntityType)}.
-     */
-    @Test
-    void testGetEntityIcon() {
-        assertNull(settings.getEntityIcon(EntityType.CAT));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityGroupIcon(java.lang.String)}.
-     */
-    @Test
-    void testGetEntityGroupIcon() {
-        assertNull(settings.getEntityGroupIcon(""));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxEntityLimitsUpgrade(org.bukkit.entity.EntityType, java.lang.String)}.
-     */
-    @Test
-    void testGetMaxEntityLimitsUpgrade() {
-        assertEquals(0, settings.getMaxEntityLimitsUpgrade(EntityType.HOPPER_MINECART, ""));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxEntityGroupLimitsUpgrade(java.lang.String, java.lang.String)}.
-     */
-    @Test
-    void testGetMaxEntityGroupLimitsUpgrade() {
-        assertEquals(0, settings.getMaxEntityGroupLimitsUpgrade("", ""));
-    }
 
     /**
      * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultEntityLimitsUpgradeTierMap()}.
@@ -201,69 +152,6 @@ class SettingsTest {
         assertTrue(settings.getAddonEntityGroupLimitsUpgradeTierMap("").isEmpty());
     }
 
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityLimitsUpgrade()}.
-     */
-    @Test
-    void testGetEntityLimitsUpgrade() {
-        assertFalse(settings.getEntityLimitsUpgrade().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getEntityGroupLimitsUpgrade()}.
-     */
-    @Test
-    void testGetEntityGroupLimitsUpgrade() {
-        assertFalse(settings.getEntityGroupLimitsUpgrade().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getMaxCommandUpgrade(java.lang.String, java.lang.String)}.
-     */
-    @Test
-    void testGetMaxCommandUpgrade() {
-        assertEquals(0, settings.getMaxCommandUpgrade("", ""));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getDefaultCommandUpgradeTierMap()}.
-     */
-    @Test
-    void testGetDefaultCommandUpgradeTierMap() {
-        assertFalse(settings.getDefaultCommandUpgradeTierMap().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getAddonCommandUpgradeTierMap(java.lang.String)}.
-     */
-    @Test
-    void testGetAddonCommandUpgradeTierMap() {
-        assertTrue(settings.getAddonCommandUpgradeTierMap("").isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandUpgrade()}.
-     */
-    @Test
-    void testGetCommandUpgrade() {
-        assertFalse(settings.getCommandUpgrade().isEmpty());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandIcon(java.lang.String)}.
-     */
-    @Test
-    void testGetCommandIcon() {
-        assertNull(settings.getCommandIcon(""));
-    }
-
-    /**
-     * Test method for {@link world.bentobox.upgrades.config.Settings#getCommandName(java.lang.String)}.
-     */
-    @Test
-    void testGetCommandName() {
-        assertNull(settings.getCommandName(""));
-    }
 
     /**
      * Test method for {@link world.bentobox.upgrades.config.Settings#parse(java.lang.String, java.util.Map)}.
