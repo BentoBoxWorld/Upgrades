@@ -9,7 +9,8 @@ upgrades:
     rangeovermax: "&c 尝试将岛屿边界扩大到最大值以上? 请将此问题告诉管理员"
     placeblock: "&c 在购买此升级之前, 您至少需要放置/破坏一个方块"
   ui: 
-    upgradepanel: 
+    upgradepanel:
+      currentlevel: "&7 等级: &a[current]&7 / &2[max]"
       islandneed: "岛屿最低等级: [islandlevel]"
       limitsupgrade: "[block] limits upgrade of [level]"
       limitsupgradedone: "&a 您岛屿的 [block] 限制已升级到 [level]"

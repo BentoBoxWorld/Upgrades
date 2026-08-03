@@ -158,6 +158,18 @@ public abstract class UpgradeAPI {
     }
 
     /**
+     * The highest level this upgrade can reach on the given island, used by the
+     * panel to show "current / max" in the item lore. Return -1 (the default) if
+     * the maximum is unknown and the lore line should be omitted.
+     *
+     * @param island island being viewed
+     * @return maximum purchasable level, or -1 if unknown
+     */
+    public int getMaxLevel(Island island) {
+        return -1;
+    }
+
+    /**
      * @return The actual description for the user
      */
     public String getOwnDescription(User user) {

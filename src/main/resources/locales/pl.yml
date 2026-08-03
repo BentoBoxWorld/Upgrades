@@ -15,6 +15,7 @@ upgrades:
       jeden blok"
   ui:
     upgradepanel:
+      currentlevel: "&7 Poziom: &a[current]&7 / &2[max]"
       islandneed: 'Minimalny poziom wyspy: [islandlevel]'
       limitsupgrade: Limit dla [block] to [level]
       limitsupgradedone: "&a Limit [block] na Twojej wyspy zostały zwiększone na [level]"

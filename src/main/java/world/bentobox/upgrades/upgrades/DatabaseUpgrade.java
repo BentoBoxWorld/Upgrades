@@ -131,6 +131,18 @@ public class DatabaseUpgrade extends UpgradeAPI {
     }
 
     /**
+     * A tier covering levels startLevel..endLevel allows a purchase at each of those
+     * levels, so the highest reachable level is the largest endLevel + 1.
+     */
+    @Override
+    public int getMaxLevel(Island island) {
+        List<UpgradeTier> tiers = this.getUpgradesAddon().getUpgradeDataManager()
+                .getUpgradeTierByUpgradeData(upgradeData);
+        return tiers.isEmpty() ? -1
+                : tiers.stream().mapToInt(UpgradeTier::getEndLevel).max().getAsInt() + 1;
+    }
+
+    /**
      * Find the tier that covers the current level (i.e. the next purchase available).
      * Level 0 = not yet purchased; a tier with startLevel=0, endLevel=0 means one purchase.
      */

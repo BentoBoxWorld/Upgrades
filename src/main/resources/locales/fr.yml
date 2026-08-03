@@ -4,6 +4,7 @@ upgrades:
       description: Ouvre l'interface d'achats d'améliorations
   ui:
     upgradepanel:
+      currentlevel: "&7 Niveau : &a[current]&7 / &2[max]"
       title: Magasin d'améliorations de l'ile
       rangeupgrade: Amélioration de [rangelevel] blocs
       norangeupgrade: "&7 Zone agrandie"
