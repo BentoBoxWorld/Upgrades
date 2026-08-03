@@ -4,6 +4,7 @@ upgrades:
       description: アップグレードショップのインターフェースを開く
   ui:
     upgradepanel:
+      currentlevel: "&7 レベル: &a[current]&7 / &2[max]"
       title: アイランドアップグレードショップ
       rangeupgrade: "[rangelevel]の範囲アップグレード"
       norangeupgrade: "&7範囲アップグレード"

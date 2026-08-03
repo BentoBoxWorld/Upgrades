@@ -44,6 +44,7 @@ upgrades:
         getupgradedataorder: "&c Order need to be a number greater than -1"
   ui:
     upgradepanel:
+      currentlevel: "&7 Level: &a[current]&7 / &2[max]"
       islandneed: "Island Min Level: [islandlevel]"
       limitsupgrade: "[block] limits upgrade of [level]"
       limitsupgradedone: "&a Your island [block] limits was upgraded by [level]"

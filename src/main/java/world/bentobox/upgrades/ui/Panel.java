@@ -76,6 +76,13 @@ public class Panel {
         String ownDescription = upgrade.getOwnDescription(user);
         List<String> fullDescription = new ArrayList<>();
 
+        int maxLevel = upgrade.getMaxLevel(island);
+        if (maxLevel > 0) {
+            fullDescription.add(user.getTranslation("upgrades.ui.upgradepanel.currentlevel",
+                    "[current]", Integer.toString(upgrade.getUpgradeLevel(island)),
+                    "[max]", Integer.toString(maxLevel)));
+        }
+
         if (ownDescription != null) {
             fullDescription.add(ownDescription);
             if (upgrade.getUpgradeValues(user) != null) {

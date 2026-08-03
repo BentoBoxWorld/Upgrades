@@ -360,6 +360,41 @@ class DatabaseUpgradeTest {
                 "ownDescription must be null when maxed so PanelClick correctly blocks the click");
     }
 
+    // ─── getMaxLevel() ────────────────────────────────────────────────────
+
+    @Test
+    void getMaxLevel_singlePurchaseTier_isOne() {
+        // Tier 0-0: one purchase, so the highest reachable level is 1.
+        assertEquals(1, databaseUpgrade.getMaxLevel(island));
+    }
+
+    @Test
+    void getMaxLevel_multiLevelTier_isEndLevelPlusOne() {
+        tier.setEndLevel(2);
+        assertEquals(3, databaseUpgrade.getMaxLevel(island));
+    }
+
+    @Test
+    void getMaxLevel_multipleTiers_usesHighestEndLevel() {
+        UpgradeTier tier2 = new UpgradeTier();
+        tier2.setUniqueId("BSkyBlock_diamond_t2");
+        tier2.setUpgrade("BSkyBlock_diamond");
+        tier2.setStartLevel(1);
+        tier2.setEndLevel(4);
+        when(upgradesDataManager.getUpgradeTierByUpgradeData(upgradeData))
+                .thenReturn(List.of(tier, tier2));
+
+        assertEquals(5, databaseUpgrade.getMaxLevel(island));
+    }
+
+    @Test
+    void getMaxLevel_noTiers_isUnknown() {
+        when(upgradesDataManager.getUpgradeTierByUpgradeData(upgradeData))
+                .thenReturn(Collections.emptyList());
+        assertEquals(-1, databaseUpgrade.getMaxLevel(island),
+                "-1 means unknown — the panel omits the level line");
+    }
+
     // ─── Description substitution ─────────────────────────────────────────
 
     @Test
