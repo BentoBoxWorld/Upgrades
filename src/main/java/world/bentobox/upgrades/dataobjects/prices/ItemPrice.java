@@ -165,6 +165,12 @@ public class ItemPrice extends Price {
             return (panel, client, click, slot) -> {
                 this.getAddon().getChatInput().askOneInput(
                         input -> {
+                            if (input == null) {
+                                // Cancelled: go back to the panel unchanged
+                                this.createInterface();
+                                this.getBuild().build();
+                                return;
+                            }
                             try {
                                 int amt = Integer.parseInt(input);
                                 if (amt > 0) {

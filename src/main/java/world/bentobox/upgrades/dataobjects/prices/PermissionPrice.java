@@ -127,8 +127,11 @@ public class PermissionPrice extends Price {
 
         private Consumer<String> doSetRule() {
             return rule -> {
-                this.saved.setPermission(rule);
-                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                // A cancelled prompt gives null: keep what was there
+                if (rule != null) {
+                    this.saved.setPermission(rule);
+                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                }
                 this.createInterface();
                 this.getBuild().build();
             };

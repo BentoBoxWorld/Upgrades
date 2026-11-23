@@ -144,8 +144,11 @@ public class IslandLevelPrice extends Price {
 
         private Consumer<String> doSetRule() {
             return rule -> {
-                this.saved.setLevelNeededEquation(rule);
-                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                // A cancelled prompt gives null: keep what was there
+                if (rule != null) {
+                    this.saved.setLevelNeededEquation(rule);
+                    this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                }
                 this.createInterface();
                 this.getBuild()
                         .build();
