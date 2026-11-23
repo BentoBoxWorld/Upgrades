@@ -135,7 +135,10 @@ public class EditUpgradePanel extends AbPanel {
 	}
 
 	private Consumer<String> doSetName = name -> {
-		applySetName(name);
+		// A cancelled prompt gives null: keep the name
+		if (name != null) {
+			applySetName(name);
+		}
 		this.setButton();
 		this.getBuild().build();
 	};
@@ -192,6 +195,11 @@ public class EditUpgradePanel extends AbPanel {
 	};
 	
 	private Consumer<String> doTierAdd = input -> {
+		if (input == null) {
+			// Cancelled: go back to the panel without adding a tier
+			this.getBuild().build();
+			return;
+		}
 		String uniqueId = this.getGamemode().getDescription().getName() + "_" + input;
 		List<UpgradeTier> tiers = this.getAddon().getUpgradeDataManager().getUpgradeTierByUpgradeData(this.upgrade);
 		int lastpos = !tiers.isEmpty() ? tiers.get(tiers.size() - 1).getEndLevel() + 1 : 0;
@@ -265,7 +273,10 @@ public class EditUpgradePanel extends AbPanel {
 	}
 
 	private Consumer<Number> doSetOrder = order -> {
-		applySetOrder(order.intValue());
+		// A cancelled prompt gives null: keep the order
+		if (order != null) {
+			applySetOrder(order.intValue());
+		}
 		this.setButton();
 		this.getBuild().build();
 	};

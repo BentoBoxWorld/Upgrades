@@ -26,7 +26,7 @@ mvn test -Dtest=UpgradesAddonTest
 mvn test -Dtest=UpgradesAddonTest#testOnEnable
 ```
 
-Java 21 is required. The surefire plugin is configured with `--add-opens` flags so tests work with MockBukkit.
+Java 25 is required. The surefire plugin is configured with `--add-opens` flags so tests work with MockBukkit.
 
 ## Architecture
 

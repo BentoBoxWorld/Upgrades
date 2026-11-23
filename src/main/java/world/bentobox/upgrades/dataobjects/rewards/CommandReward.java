@@ -153,10 +153,13 @@ public class CommandReward extends Reward {
             return (panel, client, click, slot) -> {
                 this.getAddon().getChatInput().askOneInput(
                         cmd -> {
-                            List<String> cmds = new ArrayList<>(this.saved.getCommands());
-                            cmds.add(cmd);
-                            this.saved.setCommands(cmds);
-                            this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                            // A cancelled prompt gives null: add nothing
+                            if (cmd != null) {
+                                List<String> cmds = new ArrayList<>(this.saved.getCommands());
+                                cmds.add(cmd);
+                                this.saved.setCommands(cmds);
+                                this.getAddon().getUpgradeDataManager().saveUpgradeTier(this.tier);
+                            }
                             this.createInterface();
                             this.getBuild().build();
                         },

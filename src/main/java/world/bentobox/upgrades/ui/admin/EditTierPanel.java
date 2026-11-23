@@ -143,7 +143,10 @@ public final class EditTierPanel extends AbPanel {
     }
 
     private final Consumer<String> doSetName = name -> {
-        applySetName(name);
+        // A cancelled prompt gives null: keep the name
+        if (name != null) {
+            applySetName(name);
+        }
         this.setButton();
         this.getBuild()
                 .build();
