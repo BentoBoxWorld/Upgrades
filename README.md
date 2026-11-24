@@ -1,5 +1,8 @@
 # 🎁 Upgrades Addon
 
+<!-- BentoBox stats badges: https://download.bentobox.world/admin (Badges tab) -->
+[![Servers](https://download.bentobox.world/badge/Upgrades/servers.svg)](https://download.bentobox.world/) [![Downloads](https://download.bentobox.world/badge/Upgrades/downloads.svg)](https://download.bentobox.world/) [![Minecraft](https://download.bentobox.world/badge/Upgrades/mc.svg)](https://download.bentobox.world/)
+
 <div align="center">
 
 [![Discord](https://img.shields.io/discord/272499714048524288.svg?logo=discord&label=Discord)](https://discord.bentobox.world)
